@@ -37,9 +37,9 @@ case $ARCH in
     ;;
 esac
 
-VERSION=$(curl https://api.github.com/repos/Mikubill/transfer/releases/latest 2>&1 | grep -o "[0-9]\.[0-9]\.[0-9]" | head -n 1)
+VERSION=$(curl https://api.github.com/repos/Mikubill/transfer/releases/latest 2>&1 | grep -o "[0-9]\.[0-9]" | head -n 1)
 
 curl -L https://github.com/Mikubill/transfer/releases/download/v$VERSION/transfer_$VERSION\_$OS\_$ARCH.tar.gz | tar xz
 
-printf "\nTrabsfer Downloded.\n\n"
+printf "\nTransfer Downloded.\n\n"
 exit 0

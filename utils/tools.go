@@ -99,3 +99,9 @@ func DotTicker() *chan struct{} {
 	}()
 	return &end
 }
+
+func Spacer(v string) string {
+	r := strings.Split(v, ":")[0]
+	block := strings.Repeat(" ", 24-len(r))
+	return strings.Replace(v, ":", ":"+block, 1)
+}

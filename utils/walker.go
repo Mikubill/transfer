@@ -3,29 +3,33 @@ package utils
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
-// Walker walk through paths, uploads for local files and download for urls
-func Walker(files []string, backend Backend) {
+var urlRegex = regexp.MustCompile("(http|https)://")
+
+func UploadWalker(items []string) []string {
 	var uploadList []string
-	var downloadList []string
-	for _, v := range files {
-		if strings.HasPrefix(v, "-") {
-			continue
-		}
+	for _, v := range items {
 		if IsExist(v) {
 			uploadList = append(uploadList, v)
-		} else if _, err := url.Parse(v); err == nil {
-			downloadList = append(downloadList, v)
 		} else {
-			fmt.Printf(" %s not found or incorrect.\n", v)
+			fmt.Printf("error: \"%s\" is not found.\n", v)
 		}
 	}
-	if len(uploadList) > 0 {
-		backend.Upload(uploadList)
+	return uploadList
+}
+
+func DownloadWalker(items []string) []string {
+	var downloadList []string
+
+	for _, v := range items {
+		if _, err := url.Parse(v); err == nil && urlRegex.MatchString(v) {
+			downloadList = append(downloadList, strings.TrimSpace(v))
+		} else {
+			fmt.Printf("error: \"%s\" is incorrect.\n", v)
+		}
 	}
-	if len(downloadList) > 0 {
-		backend.Download(downloadList)
-	}
+	return downloadList
 }

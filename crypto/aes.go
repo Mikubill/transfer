@@ -7,7 +7,7 @@ import (
 
 func encryptAESCBC(plainText []byte, key, iv []byte) []byte {
 	block, _ := aes.NewCipher(key)
-	plainText = padding(plainText, block.BlockSize())
+	plainText = Padding(plainText, block.BlockSize())
 	blockMode := cipher.NewCBCEncrypter(block, iv)
 	cipherText := make([]byte, len(plainText))
 	blockMode.CryptBlocks(cipherText, plainText)
@@ -25,7 +25,7 @@ func decryptAESCBC(cipherText, key, iv []byte) []byte {
 
 func encryptAESECB(plainText, key []byte) []byte {
 	block, _ := aes.NewCipher(key)
-	plainText = padding(plainText, block.BlockSize())
+	plainText = Padding(plainText, block.BlockSize())
 	cipherText := make([]byte, len(plainText))
 	size := block.BlockSize()
 	for bs, be := 0, size; bs < len(cipherText); bs, be = bs+size, be+size {

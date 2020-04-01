@@ -11,7 +11,7 @@ func encryptDES(src, key []byte) ([]byte, error) {
 		return nil, err
 	}
 	bs := block.BlockSize()
-	src = padding(src, bs)
+	src = Padding(src, bs)
 	if len(src)%bs != 0 {
 		return nil, fmt.Errorf("crypto/cipher: input not full blocks")
 	}
