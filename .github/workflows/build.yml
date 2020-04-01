@@ -1,0 +1,16 @@
+on: [push, pull_request]
+name: build
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14.x
+      - name: checkout
+        uses: actions/checkout@v1
+      - name: build
+        run: |
+          GOOS=windows GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-windows-amd64.exe
+          GOOS=linux   GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-linux-amd64

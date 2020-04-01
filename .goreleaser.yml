@@ -1,0 +1,27 @@
+archives:
+  -
+    files:
+      - none*
+
+    format_overrides:
+      - goos: windows
+        format: zip
+
+builds:
+  -
+    ldflags:
+      - -s -w -extldflags "-static" -X main.build={{.FullCommit}}
+
+    env:
+      - CGO_ENABLED=0
+
+    goos:
+      - linux
+      - windows
+      - darwin
+
+    goarch:
+      - arm
+      - 386
+      - amd64
+      - arm64
