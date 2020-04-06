@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -43,7 +44,7 @@ func (b *airPortal) PreUpload(name string, size int64) error {
 	_ = writer.WriteField("username", b.Config.username)
 	_ = writer.Close()
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("postbody: %s", string(byteBuf.Bytes()))
 	}
 	req, err := http.NewRequest("POST", upload, byteBuf)
@@ -60,7 +61,7 @@ func (b *airPortal) PreUpload(name string, size int64) error {
 		return fmt.Errorf("get ticket error: %v", err)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("ticket: %s", string(body))
 	}
 	if err != nil {
@@ -93,7 +94,7 @@ func (b airPortal) DoUpload(name string, size int64, stream io.Reader) error {
 		fileSize:   size,
 		fileName:   fp,
 		fileReader: stream,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 		ticket:     b.token,
 	})
 	if err != nil {
@@ -124,7 +125,7 @@ func (b airPortal) newMultipartUpload(config uploadConfig) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("postbody: %s", string(byteBuf.Bytes()))
 	}
 

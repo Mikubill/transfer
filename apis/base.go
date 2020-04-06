@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 	"io"
 	"net/http"
@@ -21,6 +22,7 @@ type DownloaderConfig struct {
 
 type DownConfig struct {
 	Prefix    string
+	BytesMode bool
 	DebugMode bool
 	ForceMode bool
 	Ticket    string
@@ -33,6 +35,9 @@ type Uploader interface {
 	DoUpload(string, int64, io.Reader) error
 	PostUpload(string, int64) error
 	FinishUpload([]string) error
+
+	StartProgress(io.Reader, int64) io.Reader
+	EndProgress()
 }
 
 type Downloader interface {
@@ -41,6 +46,18 @@ type Downloader interface {
 
 type Backend struct {
 	BaseBackend
+	Bar *pb.ProgressBar
+}
+
+func (b *Backend) StartProgress(stream io.Reader, size int64) io.Reader {
+	bar := pb.Full.Start64(size)
+	reader := bar.NewProxyReader(stream)
+	b.Bar = bar
+	return reader
+}
+
+func (b Backend) EndProgress() {
+	b.Bar.Finish()
 }
 
 func (b Backend) InitUpload([]string, []int64) error {

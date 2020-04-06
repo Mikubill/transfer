@@ -19,7 +19,6 @@ type wssTransfer struct {
 }
 
 func (b *wssTransfer) SetArgs(cmd *cobra.Command) {
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().StringVarP(&b.Config.token, "cookie", "c", "", "Your User cookie")
 	cmd.Flags().IntVarP(&b.Config.blockSize, "block", "b", 1048576, "Upload Block Size")
 	cmd.Flags().IntVarP(&b.Config.interval, "timeout", "t", 10, "Request retry/timeout limit")

@@ -15,7 +15,7 @@ var (
 
 func InitCmd(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&Backend,
-		"backend", "", "", "Set upload/download backend")
+		"backend", "b", "", "Set upload/download backend")
 	cmd.Flags().BoolVarP(&Verbose,
 		"verbose", "", false, "Enable verbose mode to debug")
 }

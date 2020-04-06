@@ -21,7 +21,6 @@ type weTransfer struct {
 
 func (b *weTransfer) SetArgs(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&b.Config.Parallel, "parallel", "p", 4, "Set the number of upload threads")
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().IntVarP(&b.Config.interval, "timeout", "t", 30, "Request retry/timeout limit in second")
 	cmd.Flags().BoolVarP(&b.Config.singleMode, "single", "s", false, "Single Upload Mode")
 	cmd.Long = fmt.Sprintf("Wetransfer - https://wetransfer.com/\n\n" +

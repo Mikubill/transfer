@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -20,18 +21,19 @@ func (b *catBox) DoUpload(name string, size int64, file io.Reader) error {
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
 	b.resp = string(body)
+
 	return nil
 }
 
 func (b catBox) PostUpload(string, int64) error {
-	fmt.Printf("Download Link: %s", b.resp)
+	fmt.Printf("Download Link: %s\n", b.resp)
 	return nil
 }
 

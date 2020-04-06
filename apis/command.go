@@ -5,30 +5,28 @@ import (
 )
 
 var (
-	Crypto bool
-	Key    string
+	Crypto    bool
+	Key       string
+	DebugMode bool
+	SilentMode bool
 )
 
-func InitUploadCmd(cmd *cobra.Command) {
+func InitCmd(cmd *cobra.Command) {
 	cmd.PersistentFlags().BoolVarP(&Crypto,
-		"encrypt", "", false, "Encrypt stream when upload")
+		"encrypt", "", false, "encrypt stream when upload")
 	cmd.PersistentFlags().StringVarP(&Key,
-		"encrypt-key", "", "", "Specify the encrypt key")
-}
-
-func InitDownloadCmd(cmd *cobra.Command) {
+		"encrypt-key", "", "", "specify the encrypt key")
+	cmd.PersistentFlags().BoolVarP(&SilentMode,
+		"silent", "", false, "enable silent mode to reduce output")
+	cmd.PersistentFlags().BoolVarP(&DebugMode,
+		"verbose", "", false, "enable verbose mode to debug")
 	cmd.Flags().StringVarP(&downConf.Prefix,
-		"output", "o", ".", "Write to another file/dictionary")
+		"output", "o", ".", "download to another file/folder")
 	cmd.Flags().BoolVarP(&downConf.ForceMode,
-		"force", "f", false, "Attempt to download file regardless error")
+		"force", "f", false, "attempt to download file regardless error")
 	cmd.Flags().IntVarP(&downConf.Parallel,
-		"parallel", "p", 3, "Set download task count")
+		"parallel", "p", 3, "set download task count")
 	cmd.Flags().StringVarP(&downConf.Ticket,
-		"ticket", "t", "", "Set download ticket")
-	cmd.Flags().BoolVarP(&downConf.DebugMode,
-		"verbose", "v", false, "Enable verbose mode to debug")
-	cmd.PersistentFlags().BoolVarP(&Crypto,
-		"decrypt", "", false, "Decrypt stream when download")
-	cmd.PersistentFlags().StringVarP(&Key,
-		"encrypt-key", "", "", "Specify the encrypt key")
+		"ticket", "t", "", "set download ticket")
+	cmd.HelpFunc()
 }

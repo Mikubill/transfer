@@ -7,7 +7,6 @@ import (
 )
 
 type wetOptions struct {
-	DebugMode  bool
 	interval   int
 	singleMode bool
 	Parallel   int

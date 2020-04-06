@@ -19,7 +19,6 @@ type fileLink struct {
 }
 
 func (b *fileLink) SetArgs(cmd *cobra.Command) {
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Long = fmt.Sprintf("filelink - https://filelink.io/\n\n" +
 		utils.Spacer("  Size Limit: 100M\n") +
 		utils.Spacer("  Upload Service: Google Cloud Taiwan/Singapore\n") +

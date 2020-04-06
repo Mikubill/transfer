@@ -19,7 +19,6 @@ type airPortal struct {
 }
 
 func (b *airPortal) SetArgs(cmd *cobra.Command) {
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().StringVarP(&b.Config.token, "token", "t", "", "Set your user token (optional)")
 	cmd.Flags().StringVarP(&b.Config.username, "username", "u", "", "Set your user username (optional)")
 	cmd.Flags().IntVarP(&b.Config.downloads, "downloads", "d", 2, "Set downloadable count")

@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/textproto"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -55,45 +54,16 @@ func (s *picBed) linkBuilder(string) string {
 	panic("linkBuilder method not implemented")
 }
 
-func (s picBed) UploadStream(dataChan chan UploadDataFlow) {
-	for {
-		data, ok := <-dataChan
-		if !ok {
-			break
-		}
-		url, err := s.Upload(data.Data)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		data.HashMap.Set(strconv.FormatInt(data.Offset, 10), s.linkExtractor(url))
-		data.Wg.Done()
-	}
+func (s picBed) Upload([]byte) (string, error) {
+	panic("Upload method not implemented")
 }
 
-func (s picBed) DownloadStream(dataChan chan DownloadDataFlow) {
-	for {
-		data, ok := <-dataChan
-		if !ok {
-			break
-		}
-		link := s.linkBuilder(data.Hash)
-		resp, err := http.Get(link)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		bd, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		_ = resp.Body.Close()
-		offset, _ := strconv.ParseInt(data.Offset, 10, 64)
-		n, _ := data.File.WriteAt(bd, offset)
-		data.Bar.Add(n)
-		data.Wg.Done()
-	}
+func (s picBed) UploadStream(chan UploadDataFlow) {
+	panic("UploadStream method not implemented")
+}
+
+func (s picBed) DownloadStream(chan DownloadDataFlow) {
+	panic("DownloadStream method not implemented")
 }
 
 func (s picBed) upload(data []byte, postURL string, fieldName string) ([]byte, error) {
@@ -103,7 +73,7 @@ func (s picBed) upload(data []byte, postURL string, fieldName string) ([]byte, e
 		fmt.Printf("body: byte(%d)\n", len(data))
 	}
 
-	client := http.Client{Timeout: 15 * time.Second}
+	client := http.Client{Timeout: 30 * time.Second}
 	byteBuf := &bytes.Buffer{}
 	writer := NewWriter(byteBuf)
 	filename := utils.GenRandString(14) + ".png"

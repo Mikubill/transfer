@@ -2,7 +2,6 @@ package apis
 
 import (
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
 	"io"
 	"math"
 	"os"
@@ -15,7 +14,7 @@ import (
 func Upload(files []string, backend BaseBackend) {
 	if Crypto {
 		fmt.Println("Warning: crypto mode is enabled. \n" +
-			"Note: Crypto mode is still in beta and abnormalities may occur, " +
+			"Note: Crypto mode still in beta and abnormalities may occur, " +
 			"do not over-rely on this function.")
 		if Key == "" || len(Key) > 32 {
 			Key = utils.GenRandString(16)
@@ -90,7 +89,6 @@ func upload(file string, size int64, backend BaseBackend) error {
 	ps, _ := filepath.Abs(file)
 	fmt.Printf("Local: %s\n", ps)
 	var reader io.Reader
-	bar := pb.Full.Start64(size)
 	if Crypto {
 		blockSize := int64(math.Min(1048576, float64(info.Size())))
 		pipeR, pipeW := io.Pipe()
@@ -98,17 +96,24 @@ func upload(file string, size int64, backend BaseBackend) error {
 		sig.Add(1)
 		go monitor(pipeW, sig)
 		go crypto.StreamEncrypt(fileStream, pipeW, Key, blockSize, sig)
-		reader = bar.NewProxyReader(pipeR)
+		reader = pipeR
+		if !SilentMode{
+			reader = backend.StartProgress(pipeR, size)
+		}
 	} else {
-		bar = pb.Full.Start64(size)
-		reader = bar.NewProxyReader(fileStream)
+		reader = fileStream
+		if !SilentMode{
+			reader = backend.StartProgress(fileStream, size)
+		}
 	}
 	err = backend.DoUpload(info.Name(), size, reader)
 	if err != nil {
 		return fmt.Errorf("Do Upload Error: %s\n", err)
 	}
-	bar.Finish()
 	_ = fileStream.Close()
+	if !SilentMode {
+		backend.EndProgress()
+	}
 	err = backend.PostUpload(info.Name(), size)
 	if err != nil {
 		return fmt.Errorf("PostUpload Error: %s\n", err)

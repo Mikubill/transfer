@@ -20,7 +20,6 @@ type cowTransfer struct {
 
 func (b *cowTransfer) SetArgs(cmd *cobra.Command) {
 	cmd.Flags().IntVarP(&b.Config.Parallel, "parallel", "p", 2, "Set the number of upload threads")
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().StringVarP(&b.Config.token, "cookie", "c", "", "Your user cookie (optional)")
 	cmd.Flags().IntVarP(&b.Config.blockSize, "block", "", 262144, "Upload block size")
 	cmd.Flags().IntVarP(&b.Config.interval, "timeout", "t", 10, "Request retry/timeout limit in second")

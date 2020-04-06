@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -20,14 +21,13 @@ func (b *vimcn) DoUpload(name string, size int64, file io.Reader) error {
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
 	b.resp = string(body)
-
 	return nil
 }
 
@@ -37,7 +37,7 @@ func (b *vimcn) UploadStream(file []byte) {
 		fileSize:   int64(len(file)),
 		fileName:   utils.GenRandString(8),
 		fileReader: bytes.NewReader(file),
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		fmt.Printf("upload returns error: %s", err)

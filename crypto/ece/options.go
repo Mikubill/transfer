@@ -1,6 +1,6 @@
 package ece
 
-// https://github.com/xakep666/ecego, modified
+// https://github.com/xakep666/ecego, MIT license, modified
 
 type engineOption interface {
 	apply(*Engine)

@@ -21,7 +21,6 @@ func (b fileLink) DoUpload(name string, size int64, file io.Reader) error {
 	if err != nil {
 		return fmt.Errorf("upload error: %s", err)
 	}
-
 	fmt.Println("Download Link: " + string(body))
 
 	return nil

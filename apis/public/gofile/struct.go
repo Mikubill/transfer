@@ -5,7 +5,6 @@ import "github.com/cheggaaa/pb/v3"
 type goFileOptions struct {
 	token      string
 	singleMode bool
-	DebugMode  bool
 }
 
 type respBody struct {

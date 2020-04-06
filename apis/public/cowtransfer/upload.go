@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/cheggaaa/pb/v3"
 	cmap "github.com/orcaman/concurrent-map"
+	"hash/crc32"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,6 +17,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -64,6 +67,13 @@ func (b *cowTransfer) PreUpload(_ string, size int64) error {
 	return nil
 }
 
+func (b *cowTransfer) StartProgress(reader io.Reader, size int64) io.Reader {
+	bar := pb.Full.Start64(size)
+	bar.Set(pb.Bytes, true)
+	b.Bar = bar
+	return reader
+}
+
 func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 
 	config, err := b.getUploadConfig(name, size, b.sendConf)
@@ -81,6 +91,7 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 			hashMap: &hashMap,
 		})
 	}
+
 	part := int64(0)
 	for {
 		part++
@@ -98,6 +109,7 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 			ch <- &uploadPart{
 				content: buf[:nr],
 				count:   part,
+				bar:     b.Bar,
 			}
 		}
 	}
@@ -115,20 +127,20 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 	for item := range *ch {
 		postURL := fmt.Sprintf(uploadInitEndpoint, len(item.content))
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d start uploading, size: %d", item.count, len(item.content))
 			log.Printf("part %d posting %s", item.count, postURL)
 		}
 
 		// makeBlock
 		body, err := newPostRequest(postURL, nil, requestConfig{
-			debug:    b.Config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(conf.token),
 		})
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed make mkblk on part %d, error: %s (retrying)",
 					item.count, err)
 			}
@@ -137,7 +149,7 @@ func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 		}
 		var rBody uploadResponse
 		if err := json.Unmarshal(body, &rBody); err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed make mkblk on part %d error: %v, returns: %s (retrying)",
 					item.count, string(body), strings.ReplaceAll(err.Error(), "\n", ""))
 			}
@@ -148,7 +160,7 @@ func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 		//blockPut
 		failFlag := false
 		blockCount := int(math.Ceil(float64(len(item.content)) / float64(b.Config.blockSize)))
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("init: part %d block %d ", item.count, blockCount)
 		}
 		ticket := rBody.Ticket
@@ -161,17 +173,20 @@ func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 			} else {
 				buf = item.content[start:end]
 			}
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("part %d block %d [%d:%d] start upload...", item.count, i, start, end)
 			}
 			postURL = fmt.Sprintf(uploadEndpoint, ticket, start)
 			ticket, err = b.blockPut(postURL, buf, conf.token, 0)
 			if err != nil {
-				if b.Config.DebugMode {
+				if apis.DebugMode {
 					log.Printf("part %d block %d failed. error: %s (retrying)", item.count, i, err)
 				}
 				failFlag = true
 				break
+			}
+			if item.bar != nil {
+				item.bar.Add(len(buf))
 			}
 		}
 		if failFlag {
@@ -179,7 +194,7 @@ func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 			continue
 		}
 
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d finished.", item.count)
 		}
 		conf.hashMap.Set(strconv.FormatInt(item.count, 10), ticket)
@@ -192,13 +207,13 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string, retry in
 	data := new(bytes.Buffer)
 	data.Write(buf)
 	body, err := newPostRequest(postURL, data, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(token),
 	})
 	if err != nil {
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("block upload failed (retrying)")
 		}
 		if retry > 3 {
@@ -208,7 +223,7 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string, retry in
 	}
 	var rBody uploadResponse
 	if err := json.Unmarshal(body, &rBody); err != nil {
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("block upload failed (retrying)")
 		}
 		if retry > 3 {
@@ -217,8 +232,8 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string, retry in
 		return b.blockPut(postURL, buf, token, retry+1)
 	}
 	if b.Config.hashCheck {
-		if utils.HashBlock(buf) != rBody.Hash {
-			if b.Config.DebugMode {
+		if hashBlock(buf) != rBody.Hash {
+			if apis.DebugMode {
 				log.Printf("block hashcheck failed (retrying)")
 			}
 			if retry > 3 {
@@ -230,13 +245,17 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string, retry in
 	return rBody.Ticket, nil
 }
 
+func hashBlock(buf []byte) int {
+	return int(crc32.ChecksumIEEE(buf))
+}
+
 func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int64, hashMap *cmap.ConcurrentMap, limit int64) error {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("finishing upload...")
 		log.Println("step1 -> api/mergeFile")
 	}
 	filename := utils.URLSafeEncode(name)
-	fileLocate := utils.URLSafeEncode(fmt.Sprintf("anonymous/%s/%s", config.TransferGUID, name))
+	fileLocate := utils.URLSafeEncode(fmt.Sprintf("%s/%s/%s", config.Prefix, config.TransferGUID, name))
 	mergeFileURL := fmt.Sprintf(uploadMergeFile, strconv.FormatInt(size, 10), fileLocate, filename)
 	postBody := ""
 	for i := int64(1); i <= limit; i++ {
@@ -248,12 +267,12 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 	if strings.HasSuffix(postBody, ",") {
 		postBody = postBody[:len(postBody)-1]
 	}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("merge payload: %s\n", postBody)
 	}
 	reader := bytes.NewReader([]byte(postBody))
 	_, err := newPostRequest(mergeFileURL, reader, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.UploadToken),
@@ -262,12 +281,12 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 		return err
 	}
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step2 -> api/uploaded")
 	}
 	data := map[string]string{"transferGuid": config.TransferGUID, "fileId": ""}
 	body, err := b.newMultipartRequest(uploadFinish, data, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -283,11 +302,11 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 
 func (b cowTransfer) FinishUpload(_ []string) error {
 	data := map[string]string{"transferGuid": b.sendConf.TransferGUID, "fileId": ""}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step3 -> api/completeUpload")
 	}
 	body, err := b.newMultipartRequest(uploadComplete, data, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -311,7 +330,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 		"totalSize": strconv.FormatInt(totalSize, 10),
 	}
 	body, err := b.newMultipartRequest(prepareSend, data, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -334,7 +353,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 			"passcode":     b.Config.passCode,
 		}
 		body, err = b.newMultipartRequest(setPassword, data, requestConfig{
-			debug:    b.Config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addHeaders,
@@ -351,7 +370,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 
 func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSendResp) (*prepareSendResp, error) {
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("retrieving upload config...")
 		log.Println("step 2/2 -> beforeUpload")
 	}
@@ -365,7 +384,7 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 		"storagePrefix": config.Prefix,
 	}
 	_, err := b.newMultipartRequest(beforeUpload, data, requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,

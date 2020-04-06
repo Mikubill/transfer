@@ -2,10 +2,6 @@ package firefox
 
 import "github.com/cheggaaa/pb/v3"
 
-type ffOptions struct {
-	DebugMode bool
-}
-
 type uploadConfig struct {
 	debug      bool
 	fileName   string

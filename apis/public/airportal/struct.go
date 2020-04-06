@@ -9,7 +9,6 @@ type arpOptions struct {
 	downloads int
 	hours     int
 	username  string
-	DebugMode bool
 }
 
 type uploadConfig struct {

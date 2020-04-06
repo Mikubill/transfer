@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strings"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -84,7 +85,6 @@ func (b *goFile) DoUpload(name string, _ int64, file io.Reader) error {
 	_, _ = fmt.Fprintf(b.streamWriter, "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", "filesUploaded", name)
 	_, _ = fmt.Fprintf(b.streamWriter, "Content-Type: application/octet-stream\r\n")
 	_, _ = fmt.Fprintf(b.streamWriter, "\r\n")
-	fmt.Printf("start readfile")
 	for {
 		buf := make([]byte, 256)
 		nr, err := io.ReadFull(file, buf)
@@ -136,7 +136,7 @@ func (b *goFile) finishUpload() {
 }
 
 func (b *goFile) initPipe() {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("start upload")
 	}
 	byteBuf := &bytes.Buffer{}
@@ -173,12 +173,12 @@ func (b *goFile) initMultipartUpload() {
 	//req.ContentLength = totalSize
 	//req.Header.Set("content-length", strconv.FormatInt(totalSize, 10))
 	req.Header.Set("content-type", fmt.Sprintf("multipart/form-data; boundary=%s", b.boundary))
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("header: %v", req.Header)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("do requests returns error: %v", err)
 		}
 		close(b.dataCh)
@@ -186,14 +186,14 @@ func (b *goFile) initMultipartUpload() {
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("read response returns: %v", err)
 		}
 		close(b.dataCh)
 		return
 	}
 	_ = resp.Body.Close()
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("returns: %v", string(body))
 	}
 

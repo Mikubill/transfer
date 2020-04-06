@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"regexp"
+	"strconv"
 	"time"
 	"transfer/utils"
 )
@@ -36,8 +37,49 @@ func (s Ali) linkBuilder(link string) string {
 	return "https://ae01.alicdn.com/kf/" + getter.FindString(link) + ".jpg"
 }
 
+func (s Ali) UploadStream(dataChan chan UploadDataFlow) {
+	for {
+		data, ok := <-dataChan
+		if !ok {
+			break
+		}
+		url, err := s.Upload(data.Data)
+		if err != nil {
+			dataChan <- data
+			continue
+		}
+		data.HashMap.Set(strconv.FormatInt(data.Offset, 10), s.linkExtractor(url))
+		data.Wg.Done()
+	}
+}
+
+func (s Ali) DownloadStream(dataChan chan DownloadDataFlow) {
+	for {
+		data, ok := <-dataChan
+		if !ok {
+			break
+		}
+		link := s.linkBuilder(data.Hash)
+		resp, err := http.Get(link)
+		if err != nil {
+			dataChan <- data
+			continue
+		}
+		bd, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			dataChan <- data
+			continue
+		}
+		_ = resp.Body.Close()
+		offset, _ := strconv.ParseInt(data.Offset, 10, 64)
+		n, _ := data.File.WriteAt(bd, offset)
+		data.Bar.Add(n)
+		data.Wg.Done()
+	}
+}
+
 func (s Ali) Upload(data []byte) (string, error) {
-	client := http.Client{Timeout: 10 * time.Second}
+	client := http.Client{Timeout: 30 * time.Second}
 	byteBuf := &bytes.Buffer{}
 	writer := multipart.NewWriter(byteBuf)
 	filename := utils.GenRandString(14) + ".jpg"
@@ -63,11 +105,12 @@ func (s Ali) Upload(data []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_ = resp.Body.Close()
-
 	var r AliResp
 	if err := json.Unmarshal(body, &r); err != nil {
 		return "", err
+	}
+	if r.Code != "0" {
+		return "", fmt.Errorf(string(body))
 	}
 	return s.linkBuilder(r.Url), nil
 }

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"transfer/apis"
 )
 
 const upload = "https://transfer.sh/"
@@ -16,7 +17,7 @@ func (b *transfer) DoUpload(name string, size int64, file io.Reader) error {
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)

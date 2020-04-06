@@ -10,7 +10,6 @@ var (
 )
 
 type ffsend struct {
-	Config   ffOptions
 	Commands [][]string
 }
 

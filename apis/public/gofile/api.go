@@ -28,7 +28,6 @@ type goFile struct {
 }
 
 func (b *goFile) SetArgs(cmd *cobra.Command) {
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().BoolVarP(&b.Config.singleMode, "single", "s", false, "Upload multi files in a single link")
 	cmd.Long = fmt.Sprintf("GoFile - https://gofile.io/\n\n" +
 		utils.Spacer("  Size Limit: -\n") +

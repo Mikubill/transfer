@@ -5,8 +5,7 @@ import (
 )
 
 type wssOptions struct {
-	token     string
-	DebugMode bool
+	token string
 }
 
 type uploadConfig struct {

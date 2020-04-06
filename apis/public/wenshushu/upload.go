@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"transfer/apis"
 )
 
 const (
@@ -121,13 +122,13 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 			"upId":   config.UploadID,
 		})
 		uploadTicket, err := newRequest(getUpURL, string(d), requestConfig{
-			debug:    b.Config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(config.Token),
 		})
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("get upload url request returns error: %v", err)
 			}
 			*ch <- item
@@ -137,13 +138,13 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 		client := http.Client{Timeout: time.Duration(b.Config.interval) * time.Second}
 		data := new(bytes.Buffer)
 		data.Write(item.content)
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d start uploading", item.count)
 			log.Printf("part %d posting %s", item.count, uploadTicket.Data.URL)
 		}
 		req, err := http.NewRequest("PUT", uploadTicket.Data.URL, data)
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("build request returns error: %v", err)
 			}
 			*ch <- item
@@ -152,7 +153,7 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 		req.Header.Set("content-type", "application/octet-stream")
 		resp, err := client.Do(req)
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
 			*ch <- item
@@ -160,7 +161,7 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 		}
 		_, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
 			*ch <- item
@@ -169,7 +170,7 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 
 		_ = resp.Body.Close()
 
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d finished.", item.count)
 		}
 		item.wg.Done()
@@ -178,7 +179,7 @@ func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 }
 
 func (b wssTransfer) finishUpload(config sendConfigBlock, name string) error {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("finish upload...")
 		log.Println("step1 -> complete")
 	}
@@ -193,7 +194,7 @@ func (b wssTransfer) finishUpload(config sendConfigBlock, name string) error {
 	})
 
 	body, err := newRequest(complete, string(d), requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.Token),
@@ -208,14 +209,14 @@ func (b wssTransfer) finishUpload(config sendConfigBlock, name string) error {
 }
 
 func (b wssTransfer) completeUpload(config sendConfigBlock) error {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("complete upload...")
 		log.Println("step1 -> process")
 	}
 	d, _ := json.Marshal(map[string]string{"processId": config.UploadID})
 	for {
 		body, err := newRequest(process, string(d), requestConfig{
-			debug:    b.Config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(config.Token),
@@ -230,7 +231,7 @@ func (b wssTransfer) completeUpload(config sendConfigBlock) error {
 		time.Sleep(time.Second)
 	}
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step2 -> finish(copySend)")
 	}
 	d, _ = json.Marshal(map[string]string{
@@ -239,7 +240,7 @@ func (b wssTransfer) completeUpload(config sendConfigBlock) error {
 		"tid":     config.Tid,
 	})
 	body, err := newRequest(finish, string(d), requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.Token),
@@ -261,11 +262,11 @@ func (b wssTransfer) getTicket() (string, error) {
 	if b.Config.token != "" {
 		return b.Config.token, nil
 	}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("getToken...")
 	}
 	config, err := newRequest(anonymous, "{\"dev_info\":\"{}\"}", requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(""),
@@ -282,7 +283,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		return nil, err
 	}
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step 1/2 addSend")
 	}
 	data, _ := json.Marshal(map[string]interface{}{
@@ -296,7 +297,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		"file_count":  totalCount,
 	})
 	config, err := newRequest(addSend, string(data), requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -305,7 +306,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		return nil, err
 	}
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step 2/2 getUpID")
 	}
 	data, _ = json.Marshal(map[string]interface{}{
@@ -318,7 +319,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		"count":      totalCount,
 	})
 	upData, err := newRequest(getUpID, string(data), requestConfig{
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -328,7 +329,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 	}
 	config.Data.UploadID = upData.Data.UploadID
 	config.Data.Token = ticket
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("%+v", config.Data)
 	}
 	return &config.Data, nil

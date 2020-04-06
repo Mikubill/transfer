@@ -16,7 +16,7 @@ func (b tmpLink) LinkMatcher(v string) bool {
 }
 
 func (b tmpLink) DoDownload(link string, config apis.DownConfig) error {
-	if b.Config.token == "" {
+	if config.Ticket == "" {
 		return fmt.Errorf("%s: token is required.\n", link)
 	}
 	err := b.download(link, config)

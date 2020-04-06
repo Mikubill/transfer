@@ -5,9 +5,8 @@ import (
 )
 
 type wssOptions struct {
-	DebugMode bool
-	interval  int
-	passCode  string
+	interval int
+	passCode string
 }
 
 type uploadConfig struct {

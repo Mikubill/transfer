@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -19,7 +20,7 @@ func (b bitSend) PostUpload(_ string, _ int64) error {
 	if len(b.resp.Files) == 0 {
 		return fmt.Errorf("upload failed: no file found in response")
 	}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("%+v", b.resp)
 	}
 
@@ -35,7 +36,7 @@ func (b *bitSend) DoUpload(name string, size int64, file io.Reader) error {
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
@@ -47,6 +48,7 @@ func (b *bitSend) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("json unmarshal returns error: %s", err)
 	}
 	b.resp = respDat
+
 	return nil
 }
 

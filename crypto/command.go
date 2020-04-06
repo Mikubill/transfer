@@ -21,7 +21,7 @@ var (
 
 func InitCmd(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&Prefix,
-		"output", "o", ".", "Write to another file/dictionary")
+		"output", "o", ".", "Write to another file/folder")
 	cmd.Flags().StringVarP(&Key,
 		"key", "k", "", "Set encrypt/decrypt password")
 	cmd.Flags().BoolVarP(&ForceMode,

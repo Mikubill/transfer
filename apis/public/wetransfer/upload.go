@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/cheggaaa/pb/v3"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -44,6 +46,13 @@ func (b *weTransfer) InitUpload(files []string, sizes []int64) error {
 	return nil
 }
 
+func (b *weTransfer) StartProgress(reader io.Reader, size int64) io.Reader {
+	bar := pb.Full.Start64(size)
+	bar.Set(pb.Bytes, true)
+	b.Bar = bar
+	return reader
+}
+
 func (b *weTransfer) initUpload(fileItem []fileInfo) {
 
 	err := b.getSendConfig(fileItem)
@@ -67,7 +76,7 @@ func (b *weTransfer) PreUpload(name string, size int64) error {
 
 func (b weTransfer) DoUpload(name string, size int64, file io.Reader) error {
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("send file init...")
 	}
 	d, _ := json.Marshal(map[string]interface{}{
@@ -76,7 +85,7 @@ func (b weTransfer) DoUpload(name string, size int64, file io.Reader) error {
 	})
 	config, err := newRequest(fmt.Sprintf(getSendURL, b.baseConf.ID), string(d), requestConfig{
 		action:   "POST",
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(b.baseConf.ticket),
@@ -148,13 +157,13 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 		})
 		uploadTicket, err := newRequest(fmt.Sprintf(getUpURL, config.ID, item.fileID), string(d), requestConfig{
 			action:   "POST",
-			debug:    b.Config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(config.ticket),
 		})
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("get upload url request returns error: %v", err)
 			}
 			*ch <- item
@@ -164,22 +173,30 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 		client := http.Client{Timeout: time.Duration(b.Config.interval) * time.Second}
 		data := new(bytes.Buffer)
 		data.Write(item.content)
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d start uploading", item.count)
 			log.Printf("part %d posting %s", item.count, uploadTicket.URL)
 		}
-		req, err := http.NewRequest("PUT", uploadTicket.URL, data)
+		reader, writer := io.Pipe()
+		go func() { _, _ = io.Copy(writer, data) }()
+		var req *http.Request
+		if b.Bar != nil {
+			req, err = http.NewRequest("PUT", uploadTicket.URL, b.Bar.NewProxyReader(reader))
+		} else {
+			req, err = http.NewRequest("PUT", uploadTicket.URL, reader)
+		}
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("build request returns error: %v", err)
 			}
 			*ch <- item
 			continue
 		}
+		req.ContentLength = int64(len(item.content))
 		req.Header.Set("content-type", "application/octet-stream")
 		resp, err := client.Do(req)
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
 			*ch <- item
@@ -187,7 +204,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 		}
 		_, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			if b.Config.DebugMode {
+			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
 			*ch <- item
@@ -196,7 +213,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 
 		_ = resp.Body.Close()
 
-		if b.Config.DebugMode {
+		if apis.DebugMode {
 			log.Printf("part %d finished.", item.count)
 		}
 		item.wg.Done()
@@ -205,7 +222,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 }
 
 func (b weTransfer) finishUpload(config *configBlock, size int64, id string) error {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("finish upload...")
 		log.Println("step1 -> complete")
 	}
@@ -216,7 +233,7 @@ func (b weTransfer) finishUpload(config *configBlock, size int64, id string) err
 	link := fmt.Sprintf(finishPart, config.ID, id)
 	_, err := newRequest(link, string(d), requestConfig{
 		action:   "PUT",
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.ticket),
@@ -228,14 +245,14 @@ func (b weTransfer) finishUpload(config *configBlock, size int64, id string) err
 }
 
 func (b weTransfer) completeUpload(config *configBlock) error {
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("complete upload...")
 		log.Println("step1 -> process")
 	}
 	link := fmt.Sprintf(finishAll, config.ID)
 	body, err := newRequest(link, "", requestConfig{
 		action:   "PUT",
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.ticket),
@@ -250,7 +267,7 @@ func (b weTransfer) completeUpload(config *configBlock) error {
 
 func (b *weTransfer) getTicket() (requestTicket, error) {
 	client := http.Client{Timeout: time.Duration(b.Config.interval) * time.Second}
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("parse cookies, getToken...")
 	}
 	resp, err := client.Get(indexPage)
@@ -263,7 +280,7 @@ func (b *weTransfer) getTicket() (requestTicket, error) {
 	}
 	_ = resp.Body.Close()
 	tk := tokenRegex.FindSubmatch(body)
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("returns: ", string(tk[0]), string(tk[1]))
 	}
 	if len(tk) == 0 {
@@ -290,7 +307,7 @@ func (b *weTransfer) getSendConfig(info []fileInfo) error {
 		return err
 	}
 
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step 1/2 email")
 		log.Printf("ticket: %+v", ticket)
 	}
@@ -302,7 +319,7 @@ func (b *weTransfer) getSendConfig(info []fileInfo) error {
 	})
 	config, err := newRequest(prepareSend, string(data), requestConfig{
 		action:   "POST",
-		debug:    b.Config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -311,7 +328,7 @@ func (b *weTransfer) getSendConfig(info []fileInfo) error {
 		return err
 	}
 	config.ticket.token = ticket.token
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("init finished.")
 		log.Printf("config: %+v", config)
 	}

@@ -14,7 +14,6 @@ import (
 	"transfer/apis/public/vimcn"
 	"transfer/apis/public/wenshushu"
 	"transfer/apis/public/wetransfer"
-	"transfer/utils"
 )
 
 var (
@@ -57,7 +56,7 @@ func ParseLink(link string) apis.BaseBackend {
 
 func runner(backend apis.BaseBackend) func(cmd *cobra.Command, args []string) {
 	return func(cmd *cobra.Command, args []string) {
-		file := utils.UploadWalker(args)
+		file := uploadWalker(args)
 		if len(file) != 0 {
 			apis.Upload(file, backend)
 		} else {

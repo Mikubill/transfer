@@ -7,7 +7,6 @@ import (
 )
 
 type wssOptions struct {
-	DebugMode  bool
 	token      string
 	interval   int
 	singleMode bool

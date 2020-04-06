@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"transfer/apis/image"
-	"transfer/utils"
 )
 
 var (
@@ -30,7 +29,7 @@ Example:
 Note: Image bed backend may have strict size or format limit.
 `,
 		Run: func(cmd *cobra.Command, args []string) {
-			files := utils.UploadWalker(args)
+			files := uploadWalker(args)
 			if len(files) != 0 {
 				image.Upload(files)
 			} else {

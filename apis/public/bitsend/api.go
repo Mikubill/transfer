@@ -20,7 +20,6 @@ type bitSend struct {
 }
 
 func (b *bitSend) SetArgs(cmd *cobra.Command) {
-	cmd.Flags().BoolVarP(&b.Config.DebugMode, "verbose", "", false, "Verbose mode to debug")
 	cmd.Flags().StringVarP(&b.Config.passCode, "password", "p", "", "Set upload password")
 	cmd.Long = fmt.Sprintf("BitSend - https://bitsend.jp/\n\n" +
 		utils.Spacer("  Size Limit: -\n") +

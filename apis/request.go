@@ -40,7 +40,9 @@ func (wc *writeCounter) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	wc.offset += int64(n)
-	wc.bar.Add(n)
+	if !SilentMode && wc.bar != nil {
+		wc.bar.Add(n)
+	}
 	return n, nil
 }
 
@@ -113,10 +115,12 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	fmt.Printf("file save to: %s\n", prefix)
-
-	bar := pb.Full.Start64(0)
-	bar.Set(pb.Bytes, true)
-	bar.SetTotal(length)
+	var bar *pb.ProgressBar
+	if !SilentMode {
+		bar = pb.Full.Start64(0)
+		bar.Set(pb.Bytes, true)
+		bar.SetTotal(length)
+	}
 
 	if utils.IsExist(prefix) && !strings.HasPrefix(prefix, "/dev") && !config.Config.ForceMode {
 		return fmt.Errorf("%s exists.(use -f to overwrite)", prefix)
@@ -160,10 +164,18 @@ func DownloadFile(config *DownloaderConfig) error {
 			sig := new(sync.WaitGroup)
 			sig.Add(1)
 			go monitor(pipeW, sig)
-			go crypto.StreamDecrypt(bar.NewProxyReader(resp.Body), pipeW, Key, blockSize, sig)
+			if !SilentMode && bar != nil {
+				go crypto.StreamDecrypt(bar.NewProxyReader(resp.Body), pipeW, Key, blockSize, sig)
+			} else {
+				go crypto.StreamDecrypt(resp.Body, pipeW, Key, blockSize, sig)
+			}
 			_, _ = io.Copy(out, pipeR)
 		} else {
-			_, _ = io.Copy(out, bar.NewProxyReader(resp.Body))
+			if !SilentMode && bar != nil {
+				_, _ = io.Copy(out, bar.NewProxyReader(resp.Body))
+			} else {
+				_, _ = io.Copy(out, resp.Body)
+			}
 		}
 	} else {
 		if err := out.Truncate(length); err != nil {
@@ -193,7 +205,9 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	fmt.Print("\n")
-	bar.Finish()
+	if !SilentMode && bar != nil {
+		bar.Finish()
+	}
 	return nil
 }
 

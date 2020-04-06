@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"transfer/apis"
 	"transfer/utils"
 )
 
@@ -39,7 +40,7 @@ func (b ffsend) initUpload(files []string) {
 
 func (b ffsend) upload(v string) error {
 	fmt.Printf("Local: %s\n", v)
-	if b.Config.DebugMode {
+	if apis.DebugMode {
 		log.Println("generating keys...")
 	}
 

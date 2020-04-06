@@ -1,6 +1,7 @@
 package cowtransfer
 
 import (
+	"github.com/cheggaaa/pb/v3"
 	cmap "github.com/orcaman/concurrent-map"
 	"net/http"
 	"sync"
@@ -17,6 +18,7 @@ type requestConfig struct {
 type uploadPart struct {
 	content []byte
 	count   int64
+	bar     *pb.ProgressBar
 }
 
 type uploadConfig struct {
@@ -33,7 +35,6 @@ type cowOptions struct {
 	blockSize  int
 	hashCheck  bool
 	passCode   string
-	DebugMode  bool
 }
 
 type prepareSendResp struct {

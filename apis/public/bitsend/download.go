@@ -29,7 +29,7 @@ func (b bitSend) download(v string, config apis.DownConfig) error {
 	if config.DebugMode {
 		log.Printf("fetching: %v", v)
 	}
-	fmt.Printf("fetching download metadata..")
+	fmt.Printf("fetching ticket..")
 	end := utils.DotTicker()
 
 	resp, err := http.Get(v)
@@ -64,7 +64,7 @@ func (b bitSend) addRef(ref string) func(req *http.Request) {
 
 		req.Header.Set("Referer", ref)
 		req.Header.Set("cookie", b.headRequest(ref, 0))
-		log.Printf("%+v", req.Header)
+		//log.Printf("%+v", req.Header)
 	}
 }
 

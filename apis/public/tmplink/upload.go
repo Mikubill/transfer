@@ -9,10 +9,18 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
+	"transfer/apis"
 	"transfer/utils"
 )
 
 const upload = "https://connect.tmp.link/api_v2/cli_uploader"
+
+func (b *tmpLink) PreUpload(string, int64) error {
+	if b.Config.token == "" {
+		return fmt.Errorf("no token(use transfer tmp --help for more information)")
+	}
+	return nil
+}
 
 func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 
@@ -20,7 +28,7 @@ func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
-		debug:      b.Config.DebugMode,
+		debug:      apis.DebugMode,
 	})
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
