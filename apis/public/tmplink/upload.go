@@ -8,19 +8,18 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"regexp"
 	"strconv"
 	"transfer/apis"
 	"transfer/utils"
 )
 
-const upload = "https://connect.tmp.link/api_v2/cli_uploader"
+const (
+	upload = "https://connect.tmp.link/api_v2/cli_uploader"
+	aUpload = "https://connect.tmp.link/api_v2/file"
+)
 
-func (b *tmpLink) PreUpload(string, int64) error {
-	if b.Config.token == "" {
-		return fmt.Errorf("no token(use transfer tmp --help for more information)")
-	}
-	return nil
-}
+var linkMatcher = regexp.MustCompile("[a-f0-9]{13}")
 
 func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 
@@ -34,7 +33,7 @@ func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
-	b.resp = fmt.Sprintf("%s", string(body))
+	b.resp = fmt.Sprintf("Download Link: https://tmp.link/f/%s\n", linkMatcher.Find(body))
 
 	return nil
 }
@@ -53,7 +52,12 @@ func (b tmpLink) newMultipartUpload(config uploadConfig) ([]byte, error) {
 	byteBuf := &bytes.Buffer{}
 	writer := multipart.NewWriter(byteBuf)
 	_ = writer.WriteField("model", "0")
-	_ = writer.WriteField("token", b.Config.token)
+	if b.Config.token != "" {
+		_ = writer.WriteField("token", b.Config.token)
+	} else {
+		_ = writer.WriteField("action", "upload")
+		_ = writer.WriteField("token", utils.GenRandString(16))
+	}
 	_ = writer.WriteField("u_key", utils.GenRandString(16))
 	_, err := writer.CreateFormFile("file", config.fileName)
 	if err != nil {
@@ -91,8 +95,13 @@ func (b tmpLink) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		_, _ = partW.Write(lastBoundary)
 		_ = partW.Close()
 	}()
+	var req *http.Request
+	if b.Config.token != "" {
+		req, err = http.NewRequest("POST", upload, partR)
+	} else {
+		req, err = http.NewRequest("POST", aUpload, partR)
+	}
 
-	req, err := http.NewRequest("POST", upload, partR)
 	if err != nil {
 		return nil, err
 	}
