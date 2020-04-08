@@ -97,12 +97,12 @@ func upload(file string, size int64, backend BaseBackend) error {
 		go monitor(pipeW, sig)
 		go crypto.StreamEncrypt(fileStream, pipeW, Key, blockSize, sig)
 		reader = pipeR
-		if !SilentMode{
+		if !SilentMode {
 			reader = backend.StartProgress(pipeR, size)
 		}
 	} else {
 		reader = fileStream
-		if !SilentMode{
+		if !SilentMode {
 			reader = backend.StartProgress(fileStream, size)
 		}
 	}

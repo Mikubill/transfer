@@ -9,6 +9,7 @@ import (
 	"transfer/apis/public/cowtransfer"
 	"transfer/apis/public/filelink"
 	"transfer/apis/public/gofile"
+	"transfer/apis/public/lanzous"
 	"transfer/apis/public/tmplink"
 	"transfer/apis/public/transfer"
 	"transfer/apis/public/vimcn"
@@ -29,6 +30,7 @@ var (
 		{"arp", "airportal"},
 		{"flk", "filelink"},
 		{"trs", "transfer.sh"},
+		{"lzs", "lanzous"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
@@ -42,6 +44,7 @@ var (
 		airportal.Backend,
 		filelink.Backend,
 		transfer.Backend,
+		lanzous.Backend,
 	}
 )
 

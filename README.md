@@ -16,6 +16,8 @@ Go语言程序, 可直接在[发布页](https://github.com/Mikubill/transfer/rel
 curl -sL https://git.io/file-transfer | sh 
 ```
 
+Github Action中有实时构建版本，如有需要可以在Github Action的构建日志中查看下载链接。
+
 ## support
 
 目前支持的文件传输服务:
@@ -27,12 +29,13 @@ curl -sL https://git.io/file-transfer | sh
 | CatBox | https://catbox.moe/ | 100MB | Psychz |
 | CowTransfer | https://www.cowtransfer.com/ | 2GB | Qiniu |
 | GoFile | https://gofile.io/ | - | - |
-| TmpLink | https://tmp.link/ | login only | - |
+| TmpLink | https://tmp.link/ | - | - |
 | Vim-cn | https://img.vim-cn.com/ | 100MB | CloudFlare |
 | WenShuShu | https://www.wenshushu.cn/ | 5GB | QCloud |
 | WeTransfer | https://wetransfer.com/ | 2GB | CloudFront |
 | FileLink | https://filelink.io/ | - | GCE |
 | Transfer.sh | https://transfer.sh/ | - | Hetzner |
+| Lanzous | https://www.lanzous.com/ | beta | - |
 
 目前支持的图床服务:
 

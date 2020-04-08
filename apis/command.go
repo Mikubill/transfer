@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	Crypto    bool
-	Key       string
-	DebugMode bool
+	Crypto     bool
+	Key        string
+	DebugMode  bool
 	SilentMode bool
 )
 

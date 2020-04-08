@@ -19,7 +19,7 @@ import (
 	"transfer/utils"
 )
 
-var regex = regexp.MustCompile("filename=\"(.*)\"$")
+var regex = regexp.MustCompile("filename=\"?(.*)\"?$")
 
 type parallelConfig struct {
 	parallel int
@@ -108,7 +108,7 @@ func DownloadFile(config *DownloaderConfig) error {
 		}
 		dest := regex.FindStringSubmatch(resp.Header.Get("content-disposition"))
 		if len(dest) > 0 {
-			prefix = path.Join(prefix, dest[1])
+			prefix = path.Join(prefix, strings.TrimSpace(dest[1]))
 		} else {
 			prefix = path.Join(prefix, path.Base(resp.Request.URL.Path))
 		}

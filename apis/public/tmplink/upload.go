@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	upload = "https://connect.tmp.link/api_v2/cli_uploader"
+	upload  = "https://connect.tmp.link/api_v2/cli_uploader"
 	aUpload = "https://connect.tmp.link/api_v2/file"
 )
 

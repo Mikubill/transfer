@@ -89,8 +89,9 @@ func (b Backend) DoDownload(link string, config DownConfig) error {
 }
 
 func AddHeaders(req *http.Request) {
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) " +
+	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) "+
 		"Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10")
+	req.Header.Add("accept-language", "zh-CN,zh;q=0.9,en;")
 	req.Header.Set("Origin", req.Host)
 	req.Header.Set("Referer", req.Host)
 }
