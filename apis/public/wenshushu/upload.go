@@ -252,8 +252,8 @@ func (b wssTransfer) completeUpload(config sendConfigBlock) error {
 		return fmt.Errorf("status != success")
 	}
 
-	fmt.Printf("Manage URL: %s\n", body.Data.ManageURL)
-	fmt.Printf("Public URL: %s\n", body.Data.PublicURL)
+	fmt.Printf("Manage Link: %s\n", body.Data.ManageURL)
+	fmt.Printf("Download Link: %s\n", body.Data.PublicURL)
 
 	return nil
 }

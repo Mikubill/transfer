@@ -45,11 +45,11 @@ func (b *vimcn) UploadStream(file []byte) {
 	}
 
 	b.resp = string(body)
-	fmt.Printf("%s\n", b.resp)
+	//fmt.Printf("%s\n", b.resp)
 }
 
 func (b *vimcn) PostUpload(string, int64) error {
-	fmt.Printf("%s\n", b.resp)
+	fmt.Printf("Download Link: %s\n", b.resp)
 	return nil
 }
 

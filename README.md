@@ -79,6 +79,7 @@ Backend Support:
   wet  -  WeTransfer  -  https://wetransfer.com/
   flk  -  FileLink  -  https://filelink.io/
   trs  -  Transfer.sh  -  https://transfer.sh/
+  lzs  -  Lanzous  -  https://www.lanzous.com/
 
 Usage:
   transfer [command]
@@ -125,19 +126,6 @@ Usage:
 
 Aliases:
   upload, up
-
-Available APIs:
-  arp  -  Airportal  -  https://aitportal.cn/
-  bit  -  bitSend  -  https://bitsend.jp/
-  cat  -  CatBox  -  https://catbox.moe/    
-  cow  -  CowTransfer  -  https://www.cowtransfer.com/  
-  gof  -  GoFile  -  https://gofile.io/
-  tmp  -  TmpLink  -  https://tmp.link/     
-  vim  -  Vim-cn  -  https://img.vim-cn.com/    
-  wss  -  WenShuShu  -  https://www.wenshushu.cn/  
-  wet  -  WeTransfer  -  https://wetransfer.com/  
-  flk  -  FileLink  -  https://filelink.io/
-  trs  -  Transfer.sh  -  https://transfer.sh/
 
 Flags:
       --encrypt              Encrypt stream when upload

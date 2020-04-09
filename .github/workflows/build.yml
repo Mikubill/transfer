@@ -13,7 +13,9 @@ jobs:
       - name: build
         run: |
           GOOS=windows GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-windows-amd64.exe
+          GOOS=darwin  GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-macos-amd64
           GOOS=linux   GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-linux-amd64
           chmod +x bin/ci-test-linux-amd64
           bin/ci-test-linux-amd64 --silent bin/ci-test-linux-amd64
+          bin/ci-test-linux-amd64 --silent bin/ci-test-macos-amd64
           bin/ci-test-linux-amd64 --silent bin/ci-test-windows-amd64.exe

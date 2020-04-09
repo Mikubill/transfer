@@ -25,3 +25,7 @@ builds:
       - 386
       - amd64
       - arm64
+
+release:
+  prerelease: auto
+  draft: true

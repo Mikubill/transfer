@@ -29,6 +29,7 @@ Backend Support:
   wet  -  WeTransfer  -  https://wetransfer.com/  
   flk  -  FileLink  -  https://filelink.io/
   trs  -  Transfer.sh  -  https://transfer.sh/
+  lzs  -  Lanzous  -  https://www.lanzous.com/
 `,
 		SilenceErrors: true,
 		Example: `  # upload via wenshushu

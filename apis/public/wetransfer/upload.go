@@ -261,7 +261,7 @@ func (b weTransfer) completeUpload(config *configBlock) error {
 		return err
 	}
 
-	fmt.Printf("Public URL: %s\n", body.Public)
+	fmt.Printf("Download Link: %s\n", body.Public)
 	return nil
 }
 

@@ -52,7 +52,7 @@ func (b *cowTransfer) initUpload(totalSize int64) error {
 	if err != nil {
 		fmt.Printf("getSendConfig(single mode) returns error: %v\n", err)
 	}
-	fmt.Printf("Destination: %s\n", config.UniqueURL)
+	fmt.Printf("Download Link: %s\n", config.UniqueURL)
 	b.sendConf = *config
 	return nil
 }
