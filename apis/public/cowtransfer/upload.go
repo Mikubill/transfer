@@ -33,7 +33,7 @@ const (
 	block              = 4194304
 )
 
-func (b cowTransfer) InitUpload(_ []string, sizes []int64) error {
+func (b *cowTransfer) InitUpload(_ []string, sizes []int64) error {
 	if b.Config.singleMode {
 		totalSize := int64(0)
 		for _, v := range sizes {
