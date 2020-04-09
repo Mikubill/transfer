@@ -16,18 +16,16 @@ import (
 
 const download = "https://bitsend.jp/download/%s.html"
 
-func (b bitSend) PostUpload(string, int64) error {
+func (b bitSend) PostUpload(string, int64) (string, error) {
 	if len(b.resp.Files) == 0 {
-		return fmt.Errorf("upload failed: no file found in response")
+		return "", fmt.Errorf("upload failed: no file found in response")
 	}
 	if apis.DebugMode {
 		log.Printf("%+v", b.resp)
 	}
-
-	fmt.Println("Download Link: " + fmt.Sprintf(download, b.resp.Files[0].FileKey))
-	fmt.Println("Delete Link: " + b.resp.Files[0].DeleteUrl)
-
-	return nil
+	fmt.Printf("Download Link: %s\nDelete Link: %s\n",
+		fmt.Sprintf(download, b.resp.Files[0].FileKey), b.resp.Files[0].DeleteUrl)
+	return fmt.Sprintf(download, b.resp.Files[0].FileKey), nil
 }
 
 func (b *bitSend) DoUpload(name string, size int64, file io.Reader) error {

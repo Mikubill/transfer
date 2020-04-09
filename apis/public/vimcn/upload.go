@@ -48,9 +48,9 @@ func (b *vimcn) UploadStream(file []byte) {
 	//fmt.Printf("%s\n", b.resp)
 }
 
-func (b *vimcn) PostUpload(string, int64) error {
+func (b *vimcn) PostUpload(string, int64) (string, error){
 	fmt.Printf("Download Link: %s\n", b.resp)
-	return nil
+	return b.resp, nil
 }
 
 func (b vimcn) newMultipartUpload(config uploadConfig) ([]byte, error) {

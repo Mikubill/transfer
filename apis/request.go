@@ -40,7 +40,7 @@ func (wc *writeCounter) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	wc.offset += int64(n)
-	if !SilentMode && wc.bar != nil {
+	if !NoBarMode && wc.bar != nil {
 		wc.bar.Add(n)
 	}
 	return n, nil
@@ -116,7 +116,7 @@ func DownloadFile(config *DownloaderConfig) error {
 
 	fmt.Printf("file save to: %s\n", prefix)
 	var bar *pb.ProgressBar
-	if !SilentMode {
+	if !NoBarMode {
 		bar = pb.Full.Start64(0)
 		bar.Set(pb.Bytes, true)
 		bar.SetTotal(length)
@@ -164,14 +164,14 @@ func DownloadFile(config *DownloaderConfig) error {
 			sig := new(sync.WaitGroup)
 			sig.Add(1)
 			go monitor(pipeW, sig)
-			if !SilentMode && bar != nil {
+			if !NoBarMode && bar != nil {
 				go crypto.StreamDecrypt(bar.NewProxyReader(resp.Body), pipeW, Key, blockSize, sig)
 			} else {
 				go crypto.StreamDecrypt(resp.Body, pipeW, Key, blockSize, sig)
 			}
 			_, _ = io.Copy(out, pipeR)
 		} else {
-			if !SilentMode && bar != nil {
+			if !NoBarMode && bar != nil {
 				_, _ = io.Copy(out, bar.NewProxyReader(resp.Body))
 			} else {
 				_, _ = io.Copy(out, resp.Body)
@@ -205,7 +205,7 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	fmt.Print("\n")
-	if !SilentMode && bar != nil {
+	if !NoBarMode && bar != nil {
 		bar.Finish()
 	}
 	return nil

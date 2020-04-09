@@ -32,9 +32,9 @@ func (b *catBox) DoUpload(name string, size int64, file io.Reader) error {
 	return nil
 }
 
-func (b catBox) PostUpload(string, int64) error {
+func (b catBox) PostUpload(string, int64) (string, error) {
 	fmt.Printf("Download Link: %s\n", b.resp)
-	return nil
+	return b.resp, nil
 }
 
 func (b catBox) newMultipartUpload(config uploadConfig) ([]byte, error) {

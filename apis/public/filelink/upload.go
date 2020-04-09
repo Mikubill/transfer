@@ -10,7 +10,7 @@ import (
 
 const upload = "https://filelink.io/up"
 
-func (b fileLink) DoUpload(name string, size int64, file io.Reader) error {
+func (b *fileLink) DoUpload(name string, size int64, file io.Reader) error {
 
 	body, err := b.newUpload(uploadConfig{
 		fileSize:   size,
@@ -21,9 +21,14 @@ func (b fileLink) DoUpload(name string, size int64, file io.Reader) error {
 	if err != nil {
 		return fmt.Errorf("upload error: %s", err)
 	}
-	fmt.Println("Download Link: " + string(body))
-
+	//fmt.Println("Download Link: " + string(body))
+	b.result = string(body)
 	return nil
+}
+
+func (b fileLink) PostUpload(string, int64) (string, error) {
+	fmt.Printf("Download Link: %s\n", b.result)
+	return b.result, nil
 }
 
 func (b fileLink) newUpload(config uploadConfig) ([]byte, error) {

@@ -47,14 +47,14 @@ func (b *lanzous) DoUpload(name string, size int64, file io.Reader) error {
 	if uniToC(resp.Info) != `上传成功` {
 		return fmt.Errorf(uniToC(resp.Info))
 	}
-	b.resp = fmt.Sprintf("Download Link: https://www.lanzous.com/%s\n", resp.Text[0].ID)
+	b.resp = fmt.Sprintf("https://www.lanzous.com/%s\n", resp.Text[0].ID)
 
 	return nil
 }
 
-func (b *lanzous) PostUpload(string, int64) error {
-	fmt.Printf("%s", b.resp)
-	return nil
+func (b *lanzous) PostUpload(string, int64) (string, error) {
+	fmt.Printf("Download Link: %s\n", b.resp)
+	return b.resp, nil
 }
 
 func (b lanzous) newMultipartUpload(config uploadConfig) ([]byte, error) {

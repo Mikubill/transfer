@@ -134,18 +134,18 @@ func (b weTransfer) DoUpload(name string, size int64, file io.Reader) error {
 	return nil
 }
 
-func (b weTransfer) PostUpload(string, int64) error {
+func (b weTransfer) PostUpload(string, int64) (string, error) {
 	if !b.Config.singleMode {
 		return b.completeUpload(b.baseConf)
 	}
-	return nil
+	return "", nil
 }
 
-func (b weTransfer) FinishUpload([]string) error {
+func (b weTransfer) FinishUpload([]string) (string, error) {
 	if b.Config.singleMode {
 		return b.completeUpload(b.baseConf)
 	}
-	return nil
+	return "", nil
 }
 
 func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
@@ -244,7 +244,7 @@ func (b weTransfer) finishUpload(config *configBlock, size int64, id string) err
 	return nil
 }
 
-func (b weTransfer) completeUpload(config *configBlock) error {
+func (b weTransfer) completeUpload(config *configBlock) (string, error) {
 	if apis.DebugMode {
 		log.Println("complete upload...")
 		log.Println("step1 -> process")
@@ -258,11 +258,10 @@ func (b weTransfer) completeUpload(config *configBlock) error {
 		modifier: addToken(config.ticket),
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
-
 	fmt.Printf("Download Link: %s\n", body.Public)
-	return nil
+	return body.Public, nil
 }
 
 func (b *weTransfer) getTicket() (requestTicket, error) {

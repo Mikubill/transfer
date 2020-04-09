@@ -64,7 +64,6 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 ## usage 
 
 ```text
-
 Transfer is a very simple big file transfer tool.
 
 Backend Support:
@@ -82,6 +81,7 @@ Backend Support:
   lzs  -  Lanzous  -  https://www.lanzous.com/
 
 Usage:
+  transfer [flags]
   transfer [command]
 
 Examples:
@@ -104,10 +104,12 @@ Flags:
   -f, --force                attempt to download file regardless error
   -h, --help                 help for transfer
       --keep                 keep program active when process finish
+      --no-progress          disable progress bar to reduce output
   -o, --output string        download to another file/folder (default ".")
   -p, --parallel int         set download task count (default 3)
+      --silent               enable silent mode to mute output
   -t, --ticket string        set download ticket
-  -v, --verbose              enable verbose mode to debug
+      --verbose              enable verbose mode to debug
       --version              show version and exit
 
 Use "transfer [command] --help" for more information about a command.
@@ -133,8 +135,10 @@ Flags:
   -h, --help                 help for upload
 
 Global Flags:
-      --keep      Keep program active when process finish
-      --version   Show version and exit
+      --no-progress          disable progress bar to reduce output
+      --silent               enable silent mode to mute output
+      --keep                 keep program active when process finish
+      --version              show version and exit
 
 Use "transfer upload [command] --help" for more information about a command.
 ```
@@ -156,7 +160,6 @@ Examples
 
 ```text
 ➜  ./transfer cow
-
 cowTransfer - https://cowtransfer.com/
 
   Size Limit:             2G(Anonymous), ~100G(Login)
@@ -183,7 +186,9 @@ Global Flags:
       --encrypt              encrypt stream when upload
       --encrypt-key string   specify the encrypt key
       --keep                 keep program active when process finish
-  -v, --verbose              enable verbose mode to debug
+      --no-progress          disable progress bar to reduce output
+      --silent               enable silent mode to mute output
+      --verbose              enable verbose mode to debug
       --version              show version and exit
 ```
 
@@ -238,11 +243,13 @@ AirPortal
 
 TmpLink 
 ```shell script
+# login to upload
 ./transfer tmp -t <your-token> file
 ```
 
 Lanzous
 ```shell script
+# login to upload
 ./transfer lzs --cookie='phpdisk_info=...' file
 ```
 *蓝奏云可以只使用`phpdisk_info`项作为cookie上传文件，但可能无法进行文件管理。如有需要可以将完整cookie放入flag中。

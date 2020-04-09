@@ -23,14 +23,14 @@ func (b *transfer) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
-	b.resp = fmt.Sprintln("Download Link: " + string(body))
+	b.resp = string(body)
 
 	return nil
 }
 
-func (b *transfer) PostUpload(string, int64) error {
-	fmt.Printf("%s", b.resp)
-	return nil
+func (b *transfer) PostUpload(string, int64) (string, error) {
+	fmt.Printf("Download Link: " + b.resp)
+	return b.resp, nil
 }
 
 func (b transfer) newUpload(config uploadConfig) ([]byte, error) {

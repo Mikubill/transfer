@@ -79,7 +79,6 @@ func (b *airPortal) PreUpload(name string, size int64) error {
 		return fmt.Errorf(tk.Alert)
 	}
 	b.token = tk
-	fmt.Printf("Download Link: %s/%d\n", index, tk.Code)
 	return nil
 }
 
@@ -102,6 +101,12 @@ func (b airPortal) DoUpload(name string, size int64, stream io.Reader) error {
 	}
 
 	return nil
+}
+
+func (b airPortal) PostUpload(string, int64) (string, error) {
+	link := fmt.Sprintf("%s/%d", index, b.token.Code)
+	fmt.Printf("Download Link: %s\n", link)
+	return link, nil
 }
 
 func (b airPortal) newMultipartUpload(config uploadConfig) ([]byte, error) {

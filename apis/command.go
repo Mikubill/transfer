@@ -5,10 +5,11 @@ import (
 )
 
 var (
-	Crypto     bool
-	Key        string
-	DebugMode  bool
-	SilentMode bool
+	Crypto    bool
+	Key       string
+	DebugMode bool
+	NoBarMode bool
+	MuteMode  bool
 )
 
 func InitCmd(cmd *cobra.Command) {
@@ -16,8 +17,10 @@ func InitCmd(cmd *cobra.Command) {
 		"encrypt", "", false, "encrypt stream when upload")
 	cmd.PersistentFlags().StringVarP(&Key,
 		"encrypt-key", "", "", "specify the encrypt key")
-	cmd.PersistentFlags().BoolVarP(&SilentMode,
-		"silent", "", false, "enable silent mode to reduce output")
+	cmd.PersistentFlags().BoolVarP(&NoBarMode,
+		"no-progress", "", false, "disable progress bar to reduce output")
+	cmd.PersistentFlags().BoolVarP(&MuteMode,
+		"silent", "", false, "enable silent mode to mute output")
 	cmd.PersistentFlags().BoolVarP(&DebugMode,
 		"verbose", "", false, "enable verbose mode to debug")
 	cmd.Flags().StringVarP(&downConf.Prefix,

@@ -33,8 +33,8 @@ type Uploader interface {
 	InitUpload([]string, []int64) error
 	PreUpload(string, int64) error
 	DoUpload(string, int64, io.Reader) error
-	PostUpload(string, int64) error
-	FinishUpload([]string) error
+	PostUpload(string, int64) (string, error)
+	FinishUpload([]string) (string, error)
 
 	StartProgress(io.Reader, int64) io.Reader
 	EndProgress()
@@ -64,8 +64,8 @@ func (b Backend) InitUpload([]string, []int64) error {
 	return nil
 }
 
-func (b Backend) FinishUpload([]string) error {
-	return nil
+func (b Backend) FinishUpload([]string) (string, error) {
+	return "", nil
 }
 
 func (b Backend) PreUpload(string, int64) error {
@@ -76,8 +76,8 @@ func (b Backend) DoUpload(string, int64, io.Reader) error {
 	panic("method DoUpload is not implemented")
 }
 
-func (b Backend) PostUpload(string, int64) error {
-	return nil
+func (b Backend) PostUpload(string, int64) (string, error) {
+	return "", nil
 }
 
 func (b Backend) DoDownload(link string, config DownConfig) error {

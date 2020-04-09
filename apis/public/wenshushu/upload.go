@@ -98,18 +98,18 @@ func (b wssTransfer) DoUpload(name string, size int64, file io.Reader) error {
 	return nil
 }
 
-func (b wssTransfer) PostUpload(string, int64) error {
+func (b wssTransfer) PostUpload(string, int64) (string, error) {
 	if !b.Config.singleMode {
 		return b.completeUpload(b.baseConf)
 	}
-	return nil
+	return "", nil
 }
 
-func (b wssTransfer) FinishUpload([]string) error {
+func (b wssTransfer) FinishUpload([]string) (string, error) {
 	if b.Config.singleMode {
 		return b.completeUpload(b.baseConf)
 	}
-	return nil
+	return "", nil
 }
 
 func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
@@ -208,7 +208,7 @@ func (b wssTransfer) finishUpload(config sendConfigBlock, name string) error {
 	return nil
 }
 
-func (b wssTransfer) completeUpload(config sendConfigBlock) error {
+func (b wssTransfer) completeUpload(config sendConfigBlock) (string, error) {
 	if apis.DebugMode {
 		log.Println("complete upload...")
 		log.Println("step1 -> process")
@@ -246,16 +246,13 @@ func (b wssTransfer) completeUpload(config sendConfigBlock) error {
 		modifier: addToken(config.Token),
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
 	if body.Message != "success" {
-		return fmt.Errorf("status != success")
+		return "", fmt.Errorf("status != success")
 	}
-
-	fmt.Printf("Manage Link: %s\n", body.Data.ManageURL)
-	fmt.Printf("Download Link: %s\n", body.Data.PublicURL)
-
-	return nil
+	fmt.Printf("Manage Link: %s\nDownload Link: %s\n", body.Data.ManageURL, body.Data.PublicURL)
+	return body.Data.PublicURL, nil
 }
 
 func (b wssTransfer) getTicket() (string, error) {

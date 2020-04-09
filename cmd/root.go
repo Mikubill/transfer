@@ -106,8 +106,10 @@ func handleRootTransfer(args []string) {
 
 	files := uploadWalker(args)
 	if len(files) != 0 {
-		fmt.Println("Warning: backend is not set. Using default: filelink.backend - <filelink.io>")
-		fmt.Printf("Run 'transfer --help' for usage.\n\n")
+		if !apis.MuteMode {
+			fmt.Println("Warning: backend is not set. Using default: filelink.backend - <filelink.io>")
+			fmt.Printf("Run 'transfer --help' for usage.\n\n")
+		}
 		apis.Upload(files, filelink.Backend)
 		return
 	}

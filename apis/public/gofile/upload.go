@@ -103,36 +103,35 @@ func (b *goFile) DoUpload(name string, _ int64, file io.Reader) error {
 	return nil
 }
 
-func (b *goFile) PostUpload(string, int64) error {
+func (b *goFile) PostUpload(string, int64) (string, error) {
 	if !b.Config.singleMode {
-		b.finishUpload()
+		return b.finishUpload()
 	}
-	return nil
+	return "", nil
 }
 
-func (b *goFile) FinishUpload([]string) error {
+func (b *goFile) FinishUpload([]string) (string, error) {
 	if b.Config.singleMode {
-		b.finishUpload()
+		return b.finishUpload()
 	}
-	return nil
+	return "", nil
 }
 
-func (b *goFile) finishUpload() {
+func (b *goFile) finishUpload() (string, error) {
 	_, _ = fmt.Fprintf(b.streamWriter, "\r\n--%s--\r\n", b.boundary)
 	_ = b.streamWriter.Close()
 	sbody, ok := <-b.dataCh
 	if !ok {
-		fmt.Printf("internal error, upload failed.")
-		return
+		return "", fmt.Errorf("internal error, upload failed")
 	}
 	var sendData respBody
 	if err := json.Unmarshal(sbody, &sendData); err != nil {
-		fmt.Printf("parse body returns error: %v", err)
-		return
+		return "", fmt.Errorf("parse body returns error: %v", err)
 	}
-
-	fmt.Printf("Download Link: https://gofile.io/?c=%s\n", sendData.Data.Code)
-	fmt.Printf("Remove Code: %s\n", sendData.Data.RemovalCode)
+	link := fmt.Sprintf("https://gofile.io/?c=%s", sendData.Data.Code)
+	fmt.Printf("Download Link: %s\nRemove Code: %s\n",
+		link, sendData.Data.RemovalCode)
+	return link, nil
 }
 
 func (b *goFile) initPipe() {

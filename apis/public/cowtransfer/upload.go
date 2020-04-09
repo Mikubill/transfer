@@ -50,9 +50,8 @@ func (b cowTransfer) InitUpload(_ []string, sizes []int64) error {
 func (b *cowTransfer) initUpload(totalSize int64) error {
 	config, err := b.getSendConfig(totalSize)
 	if err != nil {
-		fmt.Printf("getSendConfig(single mode) returns error: %v\n", err)
+		return err
 	}
-	fmt.Printf("Download Link: %s\n", config.UniqueURL)
 	b.sendConf = *config
 	return nil
 }
@@ -300,7 +299,30 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 	return nil
 }
 
-func (b cowTransfer) FinishUpload([]string) error {
+func (b cowTransfer) PostUpload(string, int64) (string, error) {
+	if !b.Config.singleMode {
+		return b.CompleteUpload()
+	}
+	return "", nil
+}
+
+func (b cowTransfer) FinishUpload([]string) (string, error) {
+	if b.Config.singleMode {
+		return b.CompleteUpload()
+	}
+	return "", nil
+}
+
+func (b cowTransfer) CompleteUpload() (string, error) {
+	code, err := b.completeUpload()
+	if err != nil {
+		return "", err
+	}
+	fmt.Printf("Download Link: %s\nDownload Code: %s\n", b.sendConf.UniqueURL, code)
+	return b.sendConf.UniqueURL, nil
+}
+
+func (b cowTransfer) completeUpload() (string, error) {
 	data := map[string]string{"transferGuid": b.sendConf.TransferGUID, "fileId": ""}
 	if apis.DebugMode {
 		log.Println("step3 -> api/completeUpload")
@@ -312,17 +334,17 @@ func (b cowTransfer) FinishUpload([]string) error {
 		modifier: addHeaders,
 	})
 	if err != nil {
-		return err
+		return "", err
 	}
 	var rBody finishResponse
 	if err := json.Unmarshal(body, &rBody); err != nil {
-		return fmt.Errorf("read finish resp failed: %s", err)
+		return "", fmt.Errorf("read finish resp failed: %s", err)
 	}
 	if rBody.Status != true {
-		return fmt.Errorf("finish upload failed: complete is not true")
+		return "", fmt.Errorf("finish upload failed: complete is not true")
 	}
-	fmt.Printf("Short Download Code: %s\n", rBody.TempDownloadCode)
-	return nil
+	//fmt.Printf("Short Download Code: %s\n\n", rBody.TempDownloadCode)
+	return rBody.TempDownloadCode, nil
 }
 
 func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
