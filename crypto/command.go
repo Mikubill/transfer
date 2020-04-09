@@ -17,7 +17,7 @@ var (
 	ForceMode bool
 	Prefix    string
 	Key       string
-	NoBar bool
+	NoBar     bool
 	blockSize int64
 )
 
@@ -152,7 +152,6 @@ func Decrypt(file string) error {
 	} else {
 		writer = dec
 	}
-
 
 	if Key == "" || len(Key) > 32 {
 		return fmt.Errorf("key is not set")

@@ -30,7 +30,7 @@ func (b *vimcn) DoUpload(name string, size int64, file io.Reader) error {
 	return nil
 }
 
-func (b *vimcn) PostUpload(string, int64) (string, error){
+func (b *vimcn) PostUpload(string, int64) (string, error) {
 	fmt.Printf("Download Link: %s\n", b.resp)
 	return b.resp, nil
 }

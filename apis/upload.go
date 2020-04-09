@@ -52,7 +52,7 @@ func Upload(files []string, backend BaseBackend) {
 			return nil
 		})
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr,"filepath.walk failed: %v, onfile: %s\n", err, v)
+			_, _ = fmt.Fprintf(os.Stderr, "filepath.walk failed: %v, onfile: %s\n", err, v)
 			return
 		}
 	}
@@ -66,7 +66,7 @@ func Upload(files []string, backend BaseBackend) {
 		fmt.Printf("Local: %s\n", ps)
 		resp, err := upload(file, sizes[n], backend)
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr,"upload %s failed: %s\n", file, err)
+			_, _ = fmt.Fprintf(os.Stderr, "upload %s failed: %s\n", file, err)
 		}
 		if resp != "" && MuteMode {
 			_, _ = fmt.Fprintln(tmpOut, resp)
@@ -77,7 +77,7 @@ func Upload(files []string, backend BaseBackend) {
 		_, _ = fmt.Fprintf(os.Stderr, "Finish Upload Error: %s\n", err)
 	}
 	if resp != "" && MuteMode {
-		_, _ = fmt.Fprintln(tmpOut,resp)
+		_, _ = fmt.Fprintln(tmpOut, resp)
 	}
 }
 

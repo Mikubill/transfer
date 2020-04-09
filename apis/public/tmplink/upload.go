@@ -41,7 +41,7 @@ func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 func (b *tmpLink) PostUpload(string, int64) (string, error) {
 	link := b.resp
 	fmt.Printf("Download Link: %s\n", link)
-	return link,  nil
+	return link, nil
 }
 
 func (b tmpLink) newMultipartUpload(config uploadConfig) ([]byte, error) {

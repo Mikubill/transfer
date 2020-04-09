@@ -19,9 +19,13 @@ jobs:
 
       - name: test - default
         run: |
-          ./ci-test-linux-amd64 --no-progress go.sum
           ./ci-test-linux-amd64 --no-progress -o test -f $(./ci-test-linux-amd64 --silent go.sum)
           cmp test go.sum
+
+      - name: test - multi
+        run: |
+          ./ci-test-linux-amd64 cow --no-progress crypto
+          ./ci-test-linux-amd64 cow --no-progress -s crypto
 
       - name: test - all
         run: |

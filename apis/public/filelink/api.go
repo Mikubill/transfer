@@ -14,7 +14,7 @@ var (
 type fileLink struct {
 	apis.Backend
 	//baseConf *main.MainConfig
-	result string
+	result   string
 	Config   cbOptions
 	Commands [][]string
 }
