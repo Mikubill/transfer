@@ -35,7 +35,6 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 | WeTransfer | https://wetransfer.com/ | 2GB | CloudFront |
 | FileLink | https://filelink.io/ | - | GCE |
 | Transfer.sh | https://transfer.sh/ | - | Hetzner |
-| Lanzous | https://www.lanzous.com/ | beta | - |
 
 目前支持的图床服务:
 
@@ -58,6 +57,7 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 |  Name   | Site  | Limit |
 |  ----  | ----  |  ----  |
 | Firefox Send | https://send.firefox.com/ | 1GB |
+| Lanzous | https://www.lanzous.com/ | beta |
 
 ## usage 
 
