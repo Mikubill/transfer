@@ -27,6 +27,9 @@ type fileBlock struct {
 }
 
 func (b *lanzous) DoUpload(name string, size int64, file io.Reader) error {
+	if b.Config.token == "" {
+		return fmt.Errorf("no token")
+	}
 
 	body, err := b.newMultipartUpload(uploadConfig{
 		fileSize:   size,

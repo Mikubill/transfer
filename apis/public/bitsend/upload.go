@@ -16,7 +16,7 @@ import (
 
 const download = "https://bitsend.jp/download/%s.html"
 
-func (b bitSend) PostUpload(_ string, _ int64) error {
+func (b bitSend) PostUpload(string, int64) error {
 	if len(b.resp.Files) == 0 {
 		return fmt.Errorf("upload failed: no file found in response")
 	}

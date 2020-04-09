@@ -12,7 +12,7 @@ Go语言程序, 可直接在[发布页](https://github.com/Mikubill/transfer/rel
 
 或者使用安装脚本:
 
-```shell
+```shell script
 curl -sL https://git.io/file-transfer | sh 
 ```
 
@@ -35,6 +35,9 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 | WeTransfer | https://wetransfer.com/ | 2GB | CloudFront |
 | FileLink | https://filelink.io/ | - | GCE |
 | Transfer.sh | https://transfer.sh/ | - | Hetzner |
+| Lanzous | https://www.lanzous.com/ | login only | - |
+
+[登陆上传相关说明](https://github.com/Mikubill/transfer#login)
 
 目前支持的图床服务:
 
@@ -57,11 +60,10 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 |  Name   | Site  | Limit |
 |  ----  | ----  |  ----  |
 | Firefox Send | https://send.firefox.com/ | 1GB |
-| Lanzous | https://www.lanzous.com/ | beta |
 
 ## usage 
 
-```shell
+```text
 
 Transfer is a very simple big file transfer tool.
 
@@ -114,7 +116,7 @@ Use "transfer [command] --help" for more information about a command.
 
 所有上传操作都建议指定一个API，如不指定将使用默认(filelink.Backend)。加上想要传输的文件/文件夹即可。
 
-```shell 
+```text
 
 Upload a file or folder.
 
@@ -151,7 +153,7 @@ Use "transfer upload [command] --help" for more information about a command.
 
 Examples
 
-```shell
+```shell script
 # upload
 ./transfer balabala.mp4
 
@@ -164,7 +166,7 @@ Examples
 
 不同的Backend提供不同的选项，可以在帮助中查看关于该服务的相关信息。
 
-```shell 
+```text
 ➜  ./transfer cow
 
 cowTransfer - https://cowtransfer.com/
@@ -199,14 +201,14 @@ Global Flags:
 
 下载操作会自动识别支持的链接，不需要指定服务名称。
 
-```
+```shell script
 # download file
 ./transfer download https://.../
 ```
 
 试验性功能：`--encrypt`选项可以在上传时将文件加密，下载时需要配合`--decrypt`选项才能正确下载文件。（当然也可以先下载后再解密）加密方式为AES-CBC，默认会自动生成一个密码，也可以通过`--encrypt-key`指定一个。
 
-```shell 
+```shell script 
 # encrypt stream when upload
 ➜ ./transfer wss --encrypt transfer
 Warning: crypto mode is enabled.
@@ -228,11 +230,40 @@ Note: Crypto mode is not compatible with multi thread download mode, setting par
 ...
 ```
 
+### login 
+
+部分backend支持登陆环境下上传，使用时只需要提供对应的cookie即可。
+
+CowTransfer
+
+```shell script
+# login to upload
+./transfer cow --cookie="remember-me=...;" file
+```
+
+AirPortal
+
+```shell script
+# login to upload
+./transfer arp -t <your-token> -u <your-username> file
+```
+
+TmpLink 
+```shell script
+./transfer tmp -t <your-token> file
+```
+
+Lanzous
+```shell script
+./transfer lzs --cookie='phpdisk_info=...' file
+```
+*蓝奏云可以只使用`phpdisk_info`项作为cookie上传文件，但可能无法进行文件管理。如有需要可以将完整cookie放入flag中。
+
 ### image
 
 transfer也支持上传图片至图床，默认自动使用阿里图床上传，也可以通过`-b, --backend`指定图床。
 
-```shell 
+```text
 
 Upload a image to imageBed.
 Default backend is ali.backend, you can modify it by -b flag.
@@ -272,7 +303,7 @@ Global Flags:
 
 关于加密的说明：目前只能选择AES-CBC的加密方式，分块大小策略为min(1m, fileSize)
 
-```shell 
+```shell script 
 # encrypt
 transfer encrypt your-file
 
@@ -290,7 +321,7 @@ transfer encrypt -o output your-file
 
 hash功能使用sha1, crc32, md5, sha256对文件进行校验，可以用来检验文件一致性。
 
-```shell 
+```shell script 
 ➜  ./transfer hash main.go
 size: 68
 path: /../transfer/main.go

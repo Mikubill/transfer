@@ -300,7 +300,7 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 	return nil
 }
 
-func (b cowTransfer) FinishUpload(_ []string) error {
+func (b cowTransfer) FinishUpload([]string) error {
 	data := map[string]string{"transferGuid": b.sendConf.TransferGUID, "fileId": ""}
 	if apis.DebugMode {
 		log.Println("step3 -> api/completeUpload")
