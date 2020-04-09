@@ -19,6 +19,6 @@ type lanzous struct {
 
 func (b *lanzous) SetArgs(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&b.Config.token, "cookie", "c", "", "Set your user token (required)")
-	cmd.Long = fmt.Sprintf("lanzous - https://www.lanzous.com/\n\n" +
-		"\n  Note: This backend only supports login users. (use -t to set token)\n")
+	cmd.Long = fmt.Sprintf("lanzous - https://www.lanzous.com/\n" +
+		"\n  Note: This backend only supports login users. (use -c to set token)\n")
 }

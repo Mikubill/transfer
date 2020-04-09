@@ -248,11 +248,16 @@ TmpLink
 ```
 
 Lanzous
+
+蓝奏云可以只使用`phpdisk_info`项作为cookie上传文件，但可能无法进行文件管理（如删除等）。如需要上传到指定目录或进行文件管理操作需要在cookie中指定`folder_id_c`的值，如：
+
 ```shell script
-# login to upload
+# login to upload (without path)
 ./transfer lzs --cookie='phpdisk_info=...' file
+
+# login to upload (with path)
+./transfer lzs --cookie='phpdisk_info=...; folder_id_c=...;' file
 ```
-*蓝奏云可以只使用`phpdisk_info`项作为cookie上传文件，但可能无法进行文件管理。如有需要可以将完整cookie放入flag中。
 
 ### image
 
