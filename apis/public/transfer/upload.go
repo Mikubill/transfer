@@ -29,7 +29,7 @@ func (b *transfer) DoUpload(name string, size int64, file io.Reader) error {
 }
 
 func (b *transfer) PostUpload(string, int64) (string, error) {
-	fmt.Printf("Download Link: " + b.resp)
+	fmt.Printf("Download Link: %s\n", b.resp)
 	return b.resp, nil
 }
 

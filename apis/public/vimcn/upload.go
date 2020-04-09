@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"strconv"
 	"transfer/apis"
-	"transfer/utils"
 )
 
 const upload = "https://img.vim-cn.com/"
@@ -27,25 +26,8 @@ func (b *vimcn) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
-	b.resp = string(body)
+	b.resp = string(body[:len(body)-1])
 	return nil
-}
-
-func (b *vimcn) UploadStream(file []byte) {
-
-	body, err := b.newMultipartUpload(uploadConfig{
-		fileSize:   int64(len(file)),
-		fileName:   utils.GenRandString(8),
-		fileReader: bytes.NewReader(file),
-		debug:      apis.DebugMode,
-	})
-	if err != nil {
-		fmt.Printf("upload returns error: %s", err)
-		return
-	}
-
-	b.resp = string(body)
-	//fmt.Printf("%s\n", b.resp)
 }
 
 func (b *vimcn) PostUpload(string, int64) (string, error){

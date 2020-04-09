@@ -33,7 +33,7 @@ func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
-	b.resp = fmt.Sprintf("https://tmp.link/f/%s\n", linkMatcher.Find(body))
+	b.resp = fmt.Sprintf("https://tmp.link/f/%s", linkMatcher.Find(body))
 
 	return nil
 }

@@ -14,24 +14,24 @@ jobs:
 
       - name: build
         run: |
-          GOOS=linux   GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o ci-test-linux-amd64
-          chmod +x bin/ci-test-linux-amd64
+          GOOS=linux GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o ci-test-linux-amd64
+          chmod +x ./ci-test-linux-amd64
 
       - name: test - default
         run: |
-          ~/bin/ci-test-linux-amd64 go.sum
-          bin/ci-test-linux-amd64 --no-progress -o test -f $(~/bin/ci-test-linux-amd64 --silent go.sum)
+          ./ci-test-linux-amd64 --no-progress go.sum
+          ./ci-test-linux-amd64 --no-progress -o test -f $(./ci-test-linux-amd64 --silent go.sum)
           cmp test go.sum
 
       - name: test - all
         run: |
-          ~/bin/ci-test-linux-amd64 arp --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 bit --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 cat --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 flk --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 gof --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 tmp --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 trs --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 vim --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 wss --no-progress go.sum
-          ~/bin/ci-test-linux-amd64 wet --no-progress go.sum
+          ./ci-test-linux-amd64 arp --no-progress go.sum
+          ./ci-test-linux-amd64 bit --no-progress go.sum
+          ./ci-test-linux-amd64 cat --no-progress go.sum
+          ./ci-test-linux-amd64 flk --no-progress go.sum
+          ./ci-test-linux-amd64 gof --no-progress go.sum
+          ./ci-test-linux-amd64 tmp --no-progress go.sum
+          ./ci-test-linux-amd64 trs --no-progress go.sum
+          ./ci-test-linux-amd64 vim --no-progress go.sum
+          ./ci-test-linux-amd64 wss --no-progress go.sum
+          ./ci-test-linux-amd64 wet --no-progress go.sum
