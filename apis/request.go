@@ -8,6 +8,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -108,7 +109,12 @@ func DownloadFile(config *DownloaderConfig) error {
 		}
 		dest := regex.FindStringSubmatch(resp.Header.Get("content-disposition"))
 		if len(dest) > 0 {
-			prefix = path.Join(prefix, strings.TrimSpace(dest[1]))
+			exc, err := url.QueryUnescape(strings.TrimSpace(dest[1]))
+			if err != nil {
+				prefix = path.Join(prefix,  strings.TrimSpace(dest[1]))
+			} else {
+				prefix = path.Join(prefix,  exc)
+			}
 		} else {
 			prefix = path.Join(prefix, path.Base(resp.Request.URL.Path))
 		}
@@ -194,12 +200,21 @@ func DownloadFile(config *DownloaderConfig) error {
 				log.Printf("range = %s", ranger)
 			}
 			counter := &writeCounter{bar: bar, offset: start, writer: out}
-			go parallelDownloader(ranger, config.Link, parallelConfig{
-				parallel: _parallel,
-				modifier: config.Modifier,
-				counter:  counter,
-				wg:       wg,
-			})
+			go func() {
+				pConf := parallelConfig{
+					parallel: _parallel,
+					modifier: config.Modifier,
+					counter:  counter,
+					wg:       wg,
+				}
+				pRange := ranger
+				for {
+					err = parallelDownloader(pRange, config.Link, pConf)
+					if err == nil {
+						break
+					}
+				}
+			}()
 		}
 		wg.Wait()
 	}
@@ -211,17 +226,17 @@ func DownloadFile(config *DownloaderConfig) error {
 	return nil
 }
 
-func parallelDownloader(ranger, url string, config parallelConfig) {
+func parallelDownloader(ranger, url string, config parallelConfig) error {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Printf("createRequest error: %s\n", err)
+		return fmt.Errorf("createRequest error: %s\n", err)
 	}
 
 	req.Header.Set("Range", "bytes="+ranger)
 	config.modifier(req)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Printf("doRequest error: %s\n", err)
+		return fmt.Errorf("doRequest error: %s\n", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()
@@ -229,7 +244,8 @@ func parallelDownloader(ranger, url string, config parallelConfig) {
 
 	_, err = io.Copy(ioutil.Discard, io.TeeReader(resp.Body, config.counter))
 	if err != nil {
-		fmt.Printf("parallel bytes copy returns: %s", err)
+		return fmt.Errorf("parallel bytes copy returns: %s", err)
 	}
 	config.wg.Done()
+	return nil
 }
