@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-const upload = "https://filelink.io/up"
+const upload = "https://filelink.txthinking.com/"
 
 func (b *fileLink) DoUpload(name string, size int64, file io.Reader) error {
 
@@ -22,7 +22,7 @@ func (b *fileLink) DoUpload(name string, size int64, file io.Reader) error {
 		return fmt.Errorf("upload error: %s", err)
 	}
 	//fmt.Println("Download Link: " + string(body))
-	b.result = string(body)
+	b.result = "http://i.filelink.io/" + string(body)
 	return nil
 }
 
@@ -41,7 +41,10 @@ func (b fileLink) newUpload(config uploadConfig) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("content-type", "application/x-www-form-urlencoded")
+	req.Header.Set("content-type", "application/octet-stream")
+	req.Header.Set("referer", "https://filelink.io/")
+	req.Header.Set("origin", "https://filelink.io/")
+	req.Header.Set("user-agent", "Mozilla/5.0 (Macintosh;)")
 	req.Header.Set("x-file-name", config.fileName)
 	if config.debug {
 		log.Printf("header: %v", req.Header)
