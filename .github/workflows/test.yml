@@ -34,8 +34,6 @@ jobs:
           ./ci-test-linux-amd64 cat --no-progress go.sum
           ./ci-test-linux-amd64 flk --no-progress go.sum
           ./ci-test-linux-amd64 gof --no-progress go.sum
-          ./ci-test-linux-amd64 tmp --no-progress go.sum
-          ./ci-test-linux-amd64 trs --no-progress go.sum
           ./ci-test-linux-amd64 vim --no-progress go.sum
           ./ci-test-linux-amd64 wss --no-progress go.sum
           ./ci-test-linux-amd64 wet --no-progress go.sum

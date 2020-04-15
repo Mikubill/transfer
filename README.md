@@ -196,7 +196,7 @@ Global Flags:
 
 ```shell script
 # download file
-./transfer download https://.../
+./transfer https://.../
 ```
 
 试验性功能：`--encrypt`选项可以在上传时将文件加密，下载时需要配合`--decrypt`选项才能正确下载文件。（当然也可以先下载后再解密）加密方式为AES-CBC，默认会自动生成一个密码，也可以通过`--encrypt-key`指定一个。
