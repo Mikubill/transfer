@@ -188,7 +188,7 @@ func DownloadFile(config *DownloaderConfig) error {
 			return fmt.Errorf("tmpfile fruncate failed: %s", err)
 		}
 		wg := new(sync.WaitGroup)
-		for i := 0; i < _parallel; i++ {
+		for i := 0; i <= _parallel; i++ {
 			wg.Add(1)
 			start := int64(i) * blk
 			end := start + blk
