@@ -541,5 +541,5 @@ func addHeaders(req *http.Request) {
 	req.Header.Set("Referer", "https://cowtransfer.com/")
 	req.Header.Set("User-Agent", "Chrome/80.0.3987.149 Transfer")
 	req.Header.Set("Origin", "https://cowtransfer.com/")
-	req.Header.Set("Cookie", fmt.Sprintf("cf-cs-k-20181214=%d;", time.Now().UnixNano()))
+	req.Header.Set("Cookie", fmt.Sprintf("%scf-cs-k-20181214=%d;", req.Header.Get("Cookie"), time.Now().UnixNano()))
 }
