@@ -39,7 +39,13 @@ func (b cowTransfer) initDownload(v string, config apis.DownConfig) error {
 	}
 	fmt.Printf("Remote: %s\n", v)
 	detailsURL := fmt.Sprintf(downloadDetails, fileID, b.Config.passCode)
-	resp, err := http.Get(detailsURL)
+
+	req, err := http.NewRequest("GET", detailsURL, nil)
+	if err != nil {
+		return fmt.Errorf("createRequest returns error: %s", err)
+	}
+	addHeaders(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("getDownloadDetails returns error: %s", err)
 	}
