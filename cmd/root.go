@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 	"transfer/apis"
-	"transfer/apis/public/filelink"
+	"transfer/apis/public/transfer"
 )
 
 var (
@@ -107,10 +107,10 @@ func handleRootTransfer(args []string) {
 	files := uploadWalker(args)
 	if len(files) != 0 {
 		if !apis.MuteMode {
-			fmt.Println("Warning: backend is not set. Using default: filelink.backend - <filelink.io>")
+			fmt.Println("Warning: backend is not set. Using default: transfer.backend - <transfer.sh>")
 			fmt.Printf("Run 'transfer --help' for usage.\n\n")
 		}
-		apis.Upload(files, filelink.Backend)
+		apis.Upload(files, transfer.Backend)
 		return
 	}
 

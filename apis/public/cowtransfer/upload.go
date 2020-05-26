@@ -401,6 +401,7 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 		"fileId":        "",
 		"type":          "",
 		"fileName":      name,
+		"originalName":  name,
 		"fileSize":      strconv.FormatInt(size, 10),
 		"transferGuid":  config.TransferGUID,
 		"storagePrefix": config.Prefix,
