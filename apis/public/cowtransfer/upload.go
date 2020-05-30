@@ -443,7 +443,7 @@ func newPostRequest(link string, postBody io.Reader, config requestConfig) ([]by
 		if config.debug {
 			log.Printf("do requests returns error: %v", err)
 		}
-		if config.retry > 3 {
+		if config.retry > 20 {
 			return nil, err
 		}
 		config.retry++
@@ -454,7 +454,7 @@ func newPostRequest(link string, postBody io.Reader, config requestConfig) ([]by
 		if config.debug {
 			log.Printf("read response returns: %v", err)
 		}
-		if config.retry > 3 {
+		if config.retry > 20 {
 			return nil, err
 		}
 		config.retry++
@@ -493,6 +493,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			return nil, err
 		}
 		config.retry++
+		time.Sleep(1)
 		return b.newMultipartRequest(url, params, config)
 	}
 	req.Header.Set("cookie", b.Config.token)
@@ -510,6 +511,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			return nil, err
 		}
 		config.retry++
+		time.Sleep(1)
 		return b.newMultipartRequest(url, params, config)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
@@ -521,6 +523,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			return nil, err
 		}
 		config.retry++
+		time.Sleep(1)
 		return b.newMultipartRequest(url, params, config)
 	}
 	_ = resp.Body.Close()
