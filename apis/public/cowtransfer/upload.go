@@ -270,7 +270,7 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 		log.Printf("merge payload: %s\n", postBody)
 	}
 	reader := bytes.NewReader([]byte(postBody))
-	_, err := newPostRequest(mergeFileURL, reader, requestConfig{
+	resp, err := newPostRequest(mergeFileURL, reader, requestConfig{
 		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
@@ -280,10 +280,20 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 		return err
 	}
 
+	// read returns
+	var mergeResp *uploadResult
+	if err = json.Unmarshal(resp, &mergeResp); err != nil {
+		return err
+	}
+
 	if apis.DebugMode {
 		log.Println("step2 -> api/uploaded")
 	}
-	data := map[string]string{"transferGuid": config.TransferGUID, "fileId": ""}
+	data := map[string]string{
+		"transferGuid": config.TransferGUID,
+		"fileGuid": config.FileGUID,
+		"hash": mergeResp.Hash,
+	}
 	body, err := b.newMultipartRequest(uploadFinish, data, requestConfig{
 		debug:    apis.DebugMode,
 		retry:    0,
@@ -406,7 +416,7 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 		"transferGuid":  config.TransferGUID,
 		"storagePrefix": config.Prefix,
 	}
-	_, err := b.newMultipartRequest(beforeUpload, data, requestConfig{
+	resp, err := b.newMultipartRequest(beforeUpload, data, requestConfig{
 		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
@@ -414,6 +424,12 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 	})
 	if err != nil {
 		return nil, err
+	}
+	var beforeResp *beforeSendResp
+	if err = json.Unmarshal(resp, &beforeResp); err != nil {
+		return nil, err
+	} else {
+		config.FileGUID = beforeResp.FileGuid
 	}
 	return &config, nil
 }

@@ -40,11 +40,16 @@ type cowOptions struct {
 type prepareSendResp struct {
 	UploadToken  string `json:"uptoken"`
 	TransferGUID string `json:"transferguid"`
+	FileGUID     string `json:"fileguid"`
 	UniqueURL    string `json:"uniqueurl"`
 	Prefix       string `json:"prefix"`
 	QRCode       string `json:"qrcode"`
 	Error        bool   `json:"error"`
 	ErrorMessage string `json:"error_message"`
+}
+
+type beforeSendResp struct {
+	FileGuid string `json:"fileGuid"`
 }
 
 type uploadResponse struct {
@@ -69,6 +74,11 @@ type downloadDetailsBlock struct {
 	GUID     string `json:"guid"`
 	FileName string `json:"fileName"`
 	Size     string `json:"size"`
+}
+
+type uploadResult struct {
+	Hash string `json:"hash"`
+	Key  string `json:"key"`
 }
 
 type downloadConfigResponse struct {
