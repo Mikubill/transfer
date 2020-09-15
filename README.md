@@ -24,18 +24,23 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 
 |  Name   | Site  | Limit | Provider |
 |  ----  | ----  |  ----  |  ----  |
-| Airportal | https://aitportal.cn/ | - | Aliyun |
-| bitSend | https://bitsend.jp/ | - | OVH |
+| Airportal | https://airportal.cn/ | - | Aliyun |
 | CatBox | https://catbox.moe/ | 100MB | Psychz |
 | CowTransfer | https://www.cowtransfer.com/ | 2GB | Qiniu |
 | GoFile | https://gofile.io/ | - | - |
-| TmpLink | https://tmp.link/ | - | - |
 | Vim-cn | https://img.vim-cn.com/ | 100MB | CloudFlare |
 | WenShuShu | https://www.wenshushu.cn/ | 5GB | QCloud |
 | WeTransfer | https://wetransfer.com/ | 2GB | CloudFront |
 | FileLink | https://filelink.io/ | - | GCE |
 | Transfer.sh | https://transfer.sh/ | - | Hetzner |
 | Lanzous | https://www.lanzous.com/ | login only | - |
+
+不支持的传输服务
+
+|  Name   | Site  | Limit | Provider |
+|  ----  | ----  |  ----  |  ----  |
+| bitSend | https://bitsend.jp/ | - | OVH |
+| TmpLink | https://tmp.link/ | - | - |
 
 [登陆上传相关说明](https://github.com/Mikubill/transfer#login)
 

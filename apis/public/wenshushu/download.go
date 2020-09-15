@@ -60,6 +60,7 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 	} else {
 		fileID = regex.FindString(v)
 	}
+	//log.Println(fileID)
 
 	if config.DebugMode {
 		log.Println("starting download...")
@@ -76,9 +77,11 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
 	})
+	log.Println(downConfig, err)
 	if err != nil {
 		return err
 	}
+
 
 	// todo: type 1/2, start(page?)
 	data, _ = json.Marshal(map[string]interface{}{

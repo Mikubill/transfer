@@ -4,13 +4,13 @@ import (
 	"github.com/spf13/cobra"
 	"transfer/apis"
 	"transfer/apis/public/airportal"
-	"transfer/apis/public/bitsend"
+	//"transfer/apis/public/bitsend"
 	"transfer/apis/public/catbox"
 	"transfer/apis/public/cowtransfer"
 	"transfer/apis/public/filelink"
 	"transfer/apis/public/gofile"
 	"transfer/apis/public/lanzous"
-	"transfer/apis/public/tmplink"
+	//"transfer/apis/public/tmplink"
 	"transfer/apis/public/transfer"
 	"transfer/apis/public/vimcn"
 	"transfer/apis/public/wenshushu"
@@ -21,8 +21,8 @@ var (
 	baseString = [][]string{
 		{"cow", "cowtransfer"},
 		{"wss", "wenshushu"},
-		{"bit", "bitsend"},
-		{"tmp", "tmplink"},
+		//{"bit", "bitsend"},
+		//{"tmp", "tmplink"},
 		{"cat", "catbox"},
 		{"vim", "vimcn"},
 		{"gof", "gofile"},
@@ -35,8 +35,8 @@ var (
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
 		wenshushu.Backend,
-		bitsend.Backend,
-		tmplink.Backend,
+		//bitsend.Backend,
+		//tmplink.Backend,
 		catbox.Backend,
 		vimcn.Backend,
 		gofile.Backend,
@@ -63,7 +63,18 @@ func runner(backend apis.BaseBackend) func(cmd *cobra.Command, args []string) {
 		if len(file) != 0 {
 			apis.Upload(file, backend)
 		} else {
-			_ = cmd.Help()
+			links := downloadWalker(args)
+			if len(links) != 0 {
+				for _, item := range links {
+					backend := ParseLink(item)
+					if backend != nil {
+						apis.Download(item, backend)
+					}
+				}
+				return
+			} else {
+				_ = cmd.Help()
+			}
 		}
 	}
 }

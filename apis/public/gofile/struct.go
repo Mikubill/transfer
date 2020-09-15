@@ -15,7 +15,7 @@ type respBody struct {
 type respBlock struct {
 	Server      string     `json:"server"`
 	Code        string     `json:"code"`
-	RemovalCode string     `json:"removalCode"`
+	RemovalCode string     `json:"adminCode"`
 	Items       []fileItem `json:"files"`
 }
 

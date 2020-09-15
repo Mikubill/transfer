@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	matcher = regexp.MustCompile("(https://)?www\\.lanzous\\.com/[0-9a-z]{7}")
+	matcher = regexp.MustCompile("(https://)?www\\.lanzous\\.com/[0-9a-z]+")
 	regex   = regexp.MustCompile("/fn\\?[A-Za-z_0-9]+_c")
 	regex2  = regexp.MustCompile("[A-Za-z_0-9]+_c")
 )

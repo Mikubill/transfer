@@ -63,7 +63,11 @@ func (b *goFile) selectServer() error {
 	}
 	*end <- struct{}{}
 	fmt.Printf("%s\n", strings.TrimSpace(sevData.Data.Server))
-	b.serverLink = fmt.Sprintf("https://%s.gofile.io/upload", strings.TrimSpace(sevData.Data.Server))
+	// srv-store0 has dns problem
+	if sevData.Data.Server == "srv-store0" {
+		sevData.Data.Server = "srv-store1"
+	}
+	b.serverLink = fmt.Sprintf("https://%s.gofile.io/uploadFile", strings.TrimSpace(sevData.Data.Server))
 
 	return nil
 }

@@ -35,6 +35,15 @@ type sendConfigResp struct {
 	Data    sendConfigBlock `json:"data"`
 }
 
+type timeConfigResp struct {
+	Code    int             `json:"code"`
+	Message string          `json:"message"`
+	Data    struct{
+		Exp int `json:"exp"`
+		Time string `json:"time"`
+	} `json:"data"`
+}
+
 type sendConfigBlock struct {
 	Bid         string     `json:"bid"`
 	SocialToken string     `json:"social_token"`

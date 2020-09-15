@@ -23,6 +23,7 @@ const (
 	complete  = "https://www.wenshushu.cn/ap/uploadv2/complete"
 	process   = "https://www.wenshushu.cn/ap/ufile/getprocess"
 	finish    = "https://www.wenshushu.cn/ap/task/copysend"
+	timeToken = "https://www.wenshushu.cn/ag/time"
 )
 
 func (b *wssTransfer) InitUpload(_ []string, sizes []int64) error {
@@ -281,6 +282,35 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 	}
 
 	if apis.DebugMode {
+		log.Println("step 1/2 timeToken")
+	}
+	req, err := http.NewRequest("GET", timeToken,nil)
+	if err != nil {
+		return nil, err
+	}
+	addHeaders(req)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	_ = resp.Body.Close()
+	if apis.DebugMode {
+		log.Printf("returns: %v", string(body))
+	}
+	respDat := new(timeConfigResp)
+	err = json.Unmarshal(body, respDat)
+	if err != nil || respDat.Message != "success" {
+		return nil, fmt.Errorf("failed get timeToken, %v", err)
+	}
+	if apis.DebugMode {
+		log.Printf("%+v", respDat)
+	}
+
+	if apis.DebugMode {
 		log.Println("step 1/2 addSend")
 	}
 	data, _ := json.Marshal(map[string]interface{}{
@@ -297,7 +327,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
-		modifier: addToken(ticket),
+		modifier: addToken(ticket, respDat.Data.Time),
 	})
 	if err != nil {
 		return nil, err
@@ -333,6 +363,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 }
 
 func newRequest(link string, postBody string, config requestConfig) (*sendConfigResp, error) {
+	config.debug = true
 	if config.debug {
 		log.Printf("endpoint: %s", link)
 		log.Printf("postBody: %s", postBody)
@@ -352,6 +383,9 @@ func newRequest(link string, postBody string, config requestConfig) (*sendConfig
 		return newRequest(link, postBody, config)
 	}
 	config.modifier(req)
+	if config.debug {
+		log.Printf("%+v", req.Header)
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		if config.debug {
@@ -394,15 +428,19 @@ func newRequest(link string, postBody string, config requestConfig) (*sendConfig
 	return respDat, nil
 }
 
-func addToken(token string) func(req *http.Request) {
+func addToken(added ...string) func(req *http.Request) {
 	return func(req *http.Request) {
 		addHeaders(req)
-		req.Header.Set("x-token", token)
+		req.Header.Set("x-token", added[0])
+		if len(added) == 2 {
+			req.Header.Set("req-time", added[1])
+		}
 	}
 }
 
 func addHeaders(req *http.Request) {
 	req.Header.Set("Referer", "https://wenshushu.cn/")
-	req.Header.Set("User-Agent", "Chrome/80.0.3987.149 Wenshushu-Uploader")
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Transfer-cli-wss; " +
+		"Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50")
 	req.Header.Set("Origin", "https://wenshushu.cn/")
 }
