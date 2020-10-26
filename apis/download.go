@@ -14,6 +14,7 @@ func Download(link string, backend BaseBackend) {
 		NoBarMode = true
 		os.Stdout, _ = os.Open(os.DevNull)
 	}
+	downConf.DebugMode = DebugMode
 	err := backend.DoDownload(link, downConf)
 	if err != nil {
 		fmt.Printf("Download %s Error: %s", link, err)

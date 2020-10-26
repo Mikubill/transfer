@@ -107,6 +107,7 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 		"security_hash":  config.Ticket,
 		"domain_user_id": utils.GenRandUUID(),
 		"file_ids":       []string{item.ID},
+		"intent": "single_file",
 	})
 	if config.DebugMode {
 		log.Printf("tk: %+v", tk)
