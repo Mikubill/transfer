@@ -19,8 +19,8 @@ jobs:
 
       - name: test - default
         run: |
-          # ./ci-test-linux-amd64 --no-progress -o test -f $(./ci-test-linux-amd64 --silent go.sum)
-          # cmp test go.sum
+          ./ci-test-linux-amd64 --no-progress -o test -f $(./ci-test-linux-amd64 --silent go.sum)
+          cmp test go.sum
 
       - name: test - multi
         run: |
@@ -30,9 +30,8 @@ jobs:
       - name: test - all
         run: |
           ./ci-test-linux-amd64 arp --no-progress go.sum
-          ./ci-test-linux-amd64 bit --no-progress go.sum
-          ./ci-test-linux-amd64 cat --no-progress go.sum
+          ./ci-test-linux-amd64 0x0 --no-progress go.sum
+          ./ci-test-linux-amd64 lit --no-progress go.sum
           ./ci-test-linux-amd64 gof --no-progress go.sum
           ./ci-test-linux-amd64 vim --no-progress go.sum
-          ./ci-test-linux-amd64 wss --no-progress go.sum
           ./ci-test-linux-amd64 wet --no-progress go.sum

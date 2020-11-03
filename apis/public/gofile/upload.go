@@ -86,7 +86,7 @@ func (b *goFile) PreUpload(_ string, size int64) error {
 func (b *goFile) DoUpload(name string, _ int64, file io.Reader) error {
 
 	_, _ = fmt.Fprintf(b.streamWriter, "\r\n--%s\r\n", b.boundary)
-	_, _ = fmt.Fprintf(b.streamWriter, "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", "filesUploaded", name)
+	_, _ = fmt.Fprintf(b.streamWriter, "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n", "file", name)
 	_, _ = fmt.Fprintf(b.streamWriter, "Content-Type: application/octet-stream\r\n")
 	_, _ = fmt.Fprintf(b.streamWriter, "\r\n")
 	for {

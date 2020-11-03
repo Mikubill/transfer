@@ -10,7 +10,7 @@ import (
 
 type requestConfig struct {
 	debug    bool
-	retry    int
+	//retry    int
 	timeout  time.Duration
 	modifier func(r *http.Request)
 }

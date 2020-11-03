@@ -4,12 +4,15 @@ import (
 	"github.com/spf13/cobra"
 	"transfer/apis"
 	"transfer/apis/public/airportal"
+	"transfer/apis/public/null"
+
 	//"transfer/apis/public/bitsend"
 	"transfer/apis/public/catbox"
 	"transfer/apis/public/cowtransfer"
 	"transfer/apis/public/filelink"
 	"transfer/apis/public/gofile"
 	"transfer/apis/public/lanzous"
+	"transfer/apis/public/litterbox"
 	//"transfer/apis/public/tmplink"
 	"transfer/apis/public/transfer"
 	"transfer/apis/public/vimcn"
@@ -24,6 +27,7 @@ var (
 		//{"bit", "bitsend"},
 		//{"tmp", "tmplink"},
 		{"cat", "catbox"},
+		{"lit", "littlebox"},
 		{"vim", "vimcn"},
 		{"gof", "gofile"},
 		{"wet", "wetransfer"},
@@ -31,6 +35,7 @@ var (
 		{"flk", "filelink"},
 		{"trs", "transfer.sh"},
 		{"lzs", "lanzous"},
+		{"0x0", "null"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
@@ -38,6 +43,7 @@ var (
 		//bitsend.Backend,
 		//tmplink.Backend,
 		catbox.Backend,
+		litterbox.Backend,
 		vimcn.Backend,
 		gofile.Backend,
 		wetransfer.Backend,
@@ -45,6 +51,7 @@ var (
 		filelink.Backend,
 		transfer.Backend,
 		lanzous.Backend,
+		null.Backend,
 	}
 )
 

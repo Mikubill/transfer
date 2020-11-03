@@ -150,6 +150,7 @@ func (b weTransfer) FinishUpload([]string) (string, error) {
 
 func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 	for item := range *ch {
+		Start:
 		d, _ := json.Marshal(map[string]interface{}{
 			"chunk_number": item.count,
 			"chunk_size":   len(item.content),
@@ -166,8 +167,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 			if apis.DebugMode {
 				log.Printf("get upload url request returns error: %v", err)
 			}
-			*ch <- item
-			continue
+			goto Start
 		}
 
 		client := http.Client{Timeout: time.Duration(b.Config.interval) * time.Second}
@@ -189,8 +189,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 			if apis.DebugMode {
 				log.Printf("build request returns error: %v", err)
 			}
-			*ch <- item
-			continue
+			goto Start
 		}
 		req.ContentLength = int64(len(item.content))
 		req.Header.Set("content-type", "application/octet-stream")
@@ -199,16 +198,14 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
-			*ch <- item
-			continue
+			goto Start
 		}
 		_, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
 			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
-			*ch <- item
-			continue
+			goto Start
 		}
 
 		_ = resp.Body.Close()
