@@ -77,7 +77,9 @@ func ParseBackend(sp string) PicBed {
 		return VMBackend
 	case "sn", "suning":
 		return SNBackend
+	case "tg", "telegraph":
+		return TGBackend
 	default:
-		return AliBackend
+		return SMBackend
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -13,7 +14,7 @@ import (
 
 var (
 	matcher = regexp.MustCompile("(https://)?gofile\\.io/(\\?c=|download/)[0-9a-zA-Z]{6}")
-	reg     = regexp.MustCompile("[0-9a-zA-Z]{6}")
+	reg     = regexp.MustCompile("=[0-9a-zA-Z]{6}")
 )
 
 func (b goFile) LinkMatcher(v string) bool {
@@ -30,6 +31,7 @@ func (b goFile) DoDownload(link string, config apis.DownConfig) error {
 
 func (b goFile) download(v string, config apis.DownConfig) error {
 	fileID := reg.FindString(v)
+	fileID = fileID[1:]
 	fmt.Printf("selecting server..")
 	end := utils.DotTicker()
 	body, err := http.Get(getServer)
@@ -49,12 +51,11 @@ func (b goFile) download(v string, config apis.DownConfig) error {
 	}
 	*end <- struct{}{}
 	fmt.Printf("%s\n", strings.TrimSpace(sevData.Data.Server))
-
-	server := fmt.Sprintf("https://%s.gofile.io", strings.TrimSpace(sevData.Data.Server))
 	fmt.Printf("fetching download metadata..")
 	end = utils.DotTicker()
-	body, err = http.Get(fmt.Sprintf("%s/?c=%s", server, fileID))
+	body, err = http.Get(fmt.Sprintf("https://apiv2.gofile.io/getUpload?c=%s", fileID))
 	if err != nil {
+		log.Println(fmt.Errorf("request %s returns error: %v", getServer, err))
 		return fmt.Errorf("request %s returns error: %v", getServer, err)
 	}
 

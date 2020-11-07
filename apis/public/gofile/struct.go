@@ -16,12 +16,12 @@ type respBlock struct {
 	Server      string     `json:"server"`
 	Code        string     `json:"code"`
 	RemovalCode string     `json:"adminCode"`
-	Items       []fileItem `json:"files"`
+	Items       map[string]fileItem `json:"files"`
 }
 
 type fileItem struct {
 	Name string `json:"name"`
-	Size string `json:"size"`
+	Size int64 `json:"size"`
 	Link string `json:"link"`
 }
 
