@@ -6,6 +6,12 @@
 
 Large file transfer tool with multiple file transfer services support
 
+## note
+
+部分API可能不是很稳定，如有问题可以及时提issue或者pr
+
+如使用过程中出现任何问题可以先尝试使用[Release](https://github.com/Mikubill/transfer/releases)中的beta版程序，说不定已经修复过了这个bug
+
 ## install
 
 Go语言程序, 可直接在[发布页](https://github.com/Mikubill/transfer/releases)下载使用。

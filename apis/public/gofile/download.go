@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	matcher = regexp.MustCompile("(https://)?gofile\\.io/(\\?c=|download/)[0-9a-zA-Z]{6}")
+	matcher = regexp.MustCompile("(https://)?gofile\\.io/(\\?c=|download/|d/)[0-9a-zA-Z]{6}")
 	reg     = regexp.MustCompile("=[0-9a-zA-Z]{6}")
 )
 
@@ -51,7 +51,7 @@ func (b goFile) download(v string, config apis.DownConfig) error {
 	}
 	*end <- struct{}{}
 	fmt.Printf("%s\n", strings.TrimSpace(sevData.Data.Server))
-	fmt.Printf("fetching download metadata..")
+	fmt.Printf("fetching ticket..")
 	end = utils.DotTicker()
 	body, err = http.Get(fmt.Sprintf("https://apiv2.gofile.io/getUpload?c=%s", fileID))
 	if err != nil {
@@ -70,6 +70,7 @@ func (b goFile) download(v string, config apis.DownConfig) error {
 	}
 	*end <- struct{}{}
 
+	fmt.Printf("%+v", sevData)
 	for _, item := range sevData.Data.Items {
 		err := apis.DownloadFile(&apis.DownloaderConfig{
 			Link:     item.Link,

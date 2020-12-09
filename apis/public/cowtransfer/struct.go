@@ -1,15 +1,16 @@
 package cowtransfer
 
 import (
-	"github.com/cheggaaa/pb/v3"
-	cmap "github.com/orcaman/concurrent-map"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/cheggaaa/pb/v3"
+	cmap "github.com/orcaman/concurrent-map"
 )
 
 type requestConfig struct {
-	debug    bool
+	debug bool
 	//retry    int
 	timeout  time.Duration
 	modifier func(r *http.Request)
@@ -63,11 +64,15 @@ type finishResponse struct {
 }
 
 type downloadDetailsResponse struct {
-	GUID         string                 `json:"guid"`
-	DownloadName string                 `json:"downloadName"`
-	Deleted      bool                   `json:"deleted"`
-	Uploaded     bool                   `json:"uploaded"`
-	Details      []downloadDetailsBlock `json:"transferFileDtos"`
+	GUID         string `json:"guid"`
+	DownloadName string `json:"downloadName"`
+	Deleted      bool   `json:"deleted"`
+	Uploaded     bool   `json:"uploaded"`
+	// Details      []downloadDetailsBlock `json:"transferFileDtos"`
+}
+
+type downloadFilesResponse struct {
+	Details []downloadDetailsBlock `json:"transferFileDtos"`
 }
 
 type downloadDetailsBlock struct {
