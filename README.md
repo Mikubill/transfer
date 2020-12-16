@@ -10,7 +10,7 @@ Large file transfer tool with multiple file transfer services support
 
 部分API可能不是很稳定，如有问题可以及时提issue或者pr
 
-如使用过程中出现任何问题可以先尝试使用[Release](https://github.com/Mikubill/transfer/releases)中的beta版程序，说不定已经修复过了这个bug
+如使用过程中出现任何问题可以先尝试使用beta版程序，说不定已经修复过了这个bug
 
 ## install
 
@@ -19,7 +19,11 @@ Go语言程序, 可直接在[发布页](https://github.com/Mikubill/transfer/rel
 或者使用安装脚本:
 
 ```shell script
+# Stable Release
 curl -sL https://git.io/file-transfer | sh 
+
+# Beta Release
+curl -sL https://git.io/file-transfer | sh -s beta
 ```
 
 Github Action中有实时构建版本，如有需要可以在Github Action的构建日志中查看下载链接。
