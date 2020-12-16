@@ -51,5 +51,5 @@ fi
 
 curl -L "$DOWNLOAD_URL" | tar xz
 
-printf "\nTransfer Downloded.\n\n"
+printf "\nTransfer has successfully downloaded.\n"
 exit 0
