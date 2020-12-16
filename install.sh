@@ -19,6 +19,7 @@ esac
 
 #check for beta flag
 if [ -n "$1" ] && [ "$1" == "beta" ]; then
+    echo "Warning: Beta version is unstable and prone to bugs and crashes."
     install_beta="beta "
 fi
 
