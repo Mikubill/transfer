@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
-	cmap "github.com/orcaman/concurrent-map"
 	"hash/crc32"
 	"io"
 	"io/ioutil"
@@ -19,6 +17,9 @@ import (
 	"time"
 	"transfer/apis"
 	"transfer/utils"
+
+	"github.com/cheggaaa/pb/v3"
+	cmap "github.com/orcaman/concurrent-map"
 )
 
 const (
@@ -125,7 +126,7 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 
 func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 	for item := range *ch {
-		Start:
+	Start:
 		postURL := fmt.Sprintf(uploadInitEndpoint, len(item.content))
 		if apis.DebugMode {
 			log.Printf("part %d start uploading, size: %d", item.count, len(item.content))
@@ -134,7 +135,7 @@ func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
 
 		// makeBlock
 		body, err := newPostRequest(postURL, nil, requestConfig{
-			debug:    apis.DebugMode,
+			debug: apis.DebugMode,
 			//retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(conf.token),
@@ -212,7 +213,7 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 	data := new(bytes.Buffer)
 	data.Write(buf)
 	body, err := newPostRequest(postURL, data, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(token),
@@ -222,7 +223,7 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 			log.Printf("block upload failed (retrying)")
 		}
 		//if retry > 3 {
-			return "", err
+		return "", err
 		//}
 		//return b.blockPut(postURL, buf, token, retry+1)
 	}
@@ -232,7 +233,7 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 			log.Printf("resp unmarshal failed (retrying)")
 		}
 		//if retry > 3 {
-			return "", err
+		return "", err
 		//}
 		//return b.blockPut(postURL, buf, token, retry+1)
 	}
@@ -242,7 +243,7 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 				log.Printf("block hashcheck failed (retrying)")
 			}
 			//if retry > 3 {
-				return "", err
+			return "", err
 			//}
 			//return b.blockPut(postURL, buf, token, retry+1)
 		}
@@ -250,8 +251,8 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 	return rBody.Ticket, nil
 }
 
-func hashBlock(buf []byte) int {
-	return int(crc32.ChecksumIEEE(buf))
+func hashBlock(buf []byte) int64 {
+	return int64(crc32.ChecksumIEEE(buf))
 }
 
 func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int64, hashMap *cmap.ConcurrentMap, limit int64) error {
@@ -282,7 +283,7 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 	}
 	reader := bytes.NewReader([]byte(postBody))
 	resp, err := newPostRequest(mergeFileURL, reader, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(config.UploadToken),
@@ -302,11 +303,11 @@ func (b cowTransfer) finishUpload(config *prepareSendResp, name string, size int
 	}
 	data := map[string]string{
 		"transferGuid": config.TransferGUID,
-		"fileGuid": config.FileGUID,
-		"hash": mergeResp.Hash,
+		"fileGuid":     config.FileGUID,
+		"hash":         mergeResp.Hash,
 	}
 	body, err := b.newMultipartRequest(uploadFinish, data, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -349,7 +350,7 @@ func (b cowTransfer) completeUpload() (string, error) {
 		log.Println("step3 -> api/completeUpload")
 	}
 	body, err := b.newMultipartRequest(uploadComplete, data, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -373,7 +374,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 		"totalSize": strconv.FormatInt(totalSize, 10),
 	}
 	body, err := b.newMultipartRequest(prepareSend, data, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -396,7 +397,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 			"passcode":     b.Config.passCode,
 		}
 		body, err = b.newMultipartRequest(setPassword, data, requestConfig{
-			debug:    apis.DebugMode,
+			debug: apis.DebugMode,
 			//retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addHeaders,
@@ -428,7 +429,7 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 		"storagePrefix": config.Prefix,
 	}
 	resp, err := b.newMultipartRequest(beforeUpload, data, requestConfig{
-		debug:    apis.DebugMode,
+		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addHeaders,
@@ -462,7 +463,7 @@ func newPostRequest(link string, postBody io.Reader, config requestConfig) ([]by
 			log.Printf("build requests returns error: %v", err)
 		}
 		//if config.retry > 3 {
-			return nil, err
+		return nil, err
 		//}
 		//return newPostRequest(link, postBody, config)
 	}
@@ -473,7 +474,7 @@ func newPostRequest(link string, postBody io.Reader, config requestConfig) ([]by
 			log.Printf("do requests returns error: %v", err)
 		}
 		//if config.retry > 20 {
-			return nil, err
+		return nil, err
 		//}
 		//config.retry++
 		//return newPostRequest(link, postBody, config)
@@ -484,7 +485,7 @@ func newPostRequest(link string, postBody io.Reader, config requestConfig) ([]by
 			log.Printf("read response returns: %v", err)
 		}
 		//if config.retry > 20 {
-			return nil, err
+		return nil, err
 		//}
 		//config.retry++
 		//return newPostRequest(link, postBody, config)
@@ -519,7 +520,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			log.Printf("build requests returns error: %v", err)
 		}
 		//if config.retry > 3 {
-			return nil, err
+		return nil, err
 		//}
 		//config.retry++
 		//time.Sleep(1)
@@ -537,7 +538,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			log.Printf("do requests returns error: %v", err)
 		}
 		//if config.retry > 3 {
-			return nil, err
+		return nil, err
 		//}
 		//config.retry++
 		//time.Sleep(1)
@@ -549,7 +550,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 			log.Printf("read response returns: %v", err)
 		}
 		//if config.retry > 3 {
-			return nil, err
+		return nil, err
 		//}
 		//config.retry++
 		//time.Sleep(1)

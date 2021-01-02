@@ -3,11 +3,12 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
 	"transfer/apis"
 	"transfer/apis/public/null"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -19,21 +20,19 @@ Transfer is a very simple big file transfer tool.
 
 Backend Support:
   arp  -  Airportal  -  https://aitportal.cn/
-  bit  -  bitSend  -  https://bitsend.jp/
   cat  -  CatBox  -  https://catbox.moe/    
   cow  -  CowTransfer  -  https://www.cowtransfer.com/  
-  gof  -  GoFile  -  https://gofile.io/
-  tmp  -  TmpLink  -  https://tmp.link/     
+  gof  -  GoFile  -  https://gofile.io/  
   vim  -  Vim-cn  -  https://img.vim-cn.com/    
-  wss  -  WenShuShu  -  https://www.wenshushu.cn/  
   wet  -  WeTransfer  -  https://wetransfer.com/  
   flk  -  FileLink  -  https://filelink.io/
+  lit  -  Litterbox -  https://litterbox.catbox.moe/
   trs  -  Transfer.sh  -  https://transfer.sh/
   lzs  -  Lanzous  -  https://www.lanzous.com/
 `,
 		SilenceErrors: true,
-		Example: `  # upload via wenshushu
-  ./transfer wss <your-file>
+		Example: `  # upload via gofile
+  ./transfer gof <your-file>
 
   # download link
   ./transfer https://.../`,

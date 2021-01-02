@@ -55,7 +55,7 @@ type beforeSendResp struct {
 
 type uploadResponse struct {
 	Ticket string `json:"ctx"`
-	Hash   int    `json:"crc32"`
+	Hash   int64  `json:"crc32"`
 }
 
 type finishResponse struct {

@@ -1,10 +1,12 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"transfer/apis"
 	"transfer/apis/public/airportal"
+	"transfer/apis/public/fileio"
 	"transfer/apis/public/null"
+
+	"github.com/spf13/cobra"
 
 	//"transfer/apis/public/bitsend"
 	"transfer/apis/public/catbox"
@@ -13,17 +15,19 @@ import (
 	"transfer/apis/public/gofile"
 	"transfer/apis/public/lanzous"
 	"transfer/apis/public/litterbox"
+
 	//"transfer/apis/public/tmplink"
 	"transfer/apis/public/transfer"
 	"transfer/apis/public/vimcn"
-	"transfer/apis/public/wenshushu"
+
+	// "transfer/apis/public/wenshushu"
 	"transfer/apis/public/wetransfer"
 )
 
 var (
 	baseString = [][]string{
 		{"cow", "cowtransfer"},
-		{"wss", "wenshushu"},
+		// {"wss", "wenshushu"},
 		//{"bit", "bitsend"},
 		//{"tmp", "tmplink"},
 		{"cat", "catbox"},
@@ -36,10 +40,11 @@ var (
 		{"trs", "transfer.sh"},
 		{"lzs", "lanzous"},
 		{"0x0", "null"},
+		{"fio", "file.io"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
-		wenshushu.Backend,
+		// wenshushu.Backend,
 		//bitsend.Backend,
 		//tmplink.Backend,
 		catbox.Backend,
@@ -52,6 +57,7 @@ var (
 		transfer.Backend,
 		lanzous.Backend,
 		null.Backend,
+		fileio.Backend,
 	}
 )
 

@@ -2,7 +2,6 @@ package apis
 
 import (
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
 	"io"
 	"io/ioutil"
 	"log"
@@ -18,6 +17,8 @@ import (
 	"sync"
 	"transfer/crypto"
 	"transfer/utils"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var regex = regexp.MustCompile("filename=\"?(.*)\"?$")
@@ -69,7 +70,7 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	if config.Link == "" {
-		return fmt.Errorf("link is invaild or expired")
+		return fmt.Errorf("link is invaild or expired\n")
 	}
 
 	fmt.Printf("fetching download metadata..")
@@ -92,8 +93,14 @@ func DownloadFile(config *DownloaderConfig) error {
 	fmt.Printf("ok\n")
 
 	if resp.StatusCode > 400 {
-		return fmt.Errorf("link unavailable, %s", resp.Status)
+		return fmt.Errorf("link unavailable, %s\n", resp.Status)
 	}
+	if config.RespHandler != nil {
+		if !config.RespHandler(resp) {
+			return fmt.Errorf("link unavailable.\n")
+		}
+	}
+
 	length, err := strconv.ParseInt(resp.Header.Get("content-length"), 10, 64)
 	if err != nil {
 		length = 0
@@ -111,9 +118,9 @@ func DownloadFile(config *DownloaderConfig) error {
 		if len(dest) > 0 {
 			exc, err := url.QueryUnescape(strings.TrimSpace(dest[1]))
 			if err != nil {
-				prefix = path.Join(prefix,  strings.TrimSpace(dest[1]))
+				prefix = path.Join(prefix, strings.TrimSpace(dest[1]))
 			} else {
-				prefix = path.Join(prefix,  exc)
+				prefix = path.Join(prefix, exc)
 			}
 		} else {
 			prefix = path.Join(prefix, path.Base(resp.Request.URL.Path))
@@ -129,7 +136,7 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	if utils.IsExist(prefix) && !strings.HasPrefix(prefix, "/dev") && !config.Config.ForceMode {
-		return fmt.Errorf("%s exists.(use -f to overwrite)", prefix)
+		return fmt.Errorf("%s exists.(use -f to overwrite)\n", prefix)
 	}
 
 	// not available in windows
@@ -185,7 +192,7 @@ func DownloadFile(config *DownloaderConfig) error {
 		}
 	} else {
 		if err := out.Truncate(length); err != nil {
-			return fmt.Errorf("tmpfile fruncate failed: %s", err)
+			return fmt.Errorf("tmpfile fruncate failed: %s\n", err)
 		}
 		wg := new(sync.WaitGroup)
 		for i := 0; i <= _parallel; i++ {

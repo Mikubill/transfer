@@ -1,10 +1,11 @@
 package apis
 
 import (
-	"github.com/cheggaaa/pb/v3"
-	"github.com/spf13/cobra"
 	"io"
 	"net/http"
+
+	"github.com/cheggaaa/pb/v3"
+	"github.com/spf13/cobra"
 )
 
 type BaseBackend interface {
@@ -15,9 +16,10 @@ type BaseBackend interface {
 }
 
 type DownloaderConfig struct {
-	Link     string
-	Config   DownConfig
-	Modifier func(r *http.Request)
+	Link        string
+	Config      DownConfig
+	Modifier    func(r *http.Request)
+	RespHandler func(r *http.Response) bool
 }
 
 type DownConfig struct {

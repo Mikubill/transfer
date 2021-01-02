@@ -9,17 +9,23 @@ jobs:
     name: release
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v1
-
-      - name: validate
-        uses: docker://goreleaser/goreleaser:latest
+     
+      -
+        name: Checkout
+        uses: actions/checkout@v2
         with:
-          args: check
+          fetch-depth: 0
+          
+      -
+        name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
 
-      - name: release
-        uses: docker://goreleaser/goreleaser:latest
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
         with:
           args: release
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
