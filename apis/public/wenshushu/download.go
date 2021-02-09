@@ -82,7 +82,6 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 		return err
 	}
 
-
 	// todo: type 1/2, start(page?)
 	data, _ = json.Marshal(map[string]interface{}{
 		"bid":  downConfig.Data.BoxID,

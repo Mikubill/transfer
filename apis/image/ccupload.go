@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"strings"
 )
 
 var (
@@ -16,8 +15,9 @@ type CC struct {
 }
 
 type CCResp struct {
-	Code  string        `json:"code"`
-	Image []CCImageItem `json:"image"`
+	Code   int64         `json:"code"`
+	Errors int64         `json:"total_error"`
+	Image  []CCImageItem `json:"success_image"`
 }
 
 type CCImageItem struct {
@@ -37,18 +37,20 @@ func (s CC) linkBuilder(link string) string {
 
 func (s CC) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://upload.cc/image_upload", "file")
+	body, err := s.upload(data, "https://upload.cc/image_upload", "uploaded_file[]")
 	if err != nil {
 		return "", err
 	}
 
 	var r CCResp
-	if strings.Contains(string(body), "error") {
-		return "", fmt.Errorf(string(body))
-	}
 
 	if err := json.Unmarshal(body, &r); err != nil {
 		return "", err
 	}
+
+	if r.Errors > 0 {
+		return "", fmt.Errorf(string(body))
+	}
+
 	return s.linkBuilder(r.Image[0].URL), nil
 }

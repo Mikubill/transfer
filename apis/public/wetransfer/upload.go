@@ -150,7 +150,7 @@ func (b weTransfer) FinishUpload([]string) (string, error) {
 
 func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 	for item := range *ch {
-		Start:
+	Start:
 		d, _ := json.Marshal(map[string]interface{}{
 			"chunk_number": item.count,
 			"chunk_size":   len(item.content),

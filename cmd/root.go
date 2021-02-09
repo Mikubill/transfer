@@ -19,16 +19,9 @@ var (
 Transfer is a very simple big file transfer tool.
 
 Backend Support:
-  arp  -  Airportal  -  https://aitportal.cn/
-  cat  -  CatBox  -  https://catbox.moe/    
-  cow  -  CowTransfer  -  https://www.cowtransfer.com/  
-  gof  -  GoFile  -  https://gofile.io/  
-  vim  -  Vim-cn  -  https://img.vim-cn.com/    
-  wet  -  WeTransfer  -  https://wetransfer.com/  
-  flk  -  FileLink  -  https://filelink.io/
-  lit  -  Litterbox -  https://litterbox.catbox.moe/
-  trs  -  Transfer.sh  -  https://transfer.sh/
-  lzs  -  Lanzous  -  https://www.lanzous.com/
+  airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
+  gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
+  wetransfer(wet), vimcn(vim)
 `,
 		SilenceErrors: true,
 		Example: `  # upload via gofile

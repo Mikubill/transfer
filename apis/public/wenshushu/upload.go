@@ -284,7 +284,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 	if apis.DebugMode {
 		log.Println("step 1/2 timeToken")
 	}
-	req, err := http.NewRequest("GET", timeToken,nil)
+	req, err := http.NewRequest("GET", timeToken, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -314,17 +314,17 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 		log.Println("step 1/2 addSend")
 	}
 	data, _ := json.Marshal(map[string]interface{}{
-		"sender":      "",
-		"remark":      "",
-		"isextension": false,
-		"trafficStatus": 0,
+		"sender":            "",
+		"remark":            "",
+		"isextension":       false,
+		"trafficStatus":     0,
 		"downPreCountLimit": 0,
-		"notSaveTo": false,
-		"pwd":         "",
-		"expire":      2,
-		"recvs":       []string{"social", "public"},
-		"file_size":   strconv.FormatInt(totalSize, 10),
-		"file_count":  totalCount,
+		"notSaveTo":         false,
+		"pwd":               "",
+		"expire":            2,
+		"recvs":             []string{"social", "public"},
+		"file_size":         strconv.FormatInt(totalSize, 10),
+		"file_count":        totalCount,
 	})
 	config, err := newRequest(addSend, string(data), requestConfig{
 		debug:    apis.DebugMode,
@@ -443,7 +443,7 @@ func addToken(added ...string) func(req *http.Request) {
 
 func addHeaders(req *http.Request) {
 	req.Header.Set("Referer", "https://wenshushu.cn/")
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Transfer-cli-wss; " +
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Transfer-cli-wss; "+
 		"Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50")
 	req.Header.Set("Origin", "https://wenshushu.cn/")
 }

@@ -36,10 +36,10 @@ type sendConfigResp struct {
 }
 
 type timeConfigResp struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
-	Data    struct{
-		Exp int `json:"exp"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    struct {
+		Exp  int    `json:"exp"`
 		Time string `json:"time"`
 	} `json:"data"`
 }

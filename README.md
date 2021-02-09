@@ -32,50 +32,20 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 
 目前支持的文件传输服务:
 
-|  Name   | Site  | Limit | Provider |
-|  ----  | ----  |  ----  |  ----  |
-| Airportal | https://airportal.cn/ | - | Aliyun |
-| Litterbox | https://litter.catbox.moe/ | 1GB | Psychz |
-| CatBox | https://catbox.moe/ | 100MB | Psychz |
-| CowTransfer | https://www.cowtransfer.com/ | 2GB | Qiniu |
-| GoFile | https://gofile.io/ | - | - |
-| Vim-cn | https://img.vim-cn.com/ | 100MB | CloudFlare |
-| WeTransfer | https://wetransfer.com/ | 2GB | CloudFront |
-| FileLink | https://filelink.io/ | - | GCE |
-| Transfer.sh | https://transfer.sh/ | - | Hetzner |
-| Lanzous | https://www.lanzous.com/ | login only | - |
-
-暂不支持的传输服务
-
-|  Name   | Site  | Limit | Provider |
-|  ----  | ----  |  ----  |  ----  |
-| WenShuShu | https://www.wenshushu.cn/ | 5GB | QCloud |
-| bitSend | https://bitsend.jp/ | - | OVH |
-| TmpLink | https://tmp.link/ | - | - |
+```
+airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
+gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
+wetransfer(wet), vimcn(vim)
+```
 
 [登陆上传相关说明](https://github.com/Mikubill/transfer#login)
 
 目前支持的图床服务:
 
-|  Name   | Limit  | 
-|  ----  | ----  |
-| Ali | 5MB |
-| Baidu | 10MB |
-| CCUpload | 20MB (region limit) |
-| Juejin | 20MB |
-| Netease | 10MB |
-| Prntscr | 10MB |
-| SMMS | 5MB |
-| Sugou | 10MB |
-| Toutiao | - |
-| Xiaomi | - |
-| Suning | - |
-
-开发中的服务
-
-|  Name   | Site  | Limit |
-|  ----  | ----  |  ----  |
-| Firefox Send | https://send.firefox.com/ | 1GB |
+```
+baidu(bd), ccupload(cc), prntscr(pr), smms(sm), sogou(sg), 
+toutiao(tt), vimcn(vm), suning(sn), telegraph(tg)
+```
 
 ## usage 
 
@@ -83,18 +53,9 @@ Github Action中有实时构建版本，如有需要可以在Github Action的构
 Transfer is a very simple big file transfer tool.
 
 Backend Support:
-  arp  -  Airportal  -  https://aitportal.cn/
-  bit  -  bitSend  -  https://bitsend.jp/
-  cat  -  CatBox  -  https://catbox.moe/
-  cow  -  CowTransfer  -  https://www.cowtransfer.com/
-  gof  -  GoFile  -  https://gofile.io/
-  tmp  -  TmpLink  -  https://tmp.link/
-  vim  -  Vim-cn  -  https://img.vim-cn.com/
-  wss  -  WenShuShu  -  https://www.wenshushu.cn/
-  wet  -  WeTransfer  -  https://wetransfer.com/
-  flk  -  FileLink  -  https://filelink.io/
-  trs  -  Transfer.sh  -  https://transfer.sh/
-  lzs  -  Lanzous  -  https://www.lanzous.com/
+  airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
+  gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
+  wetransfer(wet), vimcn(vim)
 
 Usage:
   transfer [flags]

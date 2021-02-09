@@ -11,7 +11,8 @@ import (
 	//"transfer/apis/public/bitsend"
 	"transfer/apis/public/catbox"
 	"transfer/apis/public/cowtransfer"
-	"transfer/apis/public/filelink"
+
+	// "transfer/apis/public/filelink"
 	"transfer/apis/public/gofile"
 	"transfer/apis/public/lanzous"
 	"transfer/apis/public/litterbox"
@@ -28,15 +29,15 @@ var (
 	baseString = [][]string{
 		{"cow", "cowtransfer"},
 		// {"wss", "wenshushu"},
-		//{"bit", "bitsend"},
-		//{"tmp", "tmplink"},
+		// {"bit", "bitsend"},
+		// {"tmp", "tmplink"},
 		{"cat", "catbox"},
 		{"lit", "littlebox"},
 		{"vim", "vimcn"},
 		{"gof", "gofile"},
 		{"wet", "wetransfer"},
 		{"arp", "airportal"},
-		{"flk", "filelink"},
+		// {"flk", "filelink"},
 		{"trs", "transfer.sh"},
 		{"lzs", "lanzous"},
 		{"0x0", "null"},
@@ -53,7 +54,7 @@ var (
 		gofile.Backend,
 		wetransfer.Backend,
 		airportal.Backend,
-		filelink.Backend,
+		// filelink.Backend,
 		transfer.Backend,
 		lanzous.Backend,
 		null.Backend,

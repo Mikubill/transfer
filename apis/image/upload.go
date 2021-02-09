@@ -2,10 +2,11 @@ package image
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -53,16 +54,16 @@ func Upload(file []string) {
 
 func ParseBackend(sp string) PicBed {
 	switch sp {
-	case "ali", "alibaba":
-		return AliBackend
+	// case "ali", "alibaba":
+	// 	return AliBackend
 	case "bd", "baidu":
 		return BDBackend
 	case "cc", "ccupload":
 		return CCBackend
-	case "jj", "juejin":
-		return JJBackend
-	case "nt", "netease":
-		return NTBackend
+	// case "jj", "juejin":
+	// 	return JJBackend
+	// case "nt", "netease":
+	// 	return NTBackend
 	case "pr", "prntscr":
 		return PRBackend
 	case "sm", "smms":
@@ -71,12 +72,12 @@ func ParseBackend(sp string) PicBed {
 		return SGBackend
 	case "tt", "toutiao":
 		return TTBackend
-	case "xm", "xiaomi":
-		return XMBackend
+	// case "xm", "xiaomi":
+	// 	return XMBackend
 	case "vm", "vim", "vimcn":
 		return VMBackend
-	case "sn", "suning":
-		return SNBackend
+	// case "sn", "suning":
+	// 	return SNBackend
 	case "tg", "telegraph":
 		return TGBackend
 	default:
