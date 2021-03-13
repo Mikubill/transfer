@@ -21,7 +21,7 @@ import (
 	"github.com/cheggaaa/pb/v3"
 )
 
-var regex = regexp.MustCompile("filename=\"?(.*)\"?$")
+var regex = regexp.MustCompile("filename=\"(.*)\"$")
 
 type parallelConfig struct {
 	parallel int
