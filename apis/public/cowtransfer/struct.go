@@ -10,7 +10,8 @@ import (
 )
 
 type requestConfig struct {
-	debug bool
+	debug  bool
+	action string
 	//retry    int
 	timeout  time.Duration
 	modifier func(r *http.Request)
@@ -24,7 +25,7 @@ type uploadPart struct {
 
 type uploadConfig struct {
 	wg      *sync.WaitGroup
-	token   string
+	config  *initResp
 	hashMap *cmap.ConcurrentMap
 }
 
@@ -36,6 +37,15 @@ type cowOptions struct {
 	blockSize  int
 	hashCheck  bool
 	passCode   string
+}
+
+type initResp struct {
+	Token        string
+	TransferGUID string
+	FileGUID     string
+	EncodeID     string
+	Exp          int64  `json:"expireAt"`
+	ID           string `json:"uploadId"`
 }
 
 type prepareSendResp struct {
@@ -54,8 +64,21 @@ type beforeSendResp struct {
 }
 
 type uploadResponse struct {
-	Ticket string `json:"ctx"`
-	Hash   int64  `json:"crc32"`
+	Etag string `json:"etag"`
+	MD5  string `json:"md5"`
+}
+
+type slek struct {
+	ETag string `json:"etag"`
+	Part int64  `json:"partNumber"`
+}
+
+type clds struct {
+	Parts    []slek `json:"parts"`
+	FName    string `json:"fname"`
+	Mimetype string `json:"mimeType"`
+	Metadata map[string]string
+	Vars     map[string]string
 }
 
 type finishResponse struct {
