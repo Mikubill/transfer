@@ -21,7 +21,7 @@ Transfer is a very simple big file transfer tool.
 Backend Support:
   airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
   gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
-  wetransfer(wet), vimcn(vim)
+  wetransfer(wet), vimcn(vim), notion(not)
 `,
 		SilenceErrors: true,
 		Example: `  # upload via gofile

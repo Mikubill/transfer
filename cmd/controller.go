@@ -22,6 +22,7 @@ import (
 	"transfer/apis/public/vimcn"
 
 	// "transfer/apis/public/wenshushu"
+	"transfer/apis/public/notion"
 	"transfer/apis/public/wetransfer"
 )
 
@@ -42,6 +43,7 @@ var (
 		{"lzs", "lanzous"},
 		{"0x0", "null"},
 		{"fio", "file.io"},
+		{"not", "notion", "notion.so"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
@@ -59,6 +61,7 @@ var (
 		lanzous.Backend,
 		null.Backend,
 		fileio.Backend,
+		notion.Backend,
 	}
 )
 
