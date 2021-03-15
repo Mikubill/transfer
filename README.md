@@ -225,6 +225,15 @@ notion的上传需要以下参数
 
 上传后默认返回一个自动签名链接，私有页面可以在浏览器登录状态下直接点击下载。对于公开页面的文件链接，可以尝试去掉userid使用，但必须保留id和table两项。
 
+Example
+```bash
+❯ ./transfer not -p ... -t ... install.sh        
+Local: /.../install.sh
+1.03 KiB / 1.03 KiB [--------------------] 100.00% 810 B p/s 2s
+syncing blocks....
+Download Link: https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F...%2Finstall.sh?table=block&id=...&name=install.sh&userId=...&cache=v2
+```
+
 ### login 
 
 部分backend支持登陆环境下上传，使用时只需要提供对应的cookie即可。
