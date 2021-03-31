@@ -16,10 +16,11 @@ import (
 )
 
 var (
-	signDownload string
-	regexShorten = regexp.MustCompile("(https://)?we\\.tl/[a-zA-Z0-9\\-]{12}")
-	regex        = regexp.MustCompile("(https://)?wetransfer\\.com/downloads/[a-z0-9]{46}/[a-z0-9]{6}")
-	regexList    = regexp.MustCompile("{\"id.*}]}")
+	signDownload, safetyHash, blockID string
+	regexShorten                      = regexp.MustCompile("(https://)?we\\.tl/[a-zA-Z0-9\\-]{12}")
+	// regex2  = regexp.MustCompile("https://wetransfer.com/api/v4/transfers/1d0e80d8e4c05baddb6d0817acefaf9020210331043828/prepare-download")
+	regex = regexp.MustCompile("https?://wetransfer\\.com/downloads/([a-z0-9]{46})/([a-z0-9]{6})")
+	// regexList    = regexp.MustCompile("{\"id.*}]}")
 )
 
 func (b weTransfer) LinkMatcher(v string) bool {
@@ -39,13 +40,28 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 	fmt.Printf("fetching ticket..")
 	end := utils.DotTicker()
 
-	if !regexShorten.MatchString(v) && !regex.MatchString(v) {
+	if regexShorten.MatchString(v) {
+
+		req, err := http.NewRequest("HEAD", v, nil)
+		if err != nil {
+			return err
+		}
+		resp, err := http.DefaultTransport.RoundTrip(req)
+		v = resp.Header.Get("Location")
+	}
+
+	tk0 := regex.FindStringSubmatch(v)
+	if len(tk0) < 3 || !regex.MatchString(v) {
 		return fmt.Errorf("url is invaild")
 	}
+	blockID = string(tk0[1])
+	safetyHash = string(tk0[2])
+
 	if config.DebugMode {
 		log.Println("step 1/2 metadata")
 		log.Printf("link: %+v", v)
 	}
+
 	resp, err := client.Get(v)
 	if err != nil {
 		return err
@@ -60,6 +76,7 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 	if len(tk) == 0 {
 		return fmt.Errorf("no csrf-token found")
 	}
+
 	ticket := requestTicket{
 		token:   string(tk[1]),
 		cookies: "",
@@ -73,24 +90,36 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 		log.Printf("ticket: %+v", ticket)
 	}
 	_ = resp.Body.Close()
-	dat := regexList.FindString(string(body))
+
+	signPreDownload := fmt.Sprintf("https://wetransfer.com/api/v4/transfers/%s/prepare-download", blockID)
+	data, _ := json.Marshal(map[string]interface{}{
+		"security_hash": safetyHash,
+	})
 	if config.DebugMode {
-		log.Printf("dst: %+v", dat)
+		log.Printf("tk: %+v", tk)
 	}
-	var block configBlock
-	if err := json.Unmarshal([]byte(dat), &block); err != nil {
-		return err
-	}
-	signDownload = fmt.Sprintf("https://wetransfer.com/api/v4/transfers/%s/download", block.ID)
+	resp0, err := newRequest(signPreDownload, string(data), requestConfig{
+		action:   "POST",
+		debug:    config.DebugMode,
+		retry:    0,
+		timeout:  time.Duration(b.Config.interval) * time.Second,
+		modifier: addToken(ticket),
+	})
+
+	// var block configBlock
+	// if err := json.Unmarshal([]byte(resp0), &block); err != nil {
+	// 	return err
+	// }
+	signDownload = fmt.Sprintf("https://wetransfer.com/api/v4/transfers/%s/download", resp0.ID)
 
 	*end <- struct{}{}
 	fmt.Printf("ok\n")
-	if block.State != "downloadable" {
-		return fmt.Errorf("link state is not downloadable (state: %s)", block.State)
+	if resp0.State != "downloadable" {
+		return fmt.Errorf("link state is not downloadable (state: %s)", resp0.State)
 	}
 
-	for _, item := range block.Item {
-		config.Ticket = block.Hash
+	for _, item := range resp0.Item {
+		config.Ticket = resp0.Hash
 		err = b.downloadItem(item, ticket, config)
 		if err != nil {
 			fmt.Println(err)
