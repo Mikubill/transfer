@@ -161,7 +161,14 @@ func (b *notion) DoUpload(name string, size int64, file io.Reader) error {
 	}
 
 	fileID, fileURL, err := client.UploadFile(file, name, size)
-	lastBlock := root.Content[len(root.Content)-1]
+	if err != nil {
+		log.Fatalf("DownloadPage() failed with %s\n", err)
+	}
+
+	var lastBlockID string
+	if len(root.Content) > 0 {
+		lastBlockID = root.Content[len(root.Content)-1].ID
+	}
 
 	userID := root.LastEditedByID
 	spaceID := root.ParentID
@@ -185,7 +192,7 @@ func (b *notion) DoUpload(name string, size int64, file io.Reader) error {
 		}),
 		buildOp(root.ID, CommandListAfter, []string{"content"}, map[string]string{
 			"id":    newBlockID,
-			"after": lastBlock.ID,
+			"after": lastBlockID,
 		}),
 		buildOp(newBlockID, CommandSet, []string{"created_by_id"}, userID),
 		buildOp(newBlockID, CommandSet, []string{"created_by_table"}, "notion_user"),

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	matcher = regexp.MustCompile("https://(www\\.notion\\.so/signed/https%3A%2F%2F)?s3-us-west-2\\.amazonaws\\.com.*")
+	matcher = regexp.MustCompile(`https://(www\.notion\.so/signed/https%3A%2F%2F)?s3-us-west-2\.amazonaws\.com.*`)
 )
 
 func (b notion) DoDownload(link string, config apis.DownConfig) error {
@@ -18,7 +18,7 @@ func (b notion) DoDownload(link string, config apis.DownConfig) error {
 		Modifier: apis.AddHeaders,
 	})
 	if err != nil {
-		return fmt.Errorf("download failed on %s, returns %s\n", link, err)
+		return fmt.Errorf("download failed on %s, returns %s", link, err)
 	}
 	return nil
 }

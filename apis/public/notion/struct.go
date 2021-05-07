@@ -1,17 +1,8 @@
 package notion
 
 import (
-	"io"
-
 	"github.com/kjk/notionapi"
 )
-
-type uploadConfig struct {
-	debug      bool
-	fileName   string
-	fileReader io.Reader
-	fileSize   int64
-}
 
 // POST /api/v3/getUploadFileUrl request
 type getUploadFileUrlRequest struct {
