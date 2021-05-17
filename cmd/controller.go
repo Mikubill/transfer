@@ -24,6 +24,7 @@ import (
 	// "transfer/apis/public/wenshushu"
 	"transfer/apis/public/notion"
 	"transfer/apis/public/wetransfer"
+	whc "transfer/apis/public/whitecats"
 )
 
 var (
@@ -44,6 +45,7 @@ var (
 		{"0x0", "null"},
 		{"fio", "file.io"},
 		{"not", "notion", "notion.so"},
+		{"whc", "whitecat"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
@@ -62,6 +64,7 @@ var (
 		null.Backend,
 		fileio.Backend,
 		notion.Backend,
+		whc.Backend,
 	}
 )
 
