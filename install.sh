@@ -45,12 +45,13 @@ esac
 
 if [ -z "${install_beta}" ]; then
   DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Mikubill/transfer/releases/latest | grep "browser_download_url.*$OS.*$ARCH" | cut -d '"' -f 4)
+  curl -L "$DOWNLOAD_URL" | tar xz
 else
   DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Mikubill/transfer/releases/43093978 | grep "browser_download_url.*$OS.*$ARCH" | cut -d '"' -f 4 | head -n 1)
   # DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Mikubill/transfer/releases | grep "browser_download_url.*$OS.*$ARCH" | cut -d '"' -f 4 | head -n 1)
+  curl -Lo "transfer" "$DOWNLOAD_URL" 
+  chmod a+x transfer
 fi
-
-curl -L "$DOWNLOAD_URL" | tar xz
 
 printf "\nTransfer has successfully downloaded.\n"
 exit 0
