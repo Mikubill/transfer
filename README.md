@@ -26,17 +26,28 @@ curl -sL https://git.io/file-transfer | sh
 curl -sL https://git.io/file-transfer | bash -s beta
 ```
 
-Github Action中有实时构建版本，如有需要可以在Github Action的构建日志中查看下载链接。
+Beta即为实时构建版本，不一定能正常运行，仅建议用作测试。
 
 ## support
 
 目前支持的文件传输服务:
 
-```
-airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
-gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
-wetransfer(wet), vimcn(vim), notion(not)
-```
+|  Name   | Site  | Limit |
+|  ----  | ----  |  ----  | 
+| Airportal | https://aitportal.cn/ | - |
+| CatBox | https://catbox.moe/ | 200MB |
+| CowTransfer | https://www.cowtransfer.com/ | 2GB |
+| FileLink | https://file.io/ | 100MB | 
+| GoFile | https://gofile.io/ | - |
+| Vim-cn | https://img.vim-cn.com/ | 100MB |
+| WeTransfer | https://wetransfer.com/ | 2GB |
+| WhiteCats | http://whitecats.dip.jp/ | 60s/file |
+| Transfer.sh | https://transfer.sh/ | - |
+| LitterBox | https://litterbox.catbox.moe/ | 1GB |
+| Lanzous | https://www.lanzous.com/ | login |
+| Notion | https://www.notion.so/ | login |
+
+部分服务仅支持上传；部分服务需要使用beta版本。
 
 [notion上传相关说明](https://github.com/Mikubill/transfer#notion)
 

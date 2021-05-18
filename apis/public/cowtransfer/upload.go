@@ -89,9 +89,15 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 		})
 	}
 
+	partCount := size / int64(b.Config.blockSize)
+	if partCount > 10000 {
+		b.Config.blockSize = size / int64(10000)
+	}
+
 	if b.Config.blockSize < 1200000 {
 		b.Config.blockSize = 1200000
 	}
+
 	part := int64(0)
 	for {
 		part++
@@ -194,6 +200,9 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 			//}
 			//return b.blockPut(postURL, buf, token, retry+1)
 		}
+	}
+	if rBody.Error != "" {
+		return "", fmt.Errorf(rBody.Error)
 	}
 	return rBody.Etag, nil
 }

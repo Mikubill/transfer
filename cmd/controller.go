@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"transfer/apis"
+	fichier "transfer/apis/public/1fichier"
 	"transfer/apis/public/airportal"
 	"transfer/apis/public/fileio"
 	"transfer/apis/public/null"
@@ -46,6 +47,7 @@ var (
 		{"fio", "file.io"},
 		{"not", "notion", "notion.so"},
 		{"whc", "whitecat"},
+		{"fic", "1fichier"},
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
@@ -65,6 +67,7 @@ var (
 		fileio.Backend,
 		notion.Backend,
 		whc.Backend,
+		fichier.Backend,
 	}
 )
 

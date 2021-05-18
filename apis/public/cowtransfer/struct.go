@@ -34,7 +34,7 @@ type cowOptions struct {
 	token      string
 	interval   int
 	singleMode bool
-	blockSize  int
+	blockSize  int64
 	hashCheck  bool
 	passCode   string
 }
@@ -64,8 +64,9 @@ type beforeSendResp struct {
 }
 
 type uploadResponse struct {
-	Etag string `json:"etag"`
-	MD5  string `json:"md5"`
+	Error string `json:"error"`
+	Etag  string `json:"etag"`
+	MD5   string `json:"md5"`
 }
 
 type slek struct {

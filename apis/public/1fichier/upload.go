@@ -1,4 +1,4 @@
-package whc
+package fichier
 
 import (
 	"bytes"
@@ -11,29 +11,40 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 	"transfer/apis"
 	"transfer/utils"
-
-	"golang.org/x/text/encoding/japanese"
-	"golang.org/x/text/transform"
 )
-
-const upload = "http://whitecats.dip.jp/up/upload/%d"
-const download = "http://whitecats.dip.jp/up/download/%s"
 
 var (
-	ext        = regexp.MustCompile(`[0-9]{10}`)
-	errExtract = regexp.MustCompile(`error_message">(.*)</`)
+	extractDownload = regexp.MustCompile(`https://1fichier.com/\?\w+`)
+	extractRemove   = regexp.MustCompile(`https://1fichier.com/remove/[\w/]+`)
+	extractUpload   = regexp.MustCompile(`https://[\w./-]+.1fichier.com/upload.cgi[\w.?/=]+`)
+	// extact          = regexp.MustCompile(`[0-9]{10}`)
 )
 
-func (b *whiteCats) DoUpload(name string, size int64, file io.Reader) error {
+func (b *fichier) DoUpload(name string, size int64, file io.Reader) error {
 
-	if b.pwd == "" {
-		b.pwd = utils.GenRandString(8)
+	req, err := http.NewRequest("GET", "https://1fichier.com/", nil)
+	if err != nil {
+		return err
 	}
-	if b.del == "" {
-		b.del = utils.GenRandString(8)
+	req.Header.Set("Cookie", fmt.Sprintf("SID=%s;show_cm=no;", b.cookie))
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	bs, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return err
+	}
+	uploadURL := extractUpload.Find(bs)
+	// log.Println(string(uploadURL))
+	if uploadURL == nil {
+		// log.Println(string(bs))
+		uploadURL = []byte(fmt.Sprintf("https://up2.1fichier.com/upload.cgi?id=%s", utils.GenRandString(5)))
 	}
 
 	rand.Seed(time.Now().UnixNano())
@@ -42,28 +53,29 @@ func (b *whiteCats) DoUpload(name string, size int64, file io.Reader) error {
 		fileName:   name,
 		fileReader: file,
 		debug:      apis.DebugMode,
-		uploadName: utils.GenRandString(4) + ".bin",
 		password:   b.pwd,
-		delete:     b.del,
-		fileid:     int64(rand.Int31()),
+		uploadURL:  strings.TrimSpace(string(uploadURL)),
 	})
 
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
 
-	b.resp = ext.FindString(string(body))
+	b.resp = extractDownload.FindString(string(body))
+	b.remove = extractRemove.FindString(string(body))
 	return nil
 }
 
-func (b *whiteCats) PostUpload(string, int64) (string, error) {
-	fmt.Printf("Download Link: %s\n", fmt.Sprintf(download, b.resp))
-	fmt.Printf("Download Password: %s\n", b.pwd)
-	fmt.Printf("Remove Code: %s\n", b.del)
+func (b *fichier) PostUpload(string, int64) (string, error) {
+	fmt.Printf("Download Link: %s\n", b.resp)
+	if b.pwd != "" {
+		fmt.Printf("Download Password: %s\n", b.pwd)
+	}
+	fmt.Printf("Remove Code: %s\n", b.remove)
 	return b.resp, nil
 }
 
-func (b whiteCats) newMultipartUpload(config uploadConfig) ([]byte, error) {
+func (b fichier) newMultipartUpload(config uploadConfig) ([]byte, error) {
 	if config.debug {
 		log.Printf("start upload")
 	}
@@ -71,13 +83,12 @@ func (b whiteCats) newMultipartUpload(config uploadConfig) ([]byte, error) {
 
 	byteBuf := &bytes.Buffer{}
 	writer := multipart.NewWriter(byteBuf)
-	_ = writer.WriteField("comment", config.fileName)
-	_ = writer.WriteField("download_pass", config.password)
-	_ = writer.WriteField("remove_pass", config.delete)
-	_ = writer.WriteField("code_pat", "京")
-	_ = writer.WriteField("submit", "ファイルを送信する")
+	_ = writer.WriteField("send_ssl", "on")
+	_ = writer.WriteField("domain", "0")
+	_ = writer.WriteField("cdpass", config.password)
+	_ = writer.WriteField("submit", "Send")
 
-	_, err := writer.CreateFormFile("file", config.uploadName)
+	_, err := writer.CreateFormFile("file[]", config.fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -111,13 +122,13 @@ func (b whiteCats) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		_ = partW.Close()
 	}()
 
-	req, err := http.NewRequest("POST", fmt.Sprintf(upload, config.fileid), partR)
+	req, err := http.NewRequest("POST", config.uploadURL, partR)
 	if err != nil {
 		return nil, err
 	}
 	req.ContentLength = totalSize
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-	req.Header.Set("Referer", "http://whitecats.dip.jp/up/")
+	req.Header.Set("Referer", "https://1fichier.com/")
 
 	req.Header.Set("content-length", strconv.FormatInt(totalSize, 10))
 	req.Header.Set("content-type", fmt.Sprintf("multipart/form-data; boundary=%s", writer.Boundary()))
@@ -139,13 +150,9 @@ func (b whiteCats) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		return nil, err
 	}
 	_ = resp.Body.Close()
-	str, _, _ := transform.String(japanese.EUCJP.NewDecoder(), string(body))
+	// str, _, _ := transform.String(japanese.EUCJP.NewDecoder(), string(body))
 	if config.debug {
-		log.Printf("returns: %v", str)
+		log.Printf("returns: %v", string(body))
 	}
-	if p := errExtract.FindStringSubmatch(str); len(p) > 0 {
-		return nil, fmt.Errorf(p[1])
-	}
-
 	return body, nil
 }

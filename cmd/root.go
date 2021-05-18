@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"transfer/apis"
-	"transfer/apis/public/null"
+	"transfer/apis/public/fileio"
 
 	"github.com/spf13/cobra"
 )
@@ -20,8 +20,8 @@ Transfer is a very simple big file transfer tool.
 
 Backend Support:
   airportal(arp), catbox(cat), cowtransfer(cow), fileio(fio),
-  gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), 
-  wetransfer(wet), vimcn(vim), notion(not)
+  gofile(gof), lanzous(lzs), litterbox(lit), null(0x0), transfer(trs),
+  wetransfer(wet), vimcn(vim), notion(not), whitecats(whc),
 `,
 		SilenceErrors: true,
 		Example: `  # upload via gofile
@@ -99,10 +99,10 @@ func handleRootTransfer(args []string) {
 	files := uploadWalker(args)
 	if len(files) != 0 {
 		if !apis.MuteMode {
-			fmt.Println("Warning: backend is not set. Using default: null.backend - <0x0.st>")
+			fmt.Println("Warning: backend is not set. Using default: fileio.backend - <file.io>")
 			fmt.Printf("Run 'transfer --help' for usage.\n\n")
 		}
-		apis.Upload(files, null.Backend)
+		apis.Upload(files, fileio.Backend)
 		return
 	}
 
