@@ -1,5 +1,6 @@
-on: [push, pull_request]
 name: build
+on: [push, pull_request]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,37 +20,37 @@ jobs:
           GOOS=linux   GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-linux-amd64
 
       - name: Deploy Beta - Windows
-          uses: WebFreak001/deploy-nightly@v1.1.0
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          with:
-            upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
-            release_id: 43093978
-            asset_path: ./bin/ci-test-windows-amd64.exe
-            asset_name: transfer-beta-windows-amd64-$$.exe 
-            asset_content_type: application/octet-stream 
-            max_releases: 6
+        uses: WebFreak001/deploy-nightly@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
+          release_id: 43093978
+          asset_path: ./bin/ci-test-windows-amd64.exe
+          asset_name: transfer-beta-windows-amd64-$$.exe 
+          asset_content_type: application/octet-stream             
+          max_releases: 6
 
       - name: Deploy Beta - Linux
-          uses: WebFreak001/deploy-nightly@v1.1.0
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          with:
-            upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
-            release_id: 43093978
-            asset_path: ./bin/ci-test-linux-amd64
-            asset_name: transfer-beta-linux-amd64-$$
-            asset_content_type: application/octet-stream 
-            max_releases: 6
+        uses: WebFreak001/deploy-nightly@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
+          release_id: 43093978
+          asset_path: ./bin/ci-test-linux-amd64
+          asset_name: transfer-beta-linux-amd64-$$
+          asset_content_type: application/octet-stream 
+          max_releases: 6
 
-       - name: Deploy Beta - Macos
-          uses: WebFreak001/deploy-nightly@v1.1.0
+      - name: Deploy Beta - Macos
+        uses: WebFreak001/deploy-nightly@v1.1.0
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          with:
-            upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
-            release_id: 43093978
-            asset_path: ./bin/ci-test-macos-amd64
-            asset_name: transfer-beta-macos-amd64-$$
-            asset_content_type: application/octet-stream 
-            max_releases: 6
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
+          release_id: 43093978
+          asset_path: ./bin/ci-test-macos-amd64
+          asset_name: transfer-beta-macos-amd64-$$
+          asset_content_type: application/octet-stream 
+          max_releases: 6

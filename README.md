@@ -37,7 +37,7 @@ Beta即为实时构建版本，不一定能正常运行，仅建议用作测试�
 | Airportal | https://aitportal.cn/ | - |
 | CatBox | https://catbox.moe/ | 200MB |
 | CowTransfer | https://www.cowtransfer.com/ | 2GB |
-| FileLink | https://file.io/ | 100MB | 
+| Fileio | https://file.io/ | 100MB | 
 | GoFile | https://gofile.io/ | - |
 | Vim-cn | https://img.vim-cn.com/ | 100MB |
 | WeTransfer | https://wetransfer.com/ | 2GB |
