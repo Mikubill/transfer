@@ -16,7 +16,7 @@ jobs:
       - name: build
         run: |
           GOOS=windows GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-windows-amd64.exe
-          GOOS=darwin  GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-macos-amd64
+          GOOS=darwin  GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-darwin-amd64
           GOOS=linux   GOARCH=amd64 go build -ldflags '-s -w -extldflags "-static"' -o bin/ci-test-linux-amd64
 
       - name: Deploy Beta - Windows
@@ -50,7 +50,7 @@ jobs:
         with:
           upload_url: https://uploads.github.com/repos/Mikubill/transfer/releases/43093978/assets{?name,label}
           release_id: 43093978
-          asset_path: ./bin/ci-test-macos-amd64
-          asset_name: transfer-beta-macos-amd64-$$
+          asset_path: ./bin/ci-test-darwin-amd64
+          asset_name: transfer-beta-darwin-amd64-$$
           asset_content_type: application/octet-stream 
           max_releases: 6
