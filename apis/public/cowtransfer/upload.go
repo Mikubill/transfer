@@ -90,7 +90,7 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 	}
 
 	partCount := size / int64(b.Config.blockSize)
-	if partCount > 10000 {
+	if partCount >= 10000 {
 		b.Config.blockSize = size / int64(9990)
 	}
 
