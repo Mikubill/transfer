@@ -29,7 +29,7 @@ jobs:
           asset_path: ./bin/ci-test-windows-amd64.exe
           asset_name: transfer-beta-windows-amd64-$$.exe 
           asset_content_type: application/octet-stream             
-          max_releases: 6
+          max_releases: 2
 
       - name: Deploy Beta - Linux
         uses: WebFreak001/deploy-nightly@v1.1.0
@@ -41,7 +41,7 @@ jobs:
           asset_path: ./bin/ci-test-linux-amd64
           asset_name: transfer-beta-linux-amd64-$$
           asset_content_type: application/octet-stream 
-          max_releases: 6
+          max_releases: 2
 
       - name: Deploy Beta - Macos
         uses: WebFreak001/deploy-nightly@v1.1.0
@@ -53,4 +53,4 @@ jobs:
           asset_path: ./bin/ci-test-darwin-amd64
           asset_name: transfer-beta-darwin-amd64-$$
           asset_content_type: application/octet-stream 
-          max_releases: 6
+          max_releases: 2
