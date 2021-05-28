@@ -30,7 +30,7 @@ const (
 	chunkSize   = 15728640
 )
 
-var tokenRegex = regexp.MustCompile("csrf-token\"\\scontent=\"([a-zA-Z0-9_=-]+)\"\\s/>?")
+var tokenRegex = regexp.MustCompile("csrf-token\"\\scontent=\"([^\"]+)\"\\s/>?")
 
 func (b *weTransfer) InitUpload(files []string, sizes []int64) error {
 	if b.Config.singleMode {
