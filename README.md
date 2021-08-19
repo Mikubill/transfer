@@ -34,7 +34,7 @@ Beta即为实时构建版本，不一定能正常运行，仅建议用作测试�
 
 |  Name   | Site  | Limit |
 |  ----  | ----  |  ----  | 
-| Airportal | https://aitportal.cn/ | - |
+| Airportal | https://airportal.cn/ | - |
 | CatBox | https://catbox.moe/ | 200MB |
 | CowTransfer | https://www.cowtransfer.com/ | 2GB |
 | Fileio | https://file.io/ | 100MB | 
