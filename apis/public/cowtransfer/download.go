@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	downloadDetails = "https://cowtransfer.com/transfer/transferdetail?url=%s&treceive=undefined&passcode=%s"
-	downloadFiles   = "https://cowtransfer.com/transfer/files?page=0&guid=%s"
-	downloadConfig  = "https://cowtransfer.com/transfer/download?guid=%s"
+	downloadDetails = "https://cowtransfer.com/api/transfer/transferdetail?url=%s&treceive=undefined&passcode=%s"
+	downloadFiles   = "https://cowtransfer.com/api/transfer/files?page=0&guid=%s"
+	downloadConfig  = "https://cowtransfer.com/api/transfer/download?guid=%s"
 )
 
 var (

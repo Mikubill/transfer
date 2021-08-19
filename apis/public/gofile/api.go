@@ -2,10 +2,10 @@ package gofile
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"io"
 	"transfer/apis"
 	"transfer/utils"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -16,12 +16,17 @@ type goFile struct {
 	apis.Backend
 	totalSize int64
 
-	baseBody     []byte
-	serverLink   string
-	boundary     string
-	streamWriter *io.PipeWriter
-	streamReader *io.PipeReader
-	dataCh       chan []byte
+	userToken  string
+	serverLink string
+	folderID   string
+	folderName string
+
+	// baseBody     []byte
+
+	// boundary     string
+	// streamWriter *io.PipeWriter
+	// streamReader *io.PipeReader
+	// dataCh       chan []byte
 
 	Config   goFileOptions
 	Commands [][]string

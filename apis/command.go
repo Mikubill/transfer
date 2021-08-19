@@ -22,7 +22,7 @@ func InitCmd(cmd *cobra.Command) {
 	cmd.PersistentFlags().BoolVarP(&MuteMode,
 		"silent", "", false, "enable silent mode to mute output")
 	cmd.PersistentFlags().BoolVarP(&DebugMode,
-		"verbose", "", false, "enable verbose mode to debug")
+		"verbose", "v", false, "enable verbose mode to debug")
 	cmd.Flags().StringVarP(&downConf.Prefix,
 		"output", "o", ".", "download to another file/folder")
 	cmd.Flags().BoolVarP(&downConf.ForceMode,

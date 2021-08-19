@@ -21,11 +21,11 @@ import (
 )
 
 const (
-	prepareSend    = "https://cowtransfer.com/transfer/preparesend"
-	setPassword    = "https://cowtransfer.com/transfer/v2/bindpasscode"
-	beforeUpload   = "https://cowtransfer.com/transfer/beforeupload"
-	uploadFinish   = "https://cowtransfer.com/transfer/uploaded"
-	uploadComplete = "https://cowtransfer.com/transfer/complete"
+	prepareSend    = "https://cowtransfer.com/api/transfer/preparesend"
+	setPassword    = "https://cowtransfer.com/api/transfer/v2/bindpasscode"
+	beforeUpload   = "https://cowtransfer.com/api/transfer/beforeupload"
+	uploadFinish   = "https://cowtransfer.com/api/transfer/uploaded"
+	uploadComplete = "https://cowtransfer.com/api/transfer/complete"
 	initUpload     = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads"
 	doUpload       = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads/%s/%d"
 	finUpload      = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads/%s"
