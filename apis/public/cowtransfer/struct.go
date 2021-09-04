@@ -32,6 +32,7 @@ type uploadConfig struct {
 type cowOptions struct {
 	Parallel   int
 	token      string
+	authCode   string
 	interval   int
 	singleMode bool
 	blockSize  int64

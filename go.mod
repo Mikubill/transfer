@@ -12,7 +12,7 @@ require (
 	github.com/orcaman/concurrent-map v0.0.0-20210501183033-44dafcb38ecc
 	github.com/spf13/cobra v1.2.1
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
-	golang.org/x/sys v0.0.0-20210819072135-bce67f096156 // indirect
+	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
 	golang.org/x/text v0.3.7
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac
 )

@@ -253,7 +253,7 @@ CowTransfer
 
 ```shell script
 # login to upload
-./transfer cow --cookie="remember-me=...;" file
+./transfer cow --cookie="remember-mev2=...;" -a "<cow-auth-token>" file
 ```
 
 AirPortal

@@ -265,7 +265,7 @@ func (b cowTransfer) finishUpload(config *initResp, name string, size int64, has
 		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
-		modifier: addHeaders,
+		modifier: b.addTk,
 	})
 	if err != nil {
 		return err
@@ -308,7 +308,7 @@ func (b cowTransfer) completeUpload() (string, error) {
 		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
-		modifier: addHeaders,
+		modifier: b.addTk,
 	})
 	if err != nil {
 		return "", err
@@ -332,7 +332,7 @@ func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
-		modifier: addHeaders,
+		modifier: b.addTk,
 	})
 	if err != nil {
 		return nil, err
@@ -387,7 +387,7 @@ func (b cowTransfer) getUploadConfig(name string, size int64, config prepareSend
 		debug: apis.DebugMode,
 		//retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
-		modifier: addHeaders,
+		modifier: b.addTk,
 	})
 	if err != nil {
 		return nil, err
@@ -511,7 +511,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 		//time.Sleep(1)
 		//return b.newMultipartRequest(url, params, config)
 	}
-	req.Header.Set("cookie", b.Config.token)
+
 	req.Header.Set("content-type", fmt.Sprintf("multipart/form-data; boundary=%s", writer.Boundary()))
 	config.modifier(req)
 	if config.debug {
@@ -554,6 +554,16 @@ func addToken(upToken string) func(req *http.Request) {
 		addHeaders(req)
 		req.Header.Set("Authorization", "UpToken "+upToken)
 	}
+}
+
+func (b cowTransfer) addTk(req *http.Request) {
+	ck := b.Config.token
+	if b.Config.authCode != "" {
+		ck = fmt.Sprintf("%s; cow-auth-token=%s", b.Config.token, b.Config.authCode)
+	}
+
+	req.Header.Set("cookie", ck)
+	req.Header.Set("authorization", b.Config.authCode)
 }
 
 func addHeaders(req *http.Request) {
