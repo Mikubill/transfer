@@ -58,7 +58,7 @@ func Upload(files []string, backend BaseBackend) {
 	}
 	err := backend.InitUpload(paths, sizes)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "init Upload Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error occurred during initialization:\n  %s\n", err)
 		return
 	}
 	for n, file := range paths {
@@ -66,7 +66,7 @@ func Upload(files []string, backend BaseBackend) {
 		fmt.Printf("Local: %s\n", ps)
 		resp, err := upload(file, sizes[n], backend)
 		if err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "upload %s failed: %s\n", file, err)
+			_, _ = fmt.Fprintf(os.Stderr, "Error occurred during upload %s:\n  %s\n", file, err)
 		}
 		if resp != "" && MuteMode {
 			_, _ = fmt.Fprintln(tmpOut, resp)
@@ -74,7 +74,7 @@ func Upload(files []string, backend BaseBackend) {
 	}
 	resp, err := backend.FinishUpload(files)
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Finish Upload Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Error occurred during finalizing upload:\n  %s\n", err)
 	}
 	if resp != "" && MuteMode {
 		_, _ = fmt.Fprintln(tmpOut, resp)
@@ -89,7 +89,7 @@ func monitor(w *io.PipeWriter, sig *sync.WaitGroup) {
 func upload(file string, size int64, backend BaseBackend) (string, error) {
 	info, err := os.Stat(file)
 	if err != nil {
-		return "", fmt.Errorf("stat file %s failed: %s\n", file, err)
+		return "", fmt.Errorf("stat file %s failed: %s", file, err)
 	}
 	err = backend.PreUpload(info.Name(), size)
 	if err != nil {
@@ -119,7 +119,7 @@ func upload(file string, size int64, backend BaseBackend) (string, error) {
 	}
 	err = backend.DoUpload(info.Name(), size, reader)
 	if err != nil {
-		return "", fmt.Errorf("Do Upload Error: %s\n", err)
+		return "", fmt.Errorf("upload error: %s", err)
 	}
 	_ = fileStream.Close()
 	if !NoBarMode {
@@ -127,7 +127,7 @@ func upload(file string, size int64, backend BaseBackend) (string, error) {
 	}
 	resp, err := backend.PostUpload(info.Name(), size)
 	if err != nil {
-		return "", fmt.Errorf("PostUpload Error: %s\n", err)
+		return "", fmt.Errorf("postUpload error: %s", err)
 	}
 	return resp, nil
 }

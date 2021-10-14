@@ -127,7 +127,7 @@ func DownloadFile(config *DownloaderConfig) error {
 		}
 	}
 
-	fmt.Printf("file save to: %s\n", prefix)
+	fmt.Printf("Saving to:: %s\n", prefix)
 	var bar *pb.ProgressBar
 	if !NoBarMode {
 		bar = pb.Full.Start64(0)

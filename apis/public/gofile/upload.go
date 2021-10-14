@@ -19,8 +19,10 @@ const (
 	getServer              = "https://api.gofile.io/getServer"
 	createAccount          = "https://api.gofile.io/createAccount"
 	createFolder           = "https://api.gofile.io/createFolder"
+	setFolder              = "https://api.gofile.io/setFolderOptions"
 	getUserAccount         = "https://api.gofile.io/getAccountDetails?token=%s"
 	createFolderPostString = "parentFolderId=%s&token=%s"
+	setPrimPostString      = "folderId=%s&token=%s&option=public&value=true"
 	shareFolder            = "https://api.gofile.io/shareFolder?folderId=%s&token=%s"
 )
 
@@ -101,20 +103,37 @@ func (b *goFile) createFolder() error {
 	if err != nil {
 		return fmt.Errorf("create request failed: %v", err)
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	body, err = http.DefaultClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("request %s returns error: %v", getServer, err)
+	if err = reqSender(req, &sevData2); err != nil {
+		return err
 	}
-	err = smallParser(body, &sevData2)
-	if err != nil {
-		return fmt.Errorf("request %s returns error: %v", getServer, err)
-	}
-	body.Body.Close()
 	b.folderID = sevData2.Data.ID
 	b.folderName = sevData2.Data.Name
 	// b.userToken = sevData2.Data.Token
 
+	// set folder as public
+	postString = fmt.Sprintf(setPrimPostString, b.folderID, b.userToken)
+	req, err = http.NewRequest("PUT", setFolder, strings.NewReader(postString))
+	if err != nil {
+		return fmt.Errorf("create request failed: %v", err)
+	}
+	if err = reqSender(req, &sevData2); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func reqSender(req *http.Request, parsed interface{}) error {
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+	body, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("request %s returns error: %v", getServer, err)
+	}
+	err = smallParser(body, parsed)
+	if err != nil {
+		return fmt.Errorf("request %s returns error: %v", getServer, err)
+	}
+	body.Body.Close()
 	return nil
 }
 

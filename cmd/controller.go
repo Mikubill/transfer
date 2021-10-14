@@ -22,8 +22,8 @@ import (
 	"transfer/apis/public/transfer"
 	"transfer/apis/public/vimcn"
 
-	// "transfer/apis/public/wenshushu"
 	"transfer/apis/public/notion"
+	"transfer/apis/public/wenshushu"
 	"transfer/apis/public/wetransfer"
 	whc "transfer/apis/public/whitecats"
 )
@@ -31,7 +31,7 @@ import (
 var (
 	baseString = [][]string{
 		{"cow", "cowtransfer"},
-		// {"wss", "wenshushu"},
+		{"wss", "wenshushu"},
 		// {"bit", "bitsend"},
 		// {"tmp", "tmplink"},
 		{"cat", "catbox"},
@@ -51,7 +51,7 @@ var (
 	}
 	baseBackend = []apis.BaseBackend{
 		cowtransfer.Backend,
-		// wenshushu.Backend,
+		wenshushu.Backend,
 		//bitsend.Backend,
 		//tmplink.Backend,
 		catbox.Backend,

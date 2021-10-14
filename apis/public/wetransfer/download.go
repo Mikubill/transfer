@@ -147,7 +147,7 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 		modifier: addToken(tk),
 	})
 	if err != nil {
-		return fmt.Errorf("sign Request returns error: %s, onfile: %s", err, item.Name)
+		return fmt.Errorf("sign Request error: %s, onfile: %s", err, item.Name)
 	}
 
 	if config.DebugMode {
@@ -155,14 +155,13 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 	}
 	filePath, err := filepath.Abs(config.Prefix)
 	if err != nil {
-		return fmt.Errorf("parse filepath returns error: %s, onfile: %s", err, item.Name)
+		return fmt.Errorf("parse filepath error: %s, onfile: %s", err, item.Name)
 	}
 
 	if utils.IsExist(filePath) && utils.IsDir(filePath) {
 		filePath = path.Join(filePath, item.Name)
 	}
 
-	//fmt.Printf("File save to: %s\n", filePath)
 	config.Prefix = filePath
 	err = apis.DownloadFile(&apis.DownloaderConfig{
 		Link:     resp.Download,
@@ -170,7 +169,7 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 		Modifier: addHeaders,
 	})
 	if err != nil {
-		return fmt.Errorf("failed DownloaderConfig with error: %s, onfile: %s", err, item.Name)
+		return fmt.Errorf("download failed: %s, onfile: %s", err, item.Name)
 	}
 	return nil
 }

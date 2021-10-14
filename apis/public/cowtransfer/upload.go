@@ -37,10 +37,7 @@ func (b *cowTransfer) InitUpload(_ []string, sizes []int64) error {
 		for _, v := range sizes {
 			totalSize += v
 		}
-		err := b.initUpload(totalSize)
-		if err != nil {
-			return err
-		}
+		return b.initUpload(totalSize)
 	}
 	return nil
 }
@@ -56,10 +53,7 @@ func (b *cowTransfer) initUpload(totalSize int64) error {
 
 func (b *cowTransfer) PreUpload(_ string, size int64) error {
 	if !b.Config.singleMode {
-		err := b.initUpload(size)
-		if err != nil {
-			return err
-		}
+		return b.initUpload(size)
 	}
 	return nil
 }
@@ -75,7 +69,7 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 
 	config, err := b.getUploadConfig(name, size, b.sendConf)
 	if err != nil {
-		return fmt.Errorf("getUploadConfig returns error: %v", err)
+		return fmt.Errorf("getUploadConfig error: %v", err)
 	}
 
 	wg := new(sync.WaitGroup)
@@ -326,6 +320,7 @@ func (b cowTransfer) completeUpload() (string, error) {
 
 func (b cowTransfer) getSendConfig(totalSize int64) (*prepareSendResp, error) {
 	data := map[string]string{
+		"validDays": "1",
 		"totalSize": strconv.FormatInt(totalSize, 10),
 	}
 	body, err := b.newMultipartRequest(prepareSend, data, requestConfig{
@@ -445,7 +440,7 @@ func newRequest(link string, postBody io.Reader, config requestConfig) ([]byte, 
 	req, err := http.NewRequest(config.action, link, postBody)
 	if err != nil {
 		if config.debug {
-			log.Printf("build requests returns error: %v", err)
+			log.Printf("build requests error: %v", err)
 		}
 		//if config.retry > 3 {
 		return nil, err
@@ -456,7 +451,7 @@ func newRequest(link string, postBody io.Reader, config requestConfig) ([]byte, 
 	resp, err := client.Do(req)
 	if err != nil {
 		if config.debug {
-			log.Printf("do requests returns error: %v", err)
+			log.Printf("do requests error: %v", err)
 		}
 		//if config.retry > 20 {
 		return nil, err
@@ -467,7 +462,7 @@ func newRequest(link string, postBody io.Reader, config requestConfig) ([]byte, 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		if config.debug {
-			log.Printf("read response returns: %v", err)
+			log.Printf("read response error: %v", err)
 		}
 		//if config.retry > 20 {
 		return nil, err
@@ -502,7 +497,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 	req, err := http.NewRequest("POST", url, buf)
 	if err != nil {
 		if config.debug {
-			log.Printf("build requests returns error: %v", err)
+			log.Printf("build requests error: %v", err)
 		}
 		//if config.retry > 3 {
 		return nil, err
@@ -520,7 +515,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 	resp, err := client.Do(req)
 	if err != nil {
 		if config.debug {
-			log.Printf("do requests returns error: %v", err)
+			log.Printf("do requests error: %v", err)
 		}
 		//if config.retry > 3 {
 		return nil, err

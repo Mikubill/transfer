@@ -58,7 +58,7 @@ func (b *weTransfer) initUpload(fileItem []fileInfo) {
 
 	err := b.getSendConfig(fileItem)
 	if err != nil {
-		fmt.Printf("getSendConfig(single mode) returns error: %v\n", err)
+		fmt.Printf("getSendConfig error: %v\n", err)
 	}
 }
 

@@ -77,16 +77,20 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
 	})
-	log.Println(downConfig, err)
+	// log.Println(downConfig, err)
 	if err != nil {
 		return err
 	}
 
 	// todo: type 1/2, start(page?)
 	data, _ = json.Marshal(map[string]interface{}{
-		"bid":  downConfig.Data.BoxID,
-		"pid":  downConfig.Data.UFileID,
-		"type": 1,
+		"bid":     downConfig.Data.BoxID,
+		"pid":     downConfig.Data.UFileID,
+		"type":    1,
+		"start":   0,
+		"size":    50,
+		"sort":    map[string]string{"name": "asc"},
+		"options": map[string]string{"uploader": "true"},
 	})
 	downConfig, err = newRequest(downloadList, string(data), requestConfig{
 		debug:    config.DebugMode,
@@ -113,8 +117,10 @@ func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownC
 		log.Printf("fileName: %s\n", item.FileName)
 	}
 	data, _ := json.Marshal(map[string]interface{}{
-		"bid": item.Bid,
-		"fid": item.Fid,
+		"consumeCode": 0,
+		// "bid": item.Bid,
+		"type":    "1",
+		"ufileid": item.Fid,
 	})
 
 	resp, err := newRequest(signDownload, string(data), requestConfig{
@@ -140,7 +146,6 @@ func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownC
 		}
 	}
 
-	//fmt.Printf("File save to: %s\n", filePath)
 	config.Prefix = filePath
 	err = apis.DownloadFile(&apis.DownloaderConfig{
 		Link:     resp.Data.URL,

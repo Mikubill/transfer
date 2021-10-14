@@ -1,6 +1,7 @@
 package crypto
 
 import (
+	"crypto/cipher"
 	"crypto/des"
 	"fmt"
 )
@@ -43,4 +44,28 @@ func decryptDES(src, key []byte) ([]byte, error) {
 	}
 	out = unPadding(out)
 	return out, nil
+}
+
+func EncryptDESCBC(plainText []byte, key, iv []byte) ([]byte, error) {
+	block, err := des.NewCipher(key[:8])
+	if err != nil {
+		return nil, err
+	}
+	plainText = Padding(plainText, block.BlockSize())
+	blockMode := cipher.NewCBCEncrypter(block, iv)
+	cipherText := make([]byte, len(plainText))
+	blockMode.CryptBlocks(cipherText, plainText)
+	return cipherText, nil
+}
+
+func DecryptDESCBC(cipherText, key, iv []byte) ([]byte, error) {
+	block, err := des.NewCipher(key[:8])
+	if err != nil {
+		return nil, err
+	}
+	blockMode := cipher.NewCBCDecrypter(block, iv)
+	plainText := make([]byte, len(cipherText))
+	blockMode.CryptBlocks(plainText, cipherText)
+	plainText = unPadding(plainText)
+	return plainText, nil
 }

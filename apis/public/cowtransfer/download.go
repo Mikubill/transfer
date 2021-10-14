@@ -152,7 +152,6 @@ func downloadItem(item downloadDetailsBlock, baseConf apis.DownConfig) error {
 		}
 	}
 
-	//fmt.Printf("File save to: %s\n", filePath)
 	baseConf.Prefix = filePath
 	err = apis.DownloadFile(&apis.DownloaderConfig{
 		Link:     config.Link,
