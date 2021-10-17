@@ -20,12 +20,12 @@ import (
 
 	//"transfer/apis/public/tmplink"
 	"transfer/apis/public/transfer"
-	"transfer/apis/public/vimcn"
+	// "transfer/apis/public/vimcn"
 
 	"transfer/apis/public/notion"
 	"transfer/apis/public/wenshushu"
 	"transfer/apis/public/wetransfer"
-	whc "transfer/apis/public/whitecats"
+	// whc "transfer/apis/public/whitecats"
 )
 
 var (
@@ -36,7 +36,7 @@ var (
 		// {"tmp", "tmplink"},
 		{"cat", "catbox"},
 		{"lit", "littlebox"},
-		{"vim", "vimcn"},
+		// {"vim", "vimcn"},
 		{"gof", "gofile"},
 		{"wet", "wetransfer"},
 		{"arp", "airportal"},
@@ -46,7 +46,7 @@ var (
 		{"0x0", "null"},
 		{"fio", "file.io"},
 		{"not", "notion", "notion.so"},
-		{"whc", "whitecat"},
+		// {"whc", "whitecat"},
 		{"fic", "1fichier"},
 	}
 	baseBackend = []apis.BaseBackend{
@@ -56,7 +56,7 @@ var (
 		//tmplink.Backend,
 		catbox.Backend,
 		litterbox.Backend,
-		vimcn.Backend,
+		// vimcn.Backend,
 		gofile.Backend,
 		wetransfer.Backend,
 		airportal.Backend,
@@ -66,7 +66,7 @@ var (
 		null.Backend,
 		fileio.Backend,
 		notion.Backend,
-		whc.Backend,
+		// whc.Backend,
 		fichier.Backend,
 	}
 )

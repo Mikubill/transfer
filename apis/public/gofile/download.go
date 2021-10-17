@@ -33,7 +33,13 @@ func (b goFile) download(v string, config apis.DownConfig) error {
 	var sevData folderDetails2
 	fmt.Printf("fetching ticket..")
 	end := utils.DotTicker()
-	body, err := http.Get(fmt.Sprintf("https://api.gofile.io/getFolder?folderId=%s", fileID))
+
+	err := b.createUser()
+	if err != nil {
+		return err
+	}
+
+	body, err := http.Get(fmt.Sprintf("https://api.gofile.io/getContent?contentId=%s&token=%s", fileID, b.userToken))
 	if err != nil {
 		return fmt.Errorf("request %s returns error: %v", getServer, err)
 	}
