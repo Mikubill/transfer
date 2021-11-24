@@ -19,7 +19,7 @@ const (
 	getServer              = "https://api.gofile.io/getServer"
 	createAccount          = "https://api.gofile.io/createAccount"
 	createFolder           = "https://api.gofile.io/createFolder"
-	setFolder              = "https://api.gofile.io/setFolderOptions"
+	setFolder              = "https://api.gofile.io/setFolderOption"
 	getUserAccount         = "https://api.gofile.io/getAccountDetails?token=%s"
 	createFolderPostString = "parentFolderId=%s&token=%s"
 	setPrimPostString      = "folderId=%s&token=%s&option=public&value=true"
