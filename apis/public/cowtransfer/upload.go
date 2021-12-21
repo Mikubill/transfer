@@ -26,9 +26,9 @@ const (
 	beforeUpload   = "https://cowtransfer.com/api/transfer/beforeupload"
 	uploadFinish   = "https://cowtransfer.com/api/transfer/uploaded"
 	uploadComplete = "https://cowtransfer.com/api/transfer/complete"
-	initUpload     = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads"
-	doUpload       = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads/%s/%d"
-	finUpload      = "https://upload-fog-cn-east-1.qiniup.com/buckets/cowtransfer-yz/objects/%s/uploads/%s"
+	initUpload     = "https://upload.qiniup.com/buckets/cftransfer/objects/%s/uploads"
+	doUpload       = "https://upload.qiniup.com/buckets/cftransfer/objects/%s/uploads/%s/%d"
+	finUpload      = "https://upload.qiniup.com/buckets/cftransfer/objects/%s/uploads/%s"
 )
 
 func (b *cowTransfer) InitUpload(_ []string, sizes []int64) error {
