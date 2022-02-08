@@ -18,7 +18,7 @@ func (s SG) linkBuilder(link string) string {
 
 func (s SG) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "http://pic.sogou.com/pic/upload_pic.jsp", "pic_path")
+	body, err := s.upload(data, "http://pic.sogou.com/pic/upload_pic.jsp", "pic_path", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

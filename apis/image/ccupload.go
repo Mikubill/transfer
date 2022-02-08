@@ -3,6 +3,7 @@ package image
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"regexp"
 )
 
@@ -35,9 +36,22 @@ func (s CC) linkBuilder(link string) string {
 	return "https://upload.cc/" + getter.FindString(link) + ".png"
 }
 
-func (s CC) Upload(data []byte) (string, error) {
+func (s CC) ModBuilder(ck *http.Cookie) func(*http.Request) {
+	return func(req *http.Request) {
+		defaultReqMod(req)
+		req.AddCookie(ck)
+	}
+}
 
-	body, err := s.upload(data, "https://upload.cc/image_upload", "uploaded_file[]")
+func (s CC) Upload(data []byte) (string, error) {
+	resp, err := http.Head("https://upload.cc/images/loading.gif")
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	cookie := resp.Cookies()[0]
+
+	body, err := s.upload(data, "https://upload.cc/image_upload", "uploaded_file[]", s.ModBuilder(cookie))
 	if err != nil {
 		return "", err
 	}

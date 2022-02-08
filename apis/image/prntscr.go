@@ -35,7 +35,7 @@ func (s PR) linkBuilder(link string) string {
 
 func (s PR) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://prntscr.com/upload.php", "image")
+	body, err := s.upload(data, "https://prntscr.com/upload.php", "image", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

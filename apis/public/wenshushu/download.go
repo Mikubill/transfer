@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	matcher  = regexp.MustCompile("(https://)?ws28\\.cn/f/[0-9a-z]{11}|www\\.wenshushu\\.cn/t/[0-9a-zA-Z]{16}")
+	matcher  = regexp.MustCompile(`(https://)?ws+?[0-9]+?\\.cn/f/[0-9a-z]{11}|www\\.wenshushu\\.cn/t/[0-9a-zA-Z]{16}`)
 	regex    = regexp.MustCompile("[0-9a-z]{11}")
 	regexMgr = regexp.MustCompile("[0-9a-zA-Z]{16}")
 )

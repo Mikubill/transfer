@@ -25,7 +25,7 @@ func (s TG) linkBuilder(link string) string {
 
 func (s TG) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://telegra.ph/upload", "file")
+	body, err := s.upload(data, "https://telegra.ph/upload", "file", defaultReqMod)
 	if err != nil || strings.Contains(string(body), "error") {
 		return "", err
 	}

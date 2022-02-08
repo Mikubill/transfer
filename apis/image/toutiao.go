@@ -31,7 +31,7 @@ func (s TT) linkBuilder(link string) string {
 
 func (s TT) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://mp.toutiao.com/upload_photo/?type=json", "photo")
+	body, err := s.upload(data, "https://mp.toutiao.com/upload_photo/?type=json", "photo", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

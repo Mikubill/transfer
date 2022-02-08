@@ -31,7 +31,7 @@ func (s NT) linkBuilder(link string) string {
 
 func (s NT) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "http://you.163.com/xhr/file/upload.json", "file")
+	body, err := s.upload(data, "http://you.163.com/xhr/file/upload.json", "file", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

@@ -3,8 +3,6 @@ package image
 import (
 	"bytes"
 	"fmt"
-	"github.com/cheggaaa/pb/v3"
-	cmap "github.com/orcaman/concurrent-map"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -15,6 +13,9 @@ import (
 	"sync"
 	"time"
 	"transfer/utils"
+
+	"github.com/cheggaaa/pb/v3"
+	cmap "github.com/orcaman/concurrent-map"
 )
 
 type PicBed interface {
@@ -66,7 +67,18 @@ func (s picBed) DownloadStream(chan DownloadDataFlow) {
 	panic("DownloadStream method not implemented")
 }
 
-func (s picBed) upload(data []byte, postURL string, fieldName string) ([]byte, error) {
+func defaultReqMod(req *http.Request) {
+	req.Header.Set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:65.0) Gecko/20100101 Firefox/65.0")
+	req.Header.Set("accept", "application/json, text/javascript, */*; q=0.01")
+	req.Header.Set("accept-language", "en-US,en;q=0.5")
+	req.Header.Set("origin", req.URL.String())
+	req.Header.Set("referer", req.URL.String())
+	req.Header.Set("x-requested-with", "XMLHttpRequest")
+	req.Header.Set("x-csrf-token", "")
+}
+
+func (s picBed) upload(data []byte, postURL string, fieldName string,
+	reqModifier func(*http.Request)) ([]byte, error) {
 
 	if Verbose {
 		fmt.Println("requesting: " + postURL)
@@ -87,8 +99,9 @@ func (s picBed) upload(data []byte, postURL string, fieldName string) ([]byte, e
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:65.0) Gecko/20100101 Firefox/65.0")
 	req.Header.Set("content-type", fmt.Sprintf("multipart/form-data; boundary=%s", writer.Boundary()))
+	reqModifier(req)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

@@ -39,13 +39,21 @@ Beta即为实时构建版本，不一定能正常运行，仅建议用作测试�
 | CowTransfer | https://www.cowtransfer.com/ | 2GB |
 | Fileio | https://file.io/ | 100MB | 
 | GoFile | https://gofile.io/ | - |
-| Vim-cn | https://img.vim-cn.com/ | 100MB |
+| Wenshushu | https://wenshushu.cn/ | 2GB |
 | WeTransfer | https://wetransfer.com/ | 2GB |
-| WhiteCats | http://whitecats.dip.jp/ | 60s/file |
 | Transfer.sh | https://transfer.sh/ | - |
 | LitterBox | https://litterbox.catbox.moe/ | 1GB |
 | Lanzous | https://www.lanzous.com/ | login |
 | Notion | https://www.notion.so/ | login |
+| 1Fichier | https://www.1fichier.com/ | 300GB |
+| Null | https://0x0.st/ | 512M |
+
+已失效或不可用的服务：
+
+|  Name   | Site  | 
+|  ----  | ----  |  
+| Vim-cn | https://img.vim-cn.com/ |
+| WhiteCats | http://whitecats.dip.jp/ |
 
 部分服务仅支持上传；部分服务需要使用beta版本。
 

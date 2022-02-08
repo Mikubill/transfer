@@ -31,7 +31,7 @@ func (s XM) linkBuilder(link string) string {
 
 func (s XM) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://shopapi.io.mi.com/homemanage/shop/uploadpic", "pic")
+	body, err := s.upload(data, "https://shopapi.io.mi.com/homemanage/shop/uploadpic", "pic", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

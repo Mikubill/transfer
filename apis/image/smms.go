@@ -39,7 +39,7 @@ func (s SM) linkBuilder(link string) string {
 
 func (s SM) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://sm.ms/api/v2/upload", "smfile")
+	body, err := s.upload(data, "https://sm.ms/api/v2/upload", "smfile", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

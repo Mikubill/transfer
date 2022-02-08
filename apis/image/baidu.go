@@ -77,5 +77,6 @@ func (s BD) Upload(data []byte) (string, error) {
 	if r.Message != "Success" {
 		return "", fmt.Errorf(r.Message)
 	}
+
 	return s.linkBuilder(r.Data.Sign), nil
 }

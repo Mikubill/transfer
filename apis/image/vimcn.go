@@ -24,7 +24,7 @@ func (s VM) linkBuilder(link string) string {
 
 func (s VM) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://img.vim-cn.com", "name")
+	body, err := s.upload(data, "https://img.vim-cn.com", "name", defaultReqMod)
 	if err != nil {
 		return "", err
 	}

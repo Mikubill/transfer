@@ -11,6 +11,10 @@ var (
 	matcher = regexp.MustCompile(`https://(www\.notion\.so/signed/https%3A%2F%2F)?s3-us-west-2\.amazonaws\.com.*`)
 )
 
+func (b notion) LinkMatcher(v string) bool {
+	return matcher.MatchString(v)
+}
+
 func (b notion) DoDownload(link string, config apis.DownConfig) error {
 	err := apis.DownloadFile(&apis.DownloaderConfig{
 		Link:     link,

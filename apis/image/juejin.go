@@ -41,7 +41,7 @@ func (s JJ) linkBuilder(link string) string {
 
 func (s JJ) Upload(data []byte) (string, error) {
 
-	body, err := s.upload(data, "https://cdn-ms.juejin.im/v1/upload?bucket=gold-user-assets", "file")
+	body, err := s.upload(data, "https://cdn-ms.juejin.im/v1/upload?bucket=gold-user-assets", "file", defaultReqMod)
 	if err != nil {
 		return "", err
 	}
