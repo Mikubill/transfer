@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"time"
 	"transfer/apis"
+	"transfer/utils"
 )
 
 func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string, error) {
@@ -129,6 +130,7 @@ func (b cowTransfer) newMultipartRequest(url string, params map[string]string, c
 	}
 	buf := &bytes.Buffer{}
 	writer := multipart.NewWriter(buf)
+	writer.SetBoundary("----WebKitFormBoundary" + utils.GenRandString(16))
 	for key, val := range params {
 		_ = writer.WriteField(key, val)
 	}
@@ -198,11 +200,12 @@ func (b cowTransfer) addTk(req *http.Request) {
 
 	req.Header.Set("cookie", ck)
 	req.Header.Set("authorization", b.Config.authCode)
+	addHeaders(req)
 }
 
 func addHeaders(req *http.Request) {
 	req.Header.Set("Referer", "https://cowtransfer.com/")
-	req.Header.Set("User-Agent", "Chrome/80.0.3987.149 Transfer")
+	req.Header.Set("User-Agent", "Mozilla/5.0 DevOps; Transfer/1.1 (KHTML, like Gecko) Chrome/97.0")
 	req.Header.Set("Origin", "https://cowtransfer.com/")
 	req.Header.Set("Cookie", fmt.Sprintf("%scf-cs-k-20181214=%d;", req.Header.Get("Cookie"), time.Now().UnixNano()))
 }

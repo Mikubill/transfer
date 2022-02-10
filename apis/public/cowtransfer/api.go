@@ -20,6 +20,8 @@ type cowTransfer struct {
 }
 
 func (b *cowTransfer) SetArgs(cmd *cobra.Command) {
+	cmd.Flags().IntVarP(&b.Config.validDays, "valid", "", 0, "Set the valid days for transfer")
+
 	cmd.Flags().IntVarP(&b.Config.Parallel, "parallel", "p", 2, "Set the number of upload threads")
 	cmd.Flags().StringVarP(&b.Config.token, "cookie", "c", "", "Your user cookie (optional)")
 	cmd.Flags().StringVarP(&b.Config.authCode, "auth", "a", "", "Your auth code (optional)")

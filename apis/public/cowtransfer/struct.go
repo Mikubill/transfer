@@ -38,6 +38,7 @@ type cowOptions struct {
 	blockSize  int64
 	hashCheck  bool
 	passCode   string
+	validDays  int
 }
 
 type initResp struct {
@@ -97,13 +98,13 @@ type downloadDetailsResponse struct {
 }
 
 type downloadFilesResponse struct {
-	Details []downloadDetailsBlock `json:"transferFileDtos"`
+	Details []downloadDetailsBlock `json:"files"`
 }
 
 type downloadDetailsBlock struct {
-	GUID     string `json:"guid"`
-	FileName string `json:"fileName"`
-	Size     string `json:"size"`
+	GUID     string  `json:"guid"`
+	FileName string  `json:"fileName"`
+	Size     float64 `json:"sizeInByte"`
 }
 
 type uploadResult struct {

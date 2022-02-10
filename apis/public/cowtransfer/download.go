@@ -15,13 +15,13 @@ import (
 )
 
 const (
-	downloadDetails = "https://cowtransfer.com/api/transfer/transferdetail?url=%s&treceive=undefined&passcode=%s"
-	downloadFiles   = "https://cowtransfer.com/api/transfer/files?page=0&guid=%s"
+	downloadDetails = "https://cowtransfer.com/api/transfer/v2/transferdetail?url=%s&treceive=undefined&passcode=%s"
+	downloadFiles   = "https://cowtransfer.com/api/transfer/v2/files?page=0&guid=%s"
 	downloadConfig  = "https://cowtransfer.com/api/transfer/download?guid=%s"
 )
 
 var (
-	matcher = regexp.MustCompile("(cowtransfer\\.com|c-t\\.work)/s/[0-9a-f]{14}")
+	matcher = regexp.MustCompile(`(cowtransfer\.com|c-t\.work)/s/[0-9a-f]{14}`)
 	reg     = regexp.MustCompile("[0-9a-f]{14}")
 )
 
@@ -42,6 +42,9 @@ func (b cowTransfer) initDownload(v string, config apis.DownConfig) error {
 	fmt.Printf("Remote: %s\n", v)
 
 	body, err := fetchWithCookie(fmt.Sprintf(downloadDetails, fileID, config.Ticket), fileID)
+	if err != nil {
+		return fmt.Errorf("request DownloadDetails returns error: %s", err)
+	}
 
 	if config.DebugMode {
 		log.Printf("returns: %v\n", string(body))
@@ -65,6 +68,9 @@ func (b cowTransfer) initDownload(v string, config apis.DownConfig) error {
 	}
 
 	body, err = fetchWithCookie(fmt.Sprintf(downloadFiles, details.GUID), fileID)
+	if err != nil {
+		return fmt.Errorf("request FileDetails returns error: %s", err)
+	}
 
 	if config.DebugMode {
 		log.Printf("returns: %v\n", string(body))
@@ -78,7 +84,7 @@ func (b cowTransfer) initDownload(v string, config apis.DownConfig) error {
 	for _, item := range files.Details {
 		err = downloadItem(item, config)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 	}
 	return nil
@@ -108,7 +114,7 @@ func downloadItem(item downloadDetailsBlock, baseConf apis.DownConfig) error {
 	if baseConf.DebugMode {
 		log.Println("step2 -> api/getConf")
 		log.Printf("fileName: %s\n", item.FileName)
-		log.Printf("fileSize: %s\n", item.Size)
+		log.Printf("fileSize: %2.f\n", item.Size)
 		log.Printf("GUID: %s\n", item.GUID)
 	}
 	configURL := fmt.Sprintf(downloadConfig, item.GUID)
