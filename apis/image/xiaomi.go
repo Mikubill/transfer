@@ -19,10 +19,10 @@ type XMResp struct {
 	D    string `json:"result"`
 }
 
-func (s XM) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-f0-9]{32}")
-	return matcher.FindString(link)
-}
+// func (s XM) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-f0-9]{32}")
+// 	return matcher.FindString(link)
+// }
 
 func (s XM) linkBuilder(link string) string {
 	geXMer := regexp.MustCompile("[a-f0-9]{32}")

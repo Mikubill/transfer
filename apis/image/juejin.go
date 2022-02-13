@@ -29,10 +29,10 @@ type JJItem struct {
 	Https string `json:"https"`
 }
 
-func (s JJ) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[a-zA-Z0-9]+")
-	return matcher.FindString(link)
-}
+// func (s JJ) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[a-zA-Z0-9]+")
+// 	return matcher.FindString(link)
+// }
 
 func (s JJ) linkBuilder(link string) string {
 	getter := regexp.MustCompile("[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}/[a-zA-Z0-9]+")

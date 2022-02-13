@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"regexp"
-	"strconv"
 	"time"
 	"transfer/utils"
 )
@@ -27,56 +26,56 @@ type AliResp struct {
 	Hash string `json:"hash"`
 }
 
-func (s Ali) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("H[0-9a-zA-Z]+")
-	return matcher.FindString(link)
-}
+// func (s Ali) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("H[0-9a-zA-Z]+")
+// 	return matcher.FindString(link)
+// }
 
 func (s Ali) linkBuilder(link string) string {
 	getter := regexp.MustCompile("H[0-9a-zA-Z]+")
 	return "https://ae01.alicdn.com/kf/" + getter.FindString(link) + ".jpg"
 }
 
-func (s Ali) UploadStream(dataChan chan UploadDataFlow) {
-	for {
-		data, ok := <-dataChan
-		if !ok {
-			break
-		}
-		url, err := s.Upload(data.Data)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		data.HashMap.Set(strconv.FormatInt(data.Offset, 10), s.linkExtractor(url))
-		data.Wg.Done()
-	}
-}
+// func (s Ali) UploadStream(dataChan chan UploadDataFlow) {
+// 	for {
+// 		data, ok := <-dataChan
+// 		if !ok {
+// 			break
+// 		}
+// 		url, err := s.Upload(data.Data)
+// 		if err != nil {
+// 			dataChan <- data
+// 			continue
+// 		}
+// 		data.HashMap.Set(strconv.FormatInt(data.Offset, 10), s.linkExtractor(url))
+// 		data.Wg.Done()
+// 	}
+// }
 
-func (s Ali) DownloadStream(dataChan chan DownloadDataFlow) {
-	for {
-		data, ok := <-dataChan
-		if !ok {
-			break
-		}
-		link := s.linkBuilder(data.Hash)
-		resp, err := http.Get(link)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		bd, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			dataChan <- data
-			continue
-		}
-		_ = resp.Body.Close()
-		offset, _ := strconv.ParseInt(data.Offset, 10, 64)
-		n, _ := data.File.WriteAt(bd, offset)
-		data.Bar.Add(n)
-		data.Wg.Done()
-	}
-}
+// func (s Ali) DownloadStream(dataChan chan DownloadDataFlow) {
+// 	for {
+// 		data, ok := <-dataChan
+// 		if !ok {
+// 			break
+// 		}
+// 		link := s.linkBuilder(data.Hash)
+// 		resp, err := http.Get(link)
+// 		if err != nil {
+// 			dataChan <- data
+// 			continue
+// 		}
+// 		bd, err := ioutil.ReadAll(resp.Body)
+// 		if err != nil {
+// 			dataChan <- data
+// 			continue
+// 		}
+// 		_ = resp.Body.Close()
+// 		offset, _ := strconv.ParseInt(data.Offset, 10, 64)
+// 		n, _ := data.File.WriteAt(bd, offset)
+// 		data.Bar.Add(n)
+// 		data.Wg.Done()
+// 	}
+// }
 
 func (s Ali) Upload(data []byte) (string, error) {
 	client := http.Client{Timeout: 30 * time.Second}

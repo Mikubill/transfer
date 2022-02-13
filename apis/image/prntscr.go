@@ -23,15 +23,15 @@ type PRResp struct {
 	Data string `json:"data"`
 }
 
-func (s PR) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-zA-Z0-9]{22}")
-	return matcher.FindString(link)
-}
+// func (s PR) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-zA-Z0-9]{22}")
+// 	return matcher.FindString(link)
+// }
 
-func (s PR) linkBuilder(link string) string {
-	getter := regexp.MustCompile("[a-zA-Z0-9]{22}")
-	return "https://image.prntscr.com/image/" + getter.FindString(link) + ".png"
-}
+// func (s PR) linkBuilder(link string) string {
+// 	getter := regexp.MustCompile("[a-zA-Z0-9]{22}")
+// 	return "https://image.prntscr.com/image/" + getter.FindString(link) + ".png"
+// }
 
 func (s PR) Upload(data []byte) (string, error) {
 

@@ -25,11 +25,11 @@ type SMItem struct {
 	URL string `json:"url"`
 }
 
-func (s SM) linkExtractor(link string) string {
-	link = strings.ReplaceAll(link, "\\/", "/")
-	matcher := regexp.MustCompile("[0-9]{4}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9]{15}")
-	return matcher.FindString(link)
-}
+// func (s SM) linkExtractor(link string) string {
+// 	link = strings.ReplaceAll(link, "\\/", "/")
+// 	matcher := regexp.MustCompile("[0-9]{4}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9]{15}")
+// 	return matcher.FindString(link)
+// }
 
 func (s SM) linkBuilder(link string) string {
 	link = strings.ReplaceAll(link, "\\/", "/")

@@ -8,9 +8,9 @@ type SG struct {
 	picBed
 }
 
-func (s SG) linkExtractor(_ string) string {
-	panic("linkExtractor is temporally unavailable on SoGou API")
-}
+// func (s SG) linkExtractor(_ string) string {
+// 	panic("linkExtractor is temporally unavailable on SoGou API")
+// }
 
 func (s SG) linkBuilder(link string) string {
 	return link

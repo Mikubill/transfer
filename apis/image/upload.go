@@ -5,11 +5,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 var (
+	Dest    string
 	Backend string
 	Verbose bool
 )
@@ -17,8 +19,10 @@ var (
 func InitCmd(cmd *cobra.Command) {
 	cmd.Flags().StringVarP(&Backend,
 		"backend", "b", "", "Set upload/download backend")
+	cmd.Flags().StringVarP(&Dest,
+		"dest", "d", "", "Specify domain to upload. (Chevereto)")
 	cmd.Flags().BoolVarP(&Verbose,
-		"verbose", "", false, "Enable verbose mode to debug")
+		"verbose", "v", false, "Enable verbose mode to debug")
 }
 
 func Upload(file []string) {
@@ -27,6 +31,9 @@ func Upload(file []string) {
 		err := filepath.Walk(v, func(path string, info os.FileInfo, err error) error {
 			if info.IsDir() {
 				return nil
+			}
+			if err != nil {
+				return err
 			}
 
 			data, err := ioutil.ReadFile(path)
@@ -37,7 +44,18 @@ func Upload(file []string) {
 
 			ps, _ := filepath.Abs(path)
 			fmt.Printf("Local: %s\n", ps)
-			resp, err := backend.Upload(data)
+
+			var resp string
+
+			if backend != CheveretoBackend {
+				resp, err = backend.Upload(data)
+			} else {
+				if Dest == "" {
+					fmt.Println("Error: Chevereto backend need dest domain.")
+				}
+				resp, err = CheveretoBackend.newUpload(data, Dest)
+			}
+
 			if err != nil {
 				fmt.Printf("failed: %s", err)
 				return nil
@@ -53,7 +71,7 @@ func Upload(file []string) {
 }
 
 func ParseBackend(sp string) PicBed {
-	switch sp {
+	switch strings.ToLower(sp) {
 	// case "ali", "alibaba":
 	// 	return AliBackend
 	case "bd", "baidu":
@@ -66,21 +84,31 @@ func ParseBackend(sp string) PicBed {
 	// 	return NTBackend
 	case "pr", "prntscr":
 		return PRBackend
-	case "sm", "smms":
-		return SMBackend
-	case "sg", "sogou":
-		return SGBackend
-	case "tt", "toutiao":
-		return TTBackend
+	case "box", "imgbox":
+		return ImgBoxBackend
+	// case "sm", "smms":
+	// 	return SMBackend
+	// case "sg", "sogou":
+	// 	return SGBackend
+	// case "tt", "toutiao":
+	// 	return TTBackend
 	// case "xm", "xiaomi":
 	// 	return XMBackend
-	case "vm", "vim", "vimcn":
-		return VMBackend
+	// case "vm", "vim", "vimcn":
+	// 	return VMBackend
 	// case "sn", "suning":
 	// 	return SNBackend
 	case "tg", "telegraph":
 		return TGBackend
+	case "iu", "imgurl":
+		return IUBackend
+	case "itp", "imgtp":
+		return ItpBackend
+	case "ikr", "imgkr":
+		return IKrBackend
+	case "ch", "cheve", "chevereto":
+		return CheveretoBackend
 	default:
-		return SMBackend
+		return CCBackend
 	}
 }

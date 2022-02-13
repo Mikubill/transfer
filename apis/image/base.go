@@ -20,8 +20,8 @@ import (
 
 type PicBed interface {
 	Upload([]byte) (string, error)
-	UploadStream(chan UploadDataFlow)
-	DownloadStream(chan DownloadDataFlow)
+	UploadStream(chan UploadDataFlow)     // optional
+	DownloadStream(chan DownloadDataFlow) // optional
 }
 
 type picBed struct {
@@ -47,13 +47,9 @@ type DownloadDataFlow struct {
 	Offset string
 }
 
-func (s *picBed) linkExtractor(string) string {
-	panic("linkExtractor method not implemented")
-}
-
-func (s *picBed) linkBuilder(string) string {
-	panic("linkBuilder method not implemented")
-}
+// func (s *picBed) linkBuilder(string) string {
+// 	panic("linkBuilder method not implemented")
+// }
 
 func (s picBed) Upload([]byte) (string, error) {
 	panic("Upload method not implemented")
@@ -88,6 +84,7 @@ func (s picBed) upload(data []byte, postURL string, fieldName string,
 	client := http.Client{Timeout: 30 * time.Second}
 	byteBuf := &bytes.Buffer{}
 	writer := NewWriter(byteBuf)
+
 	filename := utils.GenRandString(14) + ".png"
 	w, err := writer.CreateFormFile(fieldName, filename)
 	if err != nil {
@@ -120,7 +117,9 @@ func (s picBed) upload(data []byte, postURL string, fieldName string,
 }
 
 func NewWriter(w io.Writer) *mWriter {
-	return &mWriter{multipart.NewWriter(w)}
+	m := &mWriter{multipart.NewWriter(w)}
+	m.SetBoundary("------WebKitFormBoundary" + utils.GenRandString(10))
+	return m
 }
 
 func (w *mWriter) CreateFormFile(field, file string) (io.Writer, error) {

@@ -12,10 +12,10 @@ type VM struct {
 	picBed
 }
 
-func (s VM) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-f0-9]{2}/[a-f0-9]{38}")
-	return matcher.FindString(link)
-}
+// func (s VM) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-f0-9]{2}/[a-f0-9]{38}")
+// 	return matcher.FindString(link)
+// }
 
 func (s VM) linkBuilder(link string) string {
 	geVMer := regexp.MustCompile("[a-f0-9]{2}/[a-f0-9]{38}")

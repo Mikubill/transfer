@@ -26,10 +26,10 @@ type CCImageItem struct {
 	Del string `json:"delete"`
 }
 
-func (s CC) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("i[0-9]/[0-9]{4}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9]+")
-	return matcher.FindString(link)
-}
+// func (s CC) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("i[0-9]/[0-9]{4}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9]+")
+// 	return matcher.FindString(link)
+// }
 
 func (s CC) linkBuilder(link string) string {
 	getter := regexp.MustCompile("i[0-9]/[0-9]{4}/[0-9]{2}/[0-9]{2}/[a-zA-Z0-9]+")

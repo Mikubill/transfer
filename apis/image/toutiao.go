@@ -19,10 +19,10 @@ type TTResp struct {
 	D    string `json:"web_url"`
 }
 
-func (s TT) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-zA-Z0-9]{20}")
-	return matcher.FindString(link)
-}
+// func (s TT) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-zA-Z0-9]{20}")
+// 	return matcher.FindString(link)
+// }
 
 func (s TT) linkBuilder(link string) string {
 	getter := regexp.MustCompile("[a-zA-Z0-9]{20}")

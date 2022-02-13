@@ -2,21 +2,21 @@
 <a title="Release" target="_blank" href="https://github.com/Mikubill/transfer/releases"><img src="https://img.shields.io/github/release/Mikubill/transfer.svg?style=flat-square&hash=c7"></a>
 <a title="Go Report Card" target="_blank" href="https://goreportcard.com/report/github.com/Mikubill/transfer"><img src="https://goreportcard.com/badge/github.com/Mikubill/transfer?style=flat-square"></a>
 
-🍭集合多个API的大文件传输工具
+🍭集合多个 API 的大文件传输工具
 
 Large file transfer tool with multiple file transfer services support
 
 ## note
 
-部分API可能不是很稳定，如有问题可以及时提issue或者pr
+部分 API 可能不是很稳定，如有问题可以及时提 issue 或者 pr
 
-如使用过程中出现任何问题可以先尝试使用beta版程序，说不定已经修复过了这个bug
+如使用过程中出现任何问题可以先尝试使用 beta 版程序，说不定已经修复过了这个 bug
 
 ## install
 
-Go语言程序, 可直接在[发布页](https://github.com/Mikubill/transfer/releases)下载使用。
+Go 语言程序，可直接在[发布页](https://github.com/Mikubill/transfer/releases)下载使用。
 
-或者使用安装脚本:
+或者使用安装脚本：
 
 ```shell script
 # Stable Release
@@ -26,32 +26,33 @@ curl -sL https://git.io/file-transfer | sh
 curl -sL https://git.io/file-transfer | bash -s beta
 ```
 
-Beta即为实时构建版本，不一定能正常运行，仅建议用作测试。
+Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试。
 
 ## support
 
-目前支持的文件传输服务:
+目前支持的文件传输服务：
 
-|  Name   | Site  | Limit |
-|  ----  | ----  |  ----  | 
-| Airportal | https://airportal.cn/ | - |
-| CatBox | https://catbox.moe/ | 200MB |
-| Fileio | https://file.io/ | 100MB | 
-| GoFile | https://gofile.io/ | - |
-| Wenshushu | https://wenshushu.cn/ | 2GB |
-| WeTransfer | https://wetransfer.com/ | 2GB |
-| Transfer.sh | https://transfer.sh/ | - |
-| LitterBox | https://litterbox.catbox.moe/ | 1GB |
-| 1Fichier | https://www.1fichier.com/ | 300GB |
-| Null | https://0x0.st/ | 512M |
+|  Name  | Command | Site  | Limit |
+|  ----  | ----  | ----  |  ----  | 
+| Airportal | `arp` | https://airportal.cn/ | - |
+| CatBox | `cat` | https://catbox.moe/ | 200MB |
+| Fileio | `fio` | https://file.io/ | 100MB | 
+| GoFile | `gof` | https://gofile.io/ | - |
+| Wenshushu | `wss` | https://wenshushu.cn/ | 2GB |
+| WeTransfer | `wet` | https://wetransfer.com/ | 2GB |
+| Transfer.sh | `trs` | https://transfer.sh/ | - |
+| LitterBox | `lit` | https://litterbox.catbox.moe/ | 1GB |
+| 1Fichier | `fic` | https://www.1fichier.com/ | 300GB |
+| Null | `null` | https://0x0.st/ | 512M |
+| Infura (ipfs) | `inf` | https://infura.io/ | - |
 
 需要登录才能使用的服务：
 
-|  Name   | Site  | 
-|  ----  | ----  |  
-| Lanzous | https://www.lanzous.com/ | 
-| Notion | https://www.notion.so/ | 
-| CowTransfer | https://www.cowtransfer.com/ | 
+|  Name   | Command | Site  | 
+|  ----  | ----  |  ----  |  
+| Lanzous | `lzs` | https://www.lanzous.com/ | 
+| Notion | `not` | https://www.notion.so/ | 
+| CowTransfer | `cow` | https://www.cowtransfer.com/ | 
 
 已失效或不可用的服务：
 
@@ -60,18 +61,33 @@ Beta即为实时构建版本，不一定能正常运行，仅建议用作测试�
 | Vim-cn | https://img.vim-cn.com/ |
 | WhiteCats | http://whitecats.dip.jp/ |
 
-部分服务仅支持上传；部分服务需要使用beta版本。
+部分服务仅支持上传；部分服务需要使用 beta 版本。
 
-[notion上传相关说明](https://github.com/Mikubill/transfer#notion)
+[notion 上传相关说明](https://github.com/Mikubill/transfer#notion)
 
 [登陆上传相关说明](https://github.com/Mikubill/transfer#login)
 
-目前支持的图床服务:
+目前支持的图床：
 
-```
-baidu(bd), ccupload(cc), prntscr(pr), smms(sm), sogou(sg), 
-toutiao(tt), vimcn(vm), suning(sn), telegraph(tg)
-```
+|  Name  | Command | Site  | 
+|  ----  | ----  |  ----  |  
+| CCUpload | `-b cc` | https://upload.cc/ | 
+| Telegraph | `-b tg` | https://telegra.ph/ | 
+| Prntscr | `-b pr` | https://prnt.sc/ | 
+
+支持部分 chevereto 搭建的图床服务（beta，仅公开上传）：
+
+| ImgLoc | `-b ch -d imgloc.com` | https://imgloc.com/ | 
+| ImgTu | `-b ch -d imgtu.com` | https://imgtu.com/ | 
+| ImgTg | `-b ch -d imgtg.com` | https://imgtg.com/ | 
+| ZPhotos | `-b ch -d z.photos` | https://z.photos/ | 
+
+以下图床为实验性支持：
+
+| ImgTP | `-b itp` | https://imgtp.com/ | 
+| ImgURL | `-b iu` | https://imgurl.com/ | 
+| ImgKr | `-b ikr` | https://imgkr.com/ | 
+| ImgBox | `-b box` | https://imgbox.com/ | 
 
 ## usage 
 
@@ -120,7 +136,7 @@ Use "transfer [command] --help" for more information about a command.
 
 ### upload & download
 
-所有上传操作都建议指定一个API，如不指定将使用默认(filelink.Backend)。加上想要传输的文件/文件夹即可。
+所有上传操作都建议指定一个 API，如不指定将使用默认 (filelink.Backend)。加上想要传输的文件/文件夹即可。
 
 ```text
 
@@ -159,7 +175,7 @@ Examples
 ./transfer wet /path/
 ```
 
-不同的Backend提供不同的选项，可以在帮助中查看关于该服务的相关信息。
+不同的 Backend 提供不同的选项，可以在帮助中查看关于该服务的相关信息。
 
 ```text
 ➜  ./transfer cow
@@ -202,7 +218,7 @@ Global Flags:
 ./transfer https://.../
 ```
 
-试验性功能：`--encrypt`选项可以在上传时将文件加密，下载时需要配合`--decrypt`选项才能正确下载文件。（当然也可以先下载后再解密）加密方式为AES-CBC，默认会自动生成一个密码，也可以通过`--encrypt-key`指定一个。
+试验性功能：`--encrypt`选项可以在上传时将文件加密，下载时需要配合`--decrypt`选项才能正确下载文件。（当然也可以先下载后再解密）加密方式为 AES-CBC，默认会自动生成一个密码，也可以通过`--encrypt-key`指定一个。
 
 ```shell script 
 # encrypt stream when upload
@@ -228,26 +244,26 @@ Note: Crypto mode is not compatible with multi thread download mode, setting par
 
 ### notion
 
-notion的上传需要以下参数
+notion 的上传需要以下参数
 
 所有参数不带符号，即形如`ce6ad860c0864286a4392d6c2e786e8`即可。
 
 ```
 -p Page ID
 ```
-必须，即页面链接中的那个一大长串的ID。建议直接使用Workspace的次级页面作为上传目标以便程序能自动获取当前Workspace ID，否则需要通过 -s 参数指定 Space ID。
+必须，即页面链接中的那个一大长串的 ID。建议直接使用 Workspace 的次级页面作为上传目标以便程序能自动获取当前 Workspace ID，否则需要通过 -s 参数指定 Space ID。
 
 ```
 -t token
 ```
-必须，即cookie中的`www.notion.so -> token_v2`项。
+必须，即 cookie 中的`www.notion.so -> token_v2`项。
 
 ```
 -s Workspace ID
 ```
-非必须，适用于非次级页面/嵌套的情况，手动设定Workspace ID
+非必须，适用于非次级页面/嵌套的情况，手动设定 Workspace ID
 
-上传后默认返回一个自动签名链接，私有页面可以在浏览器登录状态下直接点击下载。对于公开页面的文件链接，可以尝试去掉userid使用，但必须保留id和table两项。
+上传后默认返回一个自动签名链接，私有页面可以在浏览器登录状态下直接点击下载。对于公开页面的文件链接，可以尝试去掉 userid 使用，但必须保留 id 和 table 两项。
 
 Example
 ```bash
@@ -260,7 +276,7 @@ Download Link: https://www.notion.so/signed/https%3A%2F%2Fs3-us-west-2.amazonaws
 
 ### login 
 
-部分backend支持登陆环境下上传，使用时只需要提供对应的cookie即可。
+部分 backend 支持登陆环境下上传，使用时只需要提供对应的 cookie 即可。
 
 CowTransfer
 
@@ -284,7 +300,7 @@ TmpLink
 
 Lanzous
 
-蓝奏云可以只使用`phpdisk_info`项作为cookie上传文件，但可能无法进行文件管理（如删除等）。如需要上传到指定目录或进行文件管理操作需要在cookie中指定`folder_id_c`的值，如：
+蓝奏云可以只使用 `phpdisk_info` 项作为 cookie 上传文件，但可能无法进行文件管理（如删除等）。如需要上传到指定目录或进行文件管理操作需要在 cookie 中指定 `folder_id_c` 的值，如：
 
 ```shell script
 # login to upload (without path)
@@ -296,7 +312,7 @@ Lanzous
 
 ### image
 
-transfer也支持上传图片至图床，默认自动使用阿里图床上传，也可以通过`-b, --backend`指定图床。
+transfer 也支持上传图片至图床，默认自动使用阿里图床上传，也可以通过 `-b, --backend` 指定图床。
 
 ```text
 
@@ -334,9 +350,9 @@ Global Flags:
 
 ### encrypt & decrypt
 
-和前面upload使用的是同样的加密，只是在本地进行。也可以使用前面下载的加密后文件在此解密。可以通过不同参数指定密钥和输出文件名
+和前面 upload 使用的是同样的加密，只是在本地进行。也可以使用前面下载的加密后文件在此解密。可以通过不同参数指定密钥和输出文件名
 
-关于加密的说明：目前只能选择AES-CBC的加密方式，分块大小策略为min(1m, fileSize)
+关于加密的说明：目前只能选择 AES-CBC 的加密方式，分块大小策略为 min(1m, fileSize)
 
 ```shell script 
 # encrypt
@@ -354,7 +370,7 @@ transfer encrypt -o output your-file
 
 ### hash 
 
-hash功能使用sha1, crc32, md5, sha256对文件进行校验，可以用来检验文件一致性。
+hash 功能使用 sha1, crc32, md5, sha256 对文件进行校验，可以用来检验文件一致性。
 
 ```shell script 
 ➜  ./transfer hash main.go

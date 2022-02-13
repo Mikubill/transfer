@@ -19,10 +19,10 @@ type NTResp struct {
 	Data  []string `json:"data"`
 }
 
-func (s NT) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-zA-Z0-9]{32}")
-	return matcher.FindString(link)
-}
+// func (s NT) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-zA-Z0-9]{32}")
+// 	return matcher.FindString(link)
+// }
 
 func (s NT) linkBuilder(link string) string {
 	getter := regexp.MustCompile("[a-zA-Z0-9]{32}")

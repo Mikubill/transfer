@@ -13,13 +13,13 @@ type TG struct {
 	picBed
 }
 
-func (s TG) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[a-f0-9]+\\.\\w+")
-	return matcher.FindString(link)
-}
+// func (s TG) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[a-f0-9]+\\.\\w+")
+// 	return matcher.FindString(link)
+// }
 
 func (s TG) linkBuilder(link string) string {
-	geVMer := regexp.MustCompile("[a-f0-9]+\\.\\w+")
+	geVMer := regexp.MustCompile(`[a-f0-9]+\.\w+`)
 	return "https://telegra.ph/file/" + geVMer.FindString(link)
 }
 

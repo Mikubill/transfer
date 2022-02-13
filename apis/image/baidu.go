@@ -29,10 +29,10 @@ type BDItem struct {
 	Sign string `json:"sign"`
 }
 
-func (s BD) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[0-9a-f]{32}")
-	return matcher.FindString(link)
-}
+// func (s BD) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[0-9a-f]{32}")
+// 	return matcher.FindString(link)
+// }
 
 func (s BD) linkBuilder(link string) string {
 	getter := regexp.MustCompile("[0-9a-f]{32}")
@@ -46,14 +46,16 @@ func (s BD) Upload(data []byte) (string, error) {
 	filename := utils.GenRandString(14) + ".jpg"
 	_ = writer.WriteField("pos", "upload")
 	_ = writer.WriteField("uptype", "upload_pc")
-	_ = writer.WriteField("fm", "index")
+	_ = writer.WriteField("home", "tm")
 	w, err := writer.CreateFormFile("image", filename)
 	if err != nil {
 		return "", err
 	}
 	_, _ = w.Write(data)
 	_ = writer.Close()
-	req, err := http.NewRequest("POST", "https://graph.baidu.com/upload", byteBuf)
+
+	remoteAPI := "https://graph.baidu.com/upload?tn=pc&from=pc&image_source=PC_UPLOAD_IMAGE_FILE&range=%7b%22page_from%22:%20%22shituIndex%22%7d&extUiData%5bisLogoShow%5d=1&uptime=" + time.Now().Format("20060102150405")
+	req, err := http.NewRequest("POST", remoteAPI, byteBuf)
 	if err != nil {
 		return "", err
 	}

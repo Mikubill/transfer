@@ -24,10 +24,10 @@ type SNResp struct {
 	Url string `json:"src"`
 }
 
-func (s SN) linkExtractor(link string) string {
-	matcher := regexp.MustCompile("[0-9]{18}")
-	return matcher.FindString(link)
-}
+// func (s SN) linkExtractor(link string) string {
+// 	matcher := regexp.MustCompile("[0-9]{18}")
+// 	return matcher.FindString(link)
+// }
 
 func (s SN) linkBuilder(link string) string {
 	getter := regexp.MustCompile("[0-9]{18}")
