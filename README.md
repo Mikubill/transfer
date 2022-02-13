@@ -77,6 +77,8 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 
 支持部分 chevereto 搭建的图床服务（beta，仅公开上传）：
 
+|  Name  | Command | Site  | 
+|  ----  | ----  |  ----  | 
 | ImgLoc | `-b ch -d imgloc.com` | https://imgloc.com/ | 
 | ImgTu | `-b ch -d imgtu.com` | https://imgtu.com/ | 
 | ImgTg | `-b ch -d imgtg.com` | https://imgtg.com/ | 
@@ -84,6 +86,8 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 
 以下图床为实验性支持：
 
+|  Name  | Command | Site  | 
+|  ----  | ----  |  ----  | 
 | ImgTP | `-b itp` | https://imgtp.com/ | 
 | ImgURL | `-b iu` | https://imgurl.com/ | 
 | ImgKr | `-b ikr` | https://imgkr.com/ | 
