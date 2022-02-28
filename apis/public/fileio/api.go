@@ -2,8 +2,8 @@ package fileio
 
 import (
 	"fmt"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 
 	"github.com/spf13/cobra"
 )

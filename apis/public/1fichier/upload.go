@@ -13,8 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var (

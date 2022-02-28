@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"transfer/apis"
-	"transfer/apis/public/fileio"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/apis/public/fileio"
 
 	"github.com/spf13/cobra"
 )

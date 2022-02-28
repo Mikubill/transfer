@@ -1,31 +1,31 @@
 package cmd
 
 import (
-	"transfer/apis"
-	fichier "transfer/apis/public/1fichier"
-	"transfer/apis/public/airportal"
-	"transfer/apis/public/fileio"
-	"transfer/apis/public/infura"
-	"transfer/apis/public/null"
+	"github.com/Mikubill/transfer/apis"
+	fichier "github.com/Mikubill/transfer/apis/public/1fichier"
+	"github.com/Mikubill/transfer/apis/public/airportal"
+	"github.com/Mikubill/transfer/apis/public/fileio"
+	"github.com/Mikubill/transfer/apis/public/infura"
+	"github.com/Mikubill/transfer/apis/public/null"
 
 	"github.com/spf13/cobra"
 
 	//"transfer/apis/public/bitsend"
-	"transfer/apis/public/catbox"
-	"transfer/apis/public/cowtransfer"
+	"github.com/Mikubill/transfer/apis/public/catbox"
+	"github.com/Mikubill/transfer/apis/public/cowtransfer"
 
 	// "transfer/apis/public/filelink"
-	"transfer/apis/public/gofile"
-	"transfer/apis/public/lanzous"
-	"transfer/apis/public/litterbox"
+	"github.com/Mikubill/transfer/apis/public/gofile"
+	"github.com/Mikubill/transfer/apis/public/lanzous"
+	"github.com/Mikubill/transfer/apis/public/litterbox"
 
 	//"transfer/apis/public/tmplink"
-	"transfer/apis/public/transfer"
+	"github.com/Mikubill/transfer/apis/public/transfer"
 	// "transfer/apis/public/vimcn"
 
-	"transfer/apis/public/notion"
-	"transfer/apis/public/wenshushu"
-	"transfer/apis/public/wetransfer"
+	"github.com/Mikubill/transfer/apis/public/notion"
+	"github.com/Mikubill/transfer/apis/public/wenshushu"
+	"github.com/Mikubill/transfer/apis/public/wetransfer"
 	// whc "transfer/apis/public/whitecats"
 )
 

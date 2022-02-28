@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 	"time"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var (

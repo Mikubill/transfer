@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var (

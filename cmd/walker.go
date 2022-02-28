@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var urlRegex = regexp.MustCompile("(http|https)://")

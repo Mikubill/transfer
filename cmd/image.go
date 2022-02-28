@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"transfer/apis/image"
+	"github.com/Mikubill/transfer/apis/image"
 
 	"github.com/spf13/cobra"
 )

@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"transfer/crypto"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/crypto"
+	"github.com/Mikubill/transfer/utils"
 )
 
 func Upload(files []string, backend BaseBackend) {

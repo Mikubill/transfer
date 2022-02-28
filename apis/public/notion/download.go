@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 var (

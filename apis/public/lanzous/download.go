@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 var (

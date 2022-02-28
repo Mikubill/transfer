@@ -10,7 +10,7 @@ import (
 	"net/textproto"
 	"strconv"
 	"time"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var (

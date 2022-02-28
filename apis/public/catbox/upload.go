@@ -9,8 +9,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 const upload = "https://catbox.moe/user/api.php"

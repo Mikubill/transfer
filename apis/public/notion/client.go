@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 
 	"github.com/google/uuid"
 	"golang.org/x/time/rate"
