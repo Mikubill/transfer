@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://transfer.sh/"

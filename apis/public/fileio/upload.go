@@ -10,7 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 
 	"github.com/google/uuid"
 )

@@ -12,7 +12,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://pc.woozooo.com/fileup.php"

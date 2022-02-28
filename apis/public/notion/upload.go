@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/url"
 	"time"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 // Command Types

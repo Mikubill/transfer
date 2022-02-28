@@ -1,4 +1,4 @@
-module transfer
+module github.com/Mikubill/transfer
 
 go 1.16
 

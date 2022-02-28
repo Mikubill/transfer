@@ -10,7 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://ipfs.infura.io:5001/api/v0/add?recursive=false"

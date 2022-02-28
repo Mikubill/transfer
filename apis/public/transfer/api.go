@@ -3,8 +3,8 @@ package transfer
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 var (

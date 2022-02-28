@@ -9,7 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://0x0.st/"

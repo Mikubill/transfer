@@ -11,8 +11,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"time"
-	"transfer/apis"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string, error) {

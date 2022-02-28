@@ -3,7 +3,7 @@ package lanzous
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"transfer/apis"
+	"github.com/Mikubill/transfer/apis"
 )
 
 var (

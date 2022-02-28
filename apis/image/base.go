@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 
 	"github.com/cheggaaa/pb/v3"
 	cmap "github.com/orcaman/concurrent-map"

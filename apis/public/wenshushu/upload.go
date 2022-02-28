@@ -14,9 +14,9 @@ import (
 	"strconv"
 	"sync"
 	"time"
-	"transfer/apis"
-	"transfer/crypto"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/crypto"
+	"github.com/Mikubill/transfer/utils"
 
 	"github.com/mr-tron/base58"
 )

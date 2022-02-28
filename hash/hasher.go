@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"transfer/utils"
+	"github.com/Mikubill/transfer/utils"
 )
 
 func Hash(v []string) {

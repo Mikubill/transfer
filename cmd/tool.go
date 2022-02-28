@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"transfer/apis/image"
-	"transfer/crypto"
-	"transfer/hash"
+	"github.com/Mikubill/transfer/apis/image"
+	"github.com/Mikubill/transfer/crypto"
+	"github.com/Mikubill/transfer/hash"
 )
 
 var (
