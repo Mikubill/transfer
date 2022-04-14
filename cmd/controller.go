@@ -94,8 +94,17 @@ func runner(backend apis.BaseBackend) func(cmd *cobra.Command, args []string) {
 			}
 		}
 
-		for _, item := range args {
-			if !inList(links, item) && !inList(file, item) && !strings.HasPrefix(item, "-") {
+		for k, item := range args {
+			isCommand := false
+			if strings.HasPrefix(item, "-") {
+				isCommand = true
+			}
+			if k > 1 {
+				if strings.HasPrefix(args[k-1], "-") {
+					isCommand = true
+				}
+			}
+			if !inList(links, item) && !inList(file, item) && !isCommand {
 				fmt.Printf("transfer: %s: No such file, link or directory\n", item)
 			}
 		}

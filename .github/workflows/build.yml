@@ -8,7 +8,7 @@ jobs:
       - name: install
         uses: actions/setup-go@v1
         with:
-          go-version: 1.14.x
+          go-version: 1.18.x
 
       - name: checkout
         uses: actions/checkout@v1
