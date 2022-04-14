@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"github.com/Mikubill/transfer/utils"
 	"net/url"
 	"regexp"
 	"strings"
-	"github.com/Mikubill/transfer/utils"
 )
 
 var urlRegex = regexp.MustCompile("(http|https)://")

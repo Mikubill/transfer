@@ -7,6 +7,7 @@ import (
 	"path"
 	"regexp"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 )
@@ -46,9 +47,9 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 
 	mgrID := regexMgr.FindString(v)
 	if mgrID != "" {
-		data, _ := json.Marshal(map[string]interface{}{"token": mgrID})
+		data, _ := json.Marshal(map[string]any{"token": mgrID})
 		config, err := newRequest(tokenConverter, string(data), requestConfig{
-			debug:    config.DebugMode,
+			debug:    apis.DebugMode,
 			retry:    0,
 			timeout:  time.Duration(b.Config.interval) * time.Second,
 			modifier: addToken(ticket),
@@ -62,17 +63,17 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 	}
 	//log.Println(fileID)
 
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("starting download...")
 		log.Println("step1 -> api/getTicket")
 	}
 	fmt.Printf("Remote: %s\n", v)
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"tid":      fileID,
 		"password": b.Config.passCode,
 	})
 	downConfig, err := newRequest(downloadDetails, string(data), requestConfig{
-		debug:    config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -83,7 +84,7 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 	}
 
 	// todo: type 1/2, start(page?)
-	data, _ = json.Marshal(map[string]interface{}{
+	data, _ = json.Marshal(map[string]any{
 		"bid":     downConfig.Data.BoxID,
 		"pid":     downConfig.Data.UFileID,
 		"type":    1,
@@ -93,7 +94,7 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 		"options": map[string]string{"uploader": "true"},
 	})
 	downConfig, err = newRequest(downloadList, string(data), requestConfig{
-		debug:    config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -112,11 +113,11 @@ func (b wssTransfer) download(v string, config apis.DownConfig) error {
 }
 
 func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownConfig) error {
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step2 -> api/getConf")
 		log.Printf("fileName: %s\n", item.FileName)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"consumeCode": 0,
 		// "bid": item.Bid,
 		"type":    "1",
@@ -124,7 +125,7 @@ func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownC
 	})
 
 	resp, err := newRequest(signDownload, string(data), requestConfig{
-		debug:    config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(token),
@@ -133,7 +134,7 @@ func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownC
 		return fmt.Errorf("sign Request returns error: %s, onfile: %s", err, item.FileName)
 	}
 
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step3 -> startDownload")
 	}
 	filePath := config.Prefix
@@ -147,11 +148,10 @@ func (b wssTransfer) downloadItem(item fileItem, token string, config apis.DownC
 	}
 
 	config.Prefix = filePath
-	err = apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     resp.Data.URL,
-		Config:   config,
-		Modifier: addHeaders,
-	})
+	config.Link = resp.Data.URL
+	config.Modifier = addHeaders
+
+	err = apis.DownloadFile(config)
 	if err != nil {
 		return fmt.Errorf("failed DownloaderConfig with error: %s, onfile: %s", err, item.FileName)
 	}

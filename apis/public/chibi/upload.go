@@ -9,8 +9,9 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
-	"transfer/utils"
+
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 func (b *chibi) DoUpload(name string, size int64, file io.Reader) error {

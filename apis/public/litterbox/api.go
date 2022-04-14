@@ -2,9 +2,9 @@ package litterbox
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
+	"github.com/spf13/cobra"
 )
 
 var (

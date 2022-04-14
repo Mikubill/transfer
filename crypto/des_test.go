@@ -3,7 +3,8 @@ package crypto
 import (
 	"bytes"
 	"testing"
-	"transfer/utils"
+
+	"github.com/Mikubill/transfer/utils"
 )
 
 func TestDES(t *testing.T) {

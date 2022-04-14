@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"strconv"
 	"sync"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 
@@ -121,8 +123,16 @@ func (b cowTransfer) DoUpload(name string, size int64, file io.Reader) error {
 }
 
 func (b cowTransfer) uploader(ch *chan *uploadPart, conf uploadConfig) {
+	retry := 0
 	for item := range *ch {
 	Start:
+		retry++
+		if retry > 10 {
+			fmt.Printf("Upload part %d failed after 10 retries\n", item.count)
+			// temp fix issue #52, should be handled by uploader
+			os.Exit(1)
+		}
+
 		postURL := fmt.Sprintf(doUpload, conf.config.EncodeID, conf.config.ID, item.count)
 		if apis.DebugMode {
 			log.Printf("part %d start uploading, size: %d", item.count, len(item.content))

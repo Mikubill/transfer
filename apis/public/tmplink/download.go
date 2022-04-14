@@ -3,7 +3,8 @@ package tmplink
 import (
 	"fmt"
 	"regexp"
-	"transfer/apis"
+
+	"github.com/Mikubill/transfer/apis"
 )
 
 var (
@@ -29,12 +30,12 @@ func (b tmpLink) DoDownload(link string, config apis.DownConfig) error {
 func (b tmpLink) download(v string, config apis.DownConfig) error {
 	fileID := regex.FindString(v)
 	link := fmt.Sprintf("https://send.tmp.link/connect-%s-%s", config.Ticket, fileID)
-	config.Parallel = 1 // force
-	err := apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     link,
-		Config:   config,
-		Modifier: apis.AddHeaders,
-	})
+
+	config.Link = link
+	config.Parallel = 1
+	config.Modifier = apis.AddHeaders
+
+	err := apis.DownloadFile(config)
 	if err != nil {
 		return err
 	}

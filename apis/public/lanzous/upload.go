@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Mikubill/transfer/apis"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,7 +13,6 @@ import (
 	"path"
 	"strconv"
 	"strings"
-	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://pc.woozooo.com/fileup.php"

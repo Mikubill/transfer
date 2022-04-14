@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/apis/public/fileio"
 
@@ -49,11 +50,18 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&KeepMode,
 		"keep", "", false, "keep program active when process finish")
 	apis.InitCmd(rootCmd)
-	for n, backend := range baseBackend {
+	for _, item := range backendList {
+		backend := item[len(item)-1].(apis.BaseBackend)
+		var alias []string
+		for _, a := range item {
+			if _, ok := a.(string); ok {
+				alias = append(alias, a.(string))
+			}
+		}
 		backendCmd := &cobra.Command{
-			Use:     baseString[n][0],
-			Aliases: baseString[n],
-			Short:   fmt.Sprintf("Use %s API to transfer file", baseString[n][1]),
+			Use:     alias[0],
+			Aliases: alias[1:],
+			Short:   fmt.Sprintf("Use %s API to transfer file", alias[1]),
 			Run:     runner(backend),
 		}
 		backend.SetArgs(backendCmd)
@@ -84,28 +92,13 @@ func Execute() {
 
 func handleRootTransfer(args []string) {
 
-	_ = rootCmd.ParseFlags(args)
-	links := downloadWalker(args)
-	if len(links) != 0 {
-		for _, item := range links {
-			backend := ParseLink(item)
-			if backend != nil {
-				apis.Download(item, backend)
-			}
-		}
-		return
-	}
-
+	rootCmd.ParseFlags(args)
 	files := uploadWalker(args)
 	if len(files) != 0 {
 		if !apis.MuteMode {
 			fmt.Println("Warning: backend is not set. Using default: fileio.backend - <file.io>")
 			fmt.Printf("Run 'transfer --help' for usage.\n\n")
 		}
-		apis.Upload(files, fileio.Backend)
-		return
 	}
-
-	fmt.Println("Error: no file/url detected.")
-	fmt.Println("Use \"transfer --help\" for more information.")
+	runner(fileio.Backend)(rootCmd, args)
 }

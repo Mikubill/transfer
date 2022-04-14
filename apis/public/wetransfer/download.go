@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 )
@@ -55,7 +56,7 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 	blockID = string(tk0[1])
 	safetyHash = string(tk0[2])
 
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step 1/2 metadata")
 		log.Printf("link: %+v", v)
 	}
@@ -84,21 +85,21 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 		s := strings.Split(v, ";")
 		ticket.cookies += s[0] + ";"
 	}
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("ticket: %+v", ticket)
 	}
 	_ = resp.Body.Close()
 
 	signPreDownload := fmt.Sprintf("https://wetransfer.com/api/v4/transfers/%s/prepare-download", blockID)
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"security_hash": safetyHash,
 	})
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("tk: %+v", tk)
 	}
 	resp0, err := newRequest(signPreDownload, string(data), requestConfig{
 		action:   "POST",
-		debug:    config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(ticket),
@@ -127,21 +128,21 @@ func (b weTransfer) download(v string, config apis.DownConfig) error {
 }
 
 func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.DownConfig) error {
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step2 -> api/getConf")
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"security_hash":  config.Ticket,
 		"domain_user_id": utils.GenRandUUID(),
 		"file_ids":       []string{item.ID},
 		"intent":         "single_file",
 	})
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("tk: %+v", tk)
 	}
 	resp, err := newRequest(signDownload, string(data), requestConfig{
 		action:   "POST",
-		debug:    config.DebugMode,
+		debug:    apis.DebugMode,
 		retry:    0,
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(tk),
@@ -150,7 +151,7 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 		return fmt.Errorf("sign Request error: %s, onfile: %s", err, item.Name)
 	}
 
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Println("step3 -> startDownload")
 	}
 	filePath, err := filepath.Abs(config.Prefix)
@@ -163,11 +164,10 @@ func (b weTransfer) downloadItem(item fileInfo, tk requestTicket, config apis.Do
 	}
 
 	config.Prefix = filePath
-	err = apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     resp.Download,
-		Config:   config,
-		Modifier: addHeaders,
-	})
+	config.Link = resp.Download
+	config.Modifier = addHeaders
+
+	err = apis.DownloadFile(config)
 	if err != nil {
 		return fmt.Errorf("download failed: %s, onfile: %s", err, item.Name)
 	}

@@ -5,12 +5,12 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"fmt"
+	"github.com/Mikubill/transfer/utils"
 	"hash/crc32"
 	"io"
 	"os"
 	"path/filepath"
 	"strconv"
-	"github.com/Mikubill/transfer/utils"
 )
 
 func Hash(v []string) {

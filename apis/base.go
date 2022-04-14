@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Mikubill/transfer/apis/methods"
 	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 )
@@ -15,20 +16,9 @@ type BaseBackend interface {
 	LinkMatcher(string) bool
 }
 
-type DownloaderConfig struct {
-	Link        string
-	Config      DownConfig
-	Modifier    func(r *http.Request)
-	RespHandler func(r *http.Response) bool
-}
-
 type DownConfig struct {
-	Prefix    string
-	BytesMode bool
-	DebugMode bool
-	ForceMode bool
-	Ticket    string
-	Parallel  int
+	methods.DownloaderConfig
+	Ticket string
 }
 
 type Uploader interface {
@@ -83,11 +73,9 @@ func (b Backend) PostUpload(string, int64) (string, error) {
 }
 
 func (b Backend) DoDownload(link string, config DownConfig) error {
-	return DownloadFile(&DownloaderConfig{
-		Link:     link,
-		Config:   config,
-		Modifier: AddHeaders,
-	})
+	config.Link = link
+	config.Modifier = AddHeaders
+	return DownloadFile(config)
 }
 
 func AddHeaders(req *http.Request) {

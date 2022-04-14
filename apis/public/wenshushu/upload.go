@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/crypto"
 	"github.com/Mikubill/transfer/utils"
@@ -124,7 +125,7 @@ func (b wssTransfer) FinishUpload([]string) (string, error) {
 
 func (b wssTransfer) uploader(ch *chan *uploadPart, config sendConfigBlock) {
 	for item := range *ch {
-		d, _ := json.Marshal(map[string]interface{}{
+		d, _ := json.Marshal(map[string]any{
 			"ispart": true,
 			"fname":  item.name,
 			"partnu": item.count,
@@ -193,7 +194,7 @@ func (b wssTransfer) finishUpload(config sendConfigBlock, name string) error {
 		log.Println("finish upload...")
 		log.Println("step1 -> complete")
 	}
-	d, _ := json.Marshal(map[string]interface{}{
+	d, _ := json.Marshal(map[string]any{
 		"ispart": true,
 		"fname":  name,
 		"location": map[string]string{
@@ -344,7 +345,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 	if apis.DebugMode {
 		log.Println("step 2/3 addSend")
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"sender":            "",
 		"remark":            "",
 		"isextension":       false,
@@ -378,7 +379,7 @@ func (b wssTransfer) getSendConfig(totalSize int64, totalCount int) (*sendConfig
 	if apis.DebugMode {
 		log.Println("step 3/3 getUpID")
 	}
-	data, _ = json.Marshal(map[string]interface{}{
+	data, _ = json.Marshal(map[string]any{
 		"boxid":      config.Data.Bid,
 		"preid":      config.Data.UFileID,
 		"linkid":     config.Data.Tid,

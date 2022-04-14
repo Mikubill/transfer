@@ -3,14 +3,14 @@ package catbox
 import (
 	"bytes"
 	"fmt"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 	"io"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"github.com/Mikubill/transfer/apis"
-	"github.com/Mikubill/transfer/utils"
 )
 
 const upload = "https://catbox.moe/user/api.php"

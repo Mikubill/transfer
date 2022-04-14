@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+
 	"github.com/Mikubill/transfer/apis"
 )
 
@@ -16,11 +17,10 @@ func (b notion) LinkMatcher(v string) bool {
 }
 
 func (b notion) DoDownload(link string, config apis.DownConfig) error {
-	err := apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     link,
-		Config:   config,
-		Modifier: apis.AddHeaders,
-	})
+	config.Link = link
+	config.Modifier = b.AddHeaders
+
+	err := apis.DownloadFile(config)
 	if err != nil {
 		return fmt.Errorf("download failed on %s, returns %s", link, err)
 	}

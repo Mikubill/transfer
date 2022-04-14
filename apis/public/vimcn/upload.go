@@ -9,7 +9,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"strconv"
-	"transfer/apis"
+
+	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://img.vim-cn.com/"

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Mikubill/transfer/utils"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -13,7 +14,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/Mikubill/transfer/utils"
 )
 
 var (
@@ -72,6 +72,10 @@ func (s Chevereto) getToken() (string, error) {
 }
 
 func (s *Chevereto) newUpload(data []byte, dest string) (string, error) {
+	if dest == "" {
+		return "", fmt.Errorf("chevereto dest is empty")
+	}
+
 	if strings.HasPrefix(dest, "http") {
 		s.dest = dest
 	} else {

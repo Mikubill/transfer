@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+
 	"github.com/Mikubill/transfer/apis"
 )
 
@@ -78,11 +79,10 @@ func (b lanzous) DoDownload(link string, config apis.DownConfig) error {
 
 func (b lanzous) download(v string, config apis.DownConfig) error {
 	config.Parallel = 1 // force
-	err := apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     v,
-		Config:   config,
-		Modifier: apis.AddHeaders,
-	})
+	config.Link = v
+	config.Modifier = apis.AddHeaders
+
+	err := apis.DownloadFile(config)
 	if err != nil {
 		return err
 	}

@@ -51,13 +51,13 @@ type userDetails struct {
 type folderDetails struct {
 	Status string `json:"status"`
 	Data   struct {
-		ID           string        `json:"id"`
-		Type         string        `json:"type"`
-		Name         string        `json:"name"`
-		ParentFolder string        `json:"parentFolder"`
-		CreateTime   int           `json:"createTime"`
-		Childs       []interface{} `json:"childs"`
-		Code         string        `json:"code"`
+		ID           string `json:"id"`
+		Type         string `json:"type"`
+		Name         string `json:"name"`
+		ParentFolder string `json:"parentFolder"`
+		CreateTime   int    `json:"createTime"`
+		Childs       []any  `json:"childs"`
+		Code         string `json:"code"`
 	} `json:"data"`
 }
 
@@ -99,18 +99,18 @@ type folderDetails2 struct {
 }
 
 type fileDetails struct {
-	ID            string        `json:"id"`
-	Type          string        `json:"type"`
-	Name          string        `json:"name"`
-	ParentFolder  string        `json:"parentFolder"`
-	CreateTime    int           `json:"createTime"`
-	Size          int           `json:"size"`
-	DownloadCount int           `json:"downloadCount"`
-	Md5           string        `json:"md5"`
-	Mimetype      string        `json:"mimetype"`
-	Viruses       []interface{} `json:"viruses"`
-	ServerChoosen string        `json:"serverChoosen"`
-	DirectLink    string        `json:"directLink"`
-	Link          string        `json:"link"`
-	Thumbnail     string        `json:"thumbnail"`
+	ID            string `json:"id"`
+	Type          string `json:"type"`
+	Name          string `json:"name"`
+	ParentFolder  string `json:"parentFolder"`
+	CreateTime    int    `json:"createTime"`
+	Size          int    `json:"size"`
+	DownloadCount int    `json:"downloadCount"`
+	Md5           string `json:"md5"`
+	Mimetype      string `json:"mimetype"`
+	Viruses       []any  `json:"viruses"`
+	ServerChoosen string `json:"serverChoosen"`
+	DirectLink    string `json:"directLink"`
+	Link          string `json:"link"`
+	Thumbnail     string `json:"thumbnail"`
 }

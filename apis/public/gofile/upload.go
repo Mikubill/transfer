@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 )
@@ -52,7 +53,7 @@ func (b *goFile) InitUpload(_ []string, sizes []int64) error {
 	return nil
 }
 
-func smallParser(body *http.Response, result interface{}) error {
+func smallParser(body *http.Response, result any) error {
 	data, err := ioutil.ReadAll(body.Body)
 	if err != nil {
 		return fmt.Errorf("read body returns error: %v", err)
@@ -123,7 +124,7 @@ func (b *goFile) createFolder() error {
 	return nil
 }
 
-func reqSender(req *http.Request, parsed interface{}) error {
+func reqSender(req *http.Request, parsed any) error {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	body, err := http.DefaultClient.Do(req)
 	if err != nil {

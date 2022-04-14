@@ -14,6 +14,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 
@@ -80,7 +81,7 @@ func (b weTransfer) DoUpload(name string, size int64, file io.Reader) error {
 	if apis.DebugMode {
 		log.Println("send file init...")
 	}
-	d, _ := json.Marshal(map[string]interface{}{
+	d, _ := json.Marshal(map[string]any{
 		"name": name,
 		"size": size,
 	})
@@ -152,7 +153,7 @@ func (b weTransfer) FinishUpload([]string) (string, error) {
 func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 	for item := range *ch {
 	Start:
-		d, _ := json.Marshal(map[string]interface{}{
+		d, _ := json.Marshal(map[string]any{
 			"chunk_number": item.count,
 			"chunk_size":   len(item.content),
 			"chunk_crc":    0,
@@ -195,7 +196,7 @@ func (b weTransfer) uploader(ch *chan *uploadPart, config *configBlock) {
 		req.ContentLength = int64(len(item.content))
 		req.Header.Set("content-type", "application/octet-stream")
 		resp, err := client.Do(req)
-		if err != nil {
+		if err != nil || resp.StatusCode != 200 {
 			if apis.DebugMode {
 				log.Printf("failed uploading part %d error: %v (retrying)", item.count, err)
 			}
@@ -225,7 +226,7 @@ func (b weTransfer) finishUpload(config *configBlock, size int64, id string) err
 		log.Println("step1 -> complete")
 	}
 	chunkCount := int(math.Ceil(float64(size) / float64(chunkSize)))
-	d, _ := json.Marshal(map[string]interface{}{
+	d, _ := json.Marshal(map[string]any{
 		"chunk_count": chunkCount,
 	})
 	link := fmt.Sprintf(finishPart, config.ID, id)
@@ -311,7 +312,7 @@ func (b *weTransfer) getSendConfig(info []fileInfo) error {
 		log.Println("step 1/2 email")
 		log.Printf("ticket: %+v", ticket)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, _ := json.Marshal(map[string]any{
 		"message":        "",
 		"ui_language":    "en",
 		"domain_user_id": utils.GenRandUUID(),

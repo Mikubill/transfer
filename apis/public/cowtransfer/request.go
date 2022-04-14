@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 )
@@ -19,10 +20,8 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 	data := new(bytes.Buffer)
 	data.Write(buf)
 	body, err := newRequest(postURL, data, requestConfig{
-		debug:  apis.DebugMode,
-		action: "PUT",
-
-		//retry:    0,
+		debug:    apis.DebugMode,
+		action:   "PUT",
 		timeout:  time.Duration(b.Config.interval) * time.Second,
 		modifier: addToken(token),
 	})
@@ -30,30 +29,21 @@ func (b cowTransfer) blockPut(postURL string, buf []byte, token string) (string,
 		if apis.DebugMode {
 			log.Printf("block upload failed (retrying)")
 		}
-		//if retry > 3 {
 		return "", err
-		//}
-		//return b.blockPut(postURL, buf, token, retry+1)
 	}
 	var rBody uploadResponse
 	if err := json.Unmarshal(body, &rBody); err != nil {
 		if apis.DebugMode {
 			log.Printf("resp unmarshal failed (retrying)")
 		}
-		//if retry > 3 {
 		return "", err
-		//}
-		//return b.blockPut(postURL, buf, token, retry+1)
 	}
 	if b.Config.hashCheck {
 		if hashBlock(buf) != rBody.MD5 {
 			if apis.DebugMode {
 				log.Printf("block hashcheck failed (retrying)")
 			}
-			//if retry > 3 {
 			return "", err
-			//}
-			//return b.blockPut(postURL, buf, token, retry+1)
 		}
 	}
 	if rBody.Error != "" {
@@ -68,9 +58,7 @@ func hashBlock(buf []byte) string {
 
 func newRequest(link string, postBody io.Reader, config requestConfig) ([]byte, error) {
 	if config.debug {
-		//if config.retry != 0 {
-		//	log.Printf("retrying: %v", config.retry)
-		//}
+
 		log.Printf("endpoint: %s", link)
 	}
 	client := http.Client{}
@@ -82,33 +70,22 @@ func newRequest(link string, postBody io.Reader, config requestConfig) ([]byte, 
 		if config.debug {
 			log.Printf("build requests error: %v", err)
 		}
-		//if config.retry > 3 {
 		return nil, err
-		//}
-		//return newPostRequest(link, postBody, config)
 	}
 	config.modifier(req)
 	resp, err := client.Do(req)
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
 		if config.debug {
 			log.Printf("do requests error: %v", err)
 		}
-		//if config.retry > 20 {
 		return nil, err
-		//}
-		//config.retry++
-		//return newPostRequest(link, postBody, config)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		if config.debug {
 			log.Printf("read response error: %v", err)
 		}
-		//if config.retry > 20 {
 		return nil, err
-		//}
-		//config.retry++
-		//return newPostRequest(link, postBody, config)
 	}
 	_ = resp.Body.Close()
 	if config.debug {

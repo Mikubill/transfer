@@ -2,11 +2,11 @@ package transfer
 
 import (
 	"fmt"
+	"github.com/Mikubill/transfer/apis"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"github.com/Mikubill/transfer/apis"
 )
 
 const upload = "https://transfer.sh/"

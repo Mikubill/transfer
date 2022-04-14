@@ -6,16 +6,16 @@ import (
 )
 
 var (
-	downConf DownConfig
+	DownloadConfig DownConfig
 )
 
 func Download(link string, backend BaseBackend) {
 	if MuteMode {
-		NoBarMode = true
+		transferConfig.NoBarMode = true
 		os.Stdout, _ = os.Open(os.DevNull)
 	}
-	downConf.DebugMode = DebugMode
-	err := backend.DoDownload(link, downConf)
+	DownloadConfig.TransferConfig = transferConfig
+	err := backend.DoDownload(link, DownloadConfig)
 	if err != nil {
 		fmt.Printf("Download %s Error: %s", link, err)
 	}

@@ -32,6 +32,14 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 
 ## support
 
+文件上传范例
+
+```bash
+./transfer <backend> <your-file-path>
+
+./transfer wet /home/user/file.bin
+```
+
 目前支持的文件传输服务：
 
 |  Name  | Command | Site  | Limit |
@@ -46,7 +54,11 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 | LitterBox | `lit` | https://litterbox.catbox.moe/ | 1GB |
 | 1Fichier | `fic` | https://www.1fichier.com/ | 300GB |
 | Null | `null` | https://0x0.st/ | 512M |
-| Infura (ipfs) | `inf` | https://infura.io/ | - |
+| Infura (ipfs) | `inf` | https://infura.io/ | 128M |
+| Musetransfer | `muse` | https://musetransfer.com | 5GB |
+| Quickfile | `qf` | https://quickfile.cn | 512M |
+| Anonfile | `anon` | https://anonfile.com | 10G |
+| DownloadGG | `gg` | https://download.gg/ | - |
 
 需要登录才能使用的服务：
 
@@ -68,6 +80,16 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 [notion 上传相关说明](https://github.com/Mikubill/transfer#notion)
 
 [登陆上传相关说明](https://github.com/Mikubill/transfer#login)
+
+## picbed support
+
+图床上传范例
+
+```bash
+./transfer image <your-image-path> -b <backend>
+
+./transfer image /home/user/image.png -b tg
+```
 
 目前支持的图床：
 

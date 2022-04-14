@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/Mikubill/transfer/apis"
 
 	"github.com/google/uuid"
@@ -140,12 +141,12 @@ func (c *webClient) insertFile(filename, fileid, fileurl string,
 	newBlockID := uuid.New().String()
 
 	ops := []*Operation{
-		buildOp(newBlockID, CommandSet, []string{}, map[string]interface{}{
+		buildOp(newBlockID, CommandSet, []string{}, map[string]any{
 			"type":    "file",
 			"id":      newBlockID,
 			"version": 1,
 		}),
-		buildOp(newBlockID, CommandUpdate, []string{}, map[string]interface{}{
+		buildOp(newBlockID, CommandUpdate, []string{}, map[string]any{
 			"parent_id":    root.Pageid,
 			"parent_table": "block",
 			"alive":        true,
@@ -160,7 +161,7 @@ func (c *webClient) insertFile(filename, fileid, fileurl string,
 		buildOp(newBlockID, CommandSet, []string{"last_edited_time"}, timeStamp),
 		buildOp(newBlockID, CommandSet, []string{"last_edited_by_id"}, userID),
 		buildOp(newBlockID, CommandSet, []string{"last_edited_by_table"}, "notion_user"),
-		buildOp(newBlockID, CommandUpdate, []string{"properties"}, map[string]interface{}{
+		buildOp(newBlockID, CommandUpdate, []string{"properties"}, map[string]any{
 			"source":          [][]string{{fileurl}},
 			"size":            [][]string{{ByteCountIEC(filesize)}},
 			"title":           [][]string{{filename}},
@@ -194,7 +195,7 @@ func ByteCountIEC(b int64) string {
 }
 
 // buildOp creates an Operation for this block
-func buildOp(blockID, command string, path []string, args interface{}) *Operation {
+func buildOp(blockID, command string, path []string, args any) *Operation {
 	return &Operation{
 		Point: Pointer{
 			ID:    blockID,
@@ -337,7 +338,7 @@ func (r *GetUploadFileUrlResponse) Parse() {
 	r.FileID = strings.Split(r.URL[len(s3URLPrefix):], "/")[0]
 }
 
-func (c *webClient) doNotionAPI(apiURL string, requestData interface{}, result interface{}) (map[string]interface{}, error) {
+func (c *webClient) doNotionAPI(apiURL string, requestData any, result any) (map[string]any, error) {
 	var js []byte
 	var err error
 
@@ -387,7 +388,7 @@ func (c *webClient) doNotionAPI(apiURL string, requestData interface{}, result i
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]interface{}
+	var m map[string]any
 	err = json.Unmarshal(d, &m)
 	if err != nil {
 		return nil, err
@@ -433,8 +434,8 @@ func parseRecord(table string, r *Record) error {
 	}
 
 	// set Block/Space etc. based on TableView type
-	var pRawJSON *map[string]interface{}
-	var obj interface{}
+	var pRawJSON *map[string]any
+	var obj any
 	switch table {
 	case TableBlock:
 		r.Block = &Block{}

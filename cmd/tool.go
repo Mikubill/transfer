@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/Mikubill/transfer/apis/image"
 	"github.com/Mikubill/transfer/crypto"
 	"github.com/Mikubill/transfer/hash"
+	"github.com/spf13/cobra"
 )
 
 var (

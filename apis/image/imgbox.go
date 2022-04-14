@@ -10,6 +10,7 @@ import (
 	"net/textproto"
 	"strconv"
 	"time"
+
 	"github.com/Mikubill/transfer/utils"
 )
 
@@ -24,21 +25,21 @@ type ImgBox struct {
 
 type ImgBoxResp struct {
 	Files []struct {
-		ID              string      `json:"id"`
-		Slug            string      `json:"slug"`
-		Name            string      `json:"name"`
-		NameHTMLEscaped string      `json:"name_html_escaped"`
-		CreatedAt       time.Time   `json:"created_at"`
-		CreatedAtHuman  string      `json:"created_at_human"`
-		UpdatedAt       time.Time   `json:"updated_at"`
-		GalleryID       interface{} `json:"gallery_id"`
-		URL             string      `json:"url"`
-		OriginalURL     string      `json:"original_url"`
-		ThumbnailURL    string      `json:"thumbnail_url"`
-		SquareURL       string      `json:"square_url"`
-		Selected        bool        `json:"selected"`
-		CommentsEnabled int         `json:"comments_enabled"`
-		CommentsCount   int         `json:"comments_count"`
+		ID              string    `json:"id"`
+		Slug            string    `json:"slug"`
+		Name            string    `json:"name"`
+		NameHTMLEscaped string    `json:"name_html_escaped"`
+		CreatedAt       time.Time `json:"created_at"`
+		CreatedAtHuman  string    `json:"created_at_human"`
+		UpdatedAt       time.Time `json:"updated_at"`
+		GalleryID       any       `json:"gallery_id"`
+		URL             string    `json:"url"`
+		OriginalURL     string    `json:"original_url"`
+		ThumbnailURL    string    `json:"thumbnail_url"`
+		SquareURL       string    `json:"square_url"`
+		Selected        bool      `json:"selected"`
+		CommentsEnabled int       `json:"comments_enabled"`
+		CommentsCount   int       `json:"comments_count"`
 	} `json:"files"`
 }
 

@@ -2,6 +2,7 @@ package tmplink
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,13 +11,16 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
-	"transfer/apis"
-	"transfer/utils"
+	"strings"
+
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 )
 
 const (
-	upload  = "https://connect.tmp.link/api_v2/cli_uploader"
-	aUpload = "https://connect.tmp.link/api_v2/file"
+	loginUploadEp = "https://connect.tmp.link/api_v2/cli_uploader"
+	anomFileEp    = "https://tun.tmp.link/api_v2/file"
+	anomUserInit  = "https://tun.tmp.link/api_v2/token"
 )
 
 var linkMatcher = regexp.MustCompile("[a-f0-9]{13}")
@@ -38,6 +42,89 @@ func (b *tmpLink) DoUpload(name string, size int64, file io.Reader) error {
 	return nil
 }
 
+func (b *tmpLink) InitUpload([]string, []int64) error {
+	if b.Config.token != "" {
+		b.Config.dest = loginUploadEp
+		b.Config.anom = false
+		b.Config.upToken = b.Config.token
+		return nil
+	}
+	b.Config.anom = true
+	return b.anomSignup()
+}
+
+func (b *tmpLink) PreUpload(_ string, f int64) error {
+	if b.Config.anom {
+		return b.getUploadEp(f)
+	}
+	return nil
+}
+
+func (b *tmpLink) anomSignup() error {
+	qs := map[string]string{
+		"action":  "token",
+		"captcha": utils.GenRandString(64),
+		"token":   "",
+	}
+	var payload string
+	for k, v := range qs {
+		payload += fmt.Sprintf("%s=%s&", k, v)
+	}
+	resp, err := http.Post(anomUserInit, "application/x-www-form-urlencoded", strings.NewReader(payload))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	var r tmpSignupResp
+	if err = json.Unmarshal(body, &r); err != nil {
+		return err
+	}
+	if r.Data == "" || r.Status != 1 {
+		return fmt.Errorf("anomymous signup currently not available")
+	}
+	b.Config.token = r.Data
+	return nil
+}
+
+func (b *tmpLink) getUploadEp(f int64) error {
+	qs := map[string]string{
+		"action":   "upload_request_select",
+		"token":    b.Config.token,
+		"sync":     "1",
+		"captcha":  utils.GenRandString(64),
+		"filesize": strconv.FormatInt(f, 10),
+	}
+	var payload string
+	for k, v := range qs {
+		payload += fmt.Sprintf("%s=%s&", k, v)
+	}
+	resp, err := http.Post(anomFileEp, "application/x-www-form-urlencoded", strings.NewReader(payload))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	var r tmpEpResp
+	if err = json.Unmarshal(body, &r); err != nil {
+		return err
+	}
+	if r.Status != 1 {
+		return fmt.Errorf("anomymous signup currently not available")
+	}
+	b.Config.dest = r.Data.Uploader
+	b.Config.upToken = r.Data.Utoken
+	return nil
+}
+
 func (b *tmpLink) PostUpload(string, int64) (string, error) {
 	link := b.resp
 	fmt.Printf("Download Link: %s\n", link)
@@ -53,13 +140,15 @@ func (b tmpLink) newMultipartUpload(config uploadConfig) ([]byte, error) {
 	byteBuf := &bytes.Buffer{}
 	writer := multipart.NewWriter(byteBuf)
 	_ = writer.WriteField("model", "0")
-	if b.Config.token != "" {
-		_ = writer.WriteField("token", b.Config.token)
-	} else {
-		_ = writer.WriteField("action", "upload")
-		_ = writer.WriteField("token", utils.GenRandString(16))
-	}
-	_ = writer.WriteField("u_key", utils.GenRandString(16))
+	_ = writer.WriteField("token", b.Config.token)
+	_ = writer.WriteField("utoken", b.Config.upToken)
+	_ = writer.WriteField("filename", config.fileName)
+	_ = writer.WriteField("mr_id", "0")
+	// if b.Config.token != "" {
+	// 	_ = writer.WriteField("action", "upload")
+	// 	_ = writer.WriteField("token", utils.GenRandString(16))
+	// }
+	// _ = writer.WriteField("u_key", utils.GenRandString(16))
 	_, err := writer.CreateFormFile("file", config.fileName)
 	if err != nil {
 		return nil, err
@@ -97,11 +186,7 @@ func (b tmpLink) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		_ = partW.Close()
 	}()
 	var req *http.Request
-	if b.Config.token != "" {
-		req, err = http.NewRequest("POST", upload, partR)
-	} else {
-		req, err = http.NewRequest("POST", aUpload, partR)
-	}
+	req, err = http.NewRequest("POST", b.Config.dest, partR)
 
 	if err != nil {
 		return nil, err

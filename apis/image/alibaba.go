@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Mikubill/transfer/utils"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"regexp"
 	"time"
-	"github.com/Mikubill/transfer/utils"
 )
 
 var (

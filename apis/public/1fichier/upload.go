@@ -3,6 +3,8 @@ package fichier
 import (
 	"bytes"
 	"fmt"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,8 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/Mikubill/transfer/apis"
-	"github.com/Mikubill/transfer/utils"
 )
 
 var (

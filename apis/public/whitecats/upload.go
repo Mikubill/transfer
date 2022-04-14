@@ -12,8 +12,9 @@ import (
 	"regexp"
 	"strconv"
 	"time"
-	"transfer/apis"
-	"transfer/utils"
+
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 
 	"golang.org/x/text/encoding/japanese"
 	"golang.org/x/text/transform"

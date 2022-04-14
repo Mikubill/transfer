@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
 	"github.com/Mikubill/transfer/crypto"
 	"github.com/Mikubill/transfer/utils"
 
@@ -42,35 +43,31 @@ func (wc *writeCounter) Write(p []byte) (int, error) {
 		return 0, err
 	}
 	wc.offset += int64(n)
-	if !NoBarMode && wc.bar != nil {
+	if wc.bar != nil {
 		wc.bar.Add(n)
 	}
 	return n, nil
 }
 
-func DownloadFile(config *DownloaderConfig) error {
-	if Crypto {
+func DownloadFile(config DownConfig) error {
+	if config.CryptoMode {
 		fmt.Println("Warning: crypto mode is enabled. ")
-		if config.Config.Parallel != 1 {
+		if config.Parallel != 1 {
 			fmt.Println("Note: Crypto mode is not compatible with multi thread download mode, " +
 				"setting parallel to 1.")
-			config.Config.Parallel = 1
+			config.Parallel = 1
 		}
-		if Key == "" {
+		if config.CryptoKey == "" {
 			return fmt.Errorf("crypto mode enabled but encrypt key is not set")
 		}
-		if len(Key) < 32 {
-			Key = string(crypto.Padding([]byte(Key), 32))
+		if len(config.CryptoKey) < 32 {
+			config.CryptoKey = string(crypto.Padding([]byte(config.CryptoKey), 32))
 		}
-		fmt.Printf("Decrypt using key: %s\n", Key)
-	}
-
-	if config == nil {
-		return nil
+		fmt.Printf("Decrypt using key: %s\n", config.CryptoKey)
 	}
 
 	if config.Link == "" {
-		return fmt.Errorf("link is invaild or expired\n")
+		return fmt.Errorf("link is invaild or expired")
 	}
 
 	fmt.Printf("fetching download metadata..")
@@ -93,11 +90,11 @@ func DownloadFile(config *DownloaderConfig) error {
 	fmt.Printf("ok\n")
 
 	if resp.StatusCode > 400 {
-		return fmt.Errorf("link unavailable, %s\n", resp.Status)
+		return fmt.Errorf("link unavailable, %s", resp.Status)
 	}
 	if config.RespHandler != nil {
 		if !config.RespHandler(resp) {
-			return fmt.Errorf("link unavailable.\n")
+			return fmt.Errorf("link unavailable.")
 		}
 	}
 
@@ -106,12 +103,12 @@ func DownloadFile(config *DownloaderConfig) error {
 		length = 0
 	}
 
-	prefix, err := filepath.Abs(config.Config.Prefix)
+	prefix, err := filepath.Abs(config.Prefix)
 	if err != nil {
 		return err
 	}
 	if utils.IsDir(prefix) {
-		if config.Config.DebugMode {
+		if DebugMode {
 			log.Printf("%+v", resp.Header)
 		}
 		dest := regex.FindStringSubmatch(resp.Header.Get("content-disposition"))
@@ -129,14 +126,14 @@ func DownloadFile(config *DownloaderConfig) error {
 
 	fmt.Printf("Saving to:: %s\n", prefix)
 	var bar *pb.ProgressBar
-	if !NoBarMode {
+	if !config.NoBarMode {
 		bar = pb.Full.Start64(0)
 		bar.Set(pb.Bytes, true)
 		bar.SetTotal(length)
 	}
 
-	if utils.IsExist(prefix) && !strings.HasPrefix(prefix, "/dev") && !config.Config.ForceMode {
-		return fmt.Errorf("%s exists.(use -f to overwrite)\n", prefix)
+	if utils.IsExist(prefix) && !strings.HasPrefix(prefix, "/dev") && !config.ForceMode {
+		return fmt.Errorf("%s exists.(use -f to overwrite)", prefix)
 	}
 
 	// not available in windows
@@ -159,32 +156,32 @@ func DownloadFile(config *DownloaderConfig) error {
 
 	_parallel := 1
 
-	if length > 10*1024*1024 && resp.Header.Get("Accept-Ranges") != "" && config.Config.Parallel > 1 {
-		_parallel = config.Config.Parallel
+	if length > 10*1024*1024 && resp.Header.Get("Accept-Ranges") != "" && config.Parallel > 1 {
+		_parallel = config.Parallel
 	}
 
 	blk := length / int64(_parallel)
 
-	if config.Config.DebugMode {
+	if DebugMode {
 		log.Printf("filesize = %d", length)
 		log.Printf("parallel = %d", _parallel)
 		log.Printf("block = %d", blk)
 	}
 	if _parallel == 1 {
-		if Crypto {
+		if config.CryptoMode {
 			pipeR, pipeW := io.Pipe()
 			blockSize := int64(math.Min(1048576, float64(length)))
 			sig := new(sync.WaitGroup)
 			sig.Add(1)
 			go monitor(pipeW, sig)
-			if !NoBarMode && bar != nil {
-				go crypto.StreamDecrypt(bar.NewProxyReader(resp.Body), pipeW, Key, blockSize, sig)
+			if !config.NoBarMode && bar != nil {
+				go crypto.StreamDecrypt(bar.NewProxyReader(resp.Body), pipeW, config.CryptoKey, blockSize, sig)
 			} else {
-				go crypto.StreamDecrypt(resp.Body, pipeW, Key, blockSize, sig)
+				go crypto.StreamDecrypt(resp.Body, pipeW, config.CryptoKey, blockSize, sig)
 			}
 			_, _ = io.Copy(out, pipeR)
 		} else {
-			if !NoBarMode && bar != nil {
+			if !config.NoBarMode && bar != nil {
 				_, _ = io.Copy(out, bar.NewProxyReader(resp.Body))
 			} else {
 				_, _ = io.Copy(out, resp.Body)
@@ -192,7 +189,7 @@ func DownloadFile(config *DownloaderConfig) error {
 		}
 	} else {
 		if err := out.Truncate(length); err != nil {
-			return fmt.Errorf("tmpfile fruncate failed: %s\n", err)
+			return fmt.Errorf("tmpfile fruncate failed: %s", err)
 		}
 		wg := new(sync.WaitGroup)
 		for i := 0; i <= _parallel; i++ {
@@ -203,7 +200,7 @@ func DownloadFile(config *DownloaderConfig) error {
 			if end >= length {
 				ranger = fmt.Sprintf("%d-%d", start, length)
 			}
-			if config.Config.DebugMode {
+			if DebugMode {
 				log.Printf("range = %s", ranger)
 			}
 			counter := &writeCounter{bar: bar, offset: start, writer: out}
@@ -227,7 +224,7 @@ func DownloadFile(config *DownloaderConfig) error {
 	}
 
 	fmt.Print("\n")
-	if !NoBarMode && bar != nil {
+	if bar != nil {
 		bar.Finish()
 	}
 	return nil
@@ -236,14 +233,14 @@ func DownloadFile(config *DownloaderConfig) error {
 func parallelDownloader(ranger, url string, config parallelConfig) error {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return fmt.Errorf("createRequest error: %s\n", err)
+		return fmt.Errorf("createRequest error: %s", err)
 	}
 
 	req.Header.Set("Range", "bytes="+ranger)
 	config.modifier(req)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("doRequest error: %s\n", err)
+		return fmt.Errorf("doRequest error: %s", err)
 	}
 	defer func() {
 		_ = resp.Body.Close()

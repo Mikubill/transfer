@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/Mikubill/transfer/apis"
+	"github.com/Mikubill/transfer/utils"
 	"io"
 	"io/ioutil"
 	"log"
@@ -11,8 +13,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"github.com/Mikubill/transfer/apis"
-	"github.com/Mikubill/transfer/utils"
 )
 
 const (

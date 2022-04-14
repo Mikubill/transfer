@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+
 	"github.com/Mikubill/transfer/apis"
 	"github.com/Mikubill/transfer/utils"
 )
@@ -58,11 +59,10 @@ func (b goFile) download(v string, config apis.DownConfig) error {
 		if apis.DebugMode {
 			log.Printf("fileitem: %+v\n", item)
 		}
-		err := apis.DownloadFile(&apis.DownloaderConfig{
-			Link:     item.Link,
-			Config:   config,
-			Modifier: createMod(v),
-		})
+
+		config.Link = item.Link
+		config.Modifier = createMod(v)
+		err := apis.DownloadFile(config)
 		if err != nil {
 			return err
 		}

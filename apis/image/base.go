@@ -3,6 +3,7 @@ package image
 import (
 	"bytes"
 	"fmt"
+	"github.com/Mikubill/transfer/utils"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -12,7 +13,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"github.com/Mikubill/transfer/utils"
 
 	"github.com/cheggaaa/pb/v3"
 	cmap "github.com/orcaman/concurrent-map"

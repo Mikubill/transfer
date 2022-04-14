@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -72,6 +73,14 @@ func GenRandBytes(byteLength int) []byte {
 		return nil
 	}
 	return b
+}
+
+func GetType(v any) string {
+	if t := reflect.TypeOf(v); t.Kind() == reflect.Ptr {
+		return "*" + t.Elem().Name()
+	} else {
+		return t.Name()
+	}
 }
 
 // GenRandString generates a random string in given length.

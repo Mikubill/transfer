@@ -57,7 +57,7 @@ type LoadPageChunkResponse struct {
 	RecordMap *RecordMap `json:"recordMap"`
 	Cursor    cursor     `json:"cursor"`
 
-	RawJSON map[string]interface{} `json:"-"`
+	RawJSON map[string]any `json:"-"`
 }
 
 type submitTransactionRequest struct {
@@ -77,10 +77,10 @@ type Pointer struct {
 }
 
 type Operation struct {
-	Point   Pointer     `json:"pointer"`
-	Path    []string    `json:"path"`
-	Command string      `json:"command"`
-	Args    interface{} `json:"args"`
+	Point   Pointer  `json:"pointer"`
+	Path    []string `json:"path"`
+	Command string   `json:"command"`
+	Args    any      `json:"args"`
 }
 
 // RecordMap contains a collections of blocks, a space, users, and collections.
@@ -104,11 +104,11 @@ type getUploadFileUrlRequest struct {
 
 // GetUploadFileUrlResponse is a response to POST /api/v3/getUploadFileUrl
 type GetUploadFileUrlResponse struct {
-	URL          string                 `json:"url"`
-	SignedGetURL string                 `json:"signedGetUrl"`
-	SignedPutURL string                 `json:"signedPutUrl"`
-	FileID       string                 `json:"-"`
-	RawJSON      map[string]interface{} `json:"-"`
+	URL          string         `json:"url"`
+	SignedGetURL string         `json:"signedGetUrl"`
+	SignedPutURL string         `json:"signedPutUrl"`
+	FileID       string         `json:"-"`
+	RawJSON      map[string]any `json:"-"`
 }
 
 // Record represents a polymorphic record
@@ -159,9 +159,9 @@ type Block struct {
 	LastEditedBy   string `json:"last_edited_by"`
 	LastEditedTime int64  `json:"last_edited_time"`
 	// ID of parent Block
-	ParentID    string                 `json:"parent_id"`
-	ParentTable string                 `json:"parent_table"`
-	Properties  map[string]interface{} `json:"properties,omitempty"`
+	ParentID    string         `json:"parent_id"`
+	ParentTable string         `json:"parent_table"`
+	Properties  map[string]any `json:"properties,omitempty"`
 	// type of the block e.g. TypeText, TypePage etc.
 	Type string `json:"type"`
 	// blocks are versioned
@@ -204,7 +204,7 @@ type Block struct {
 	CodeLanguage string `json:"-"`
 
 	// RawJSON represents Block as
-	RawJSON map[string]interface{} `json:"-"`
+	RawJSON map[string]any `json:"-"`
 
 	isResolved bool
 }

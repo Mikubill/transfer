@@ -7,10 +7,11 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/crypto/hkdf"
 	"os"
 	"strconv"
-	"transfer/utils"
+
+	"github.com/Mikubill/transfer/utils"
+	"golang.org/x/crypto/hkdf"
 )
 
 func genDeriveBytes(master []byte, info []byte) []byte {
