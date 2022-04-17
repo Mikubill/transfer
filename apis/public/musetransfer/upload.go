@@ -68,6 +68,7 @@ func (b *muse) getUploadToken() (*s3Token, error) {
 }
 
 func (b *muse) newTransfer() error {
+	b.EtagMap = new(sync.Map)
 	fmt.Printf("fetching upload tickets..")
 	end := utils.DotTicker()
 
@@ -245,9 +246,6 @@ func (b *muse) DoUpload(name string, size int64, file io.Reader) error {
 		return err
 	}
 	b.ossSigner(req, auth)
-	if apis.DebugMode {
-		log.Println("usq header: ", req.Header)
-	}
 	http.DefaultClient.Timeout = time.Duration(b.Config.interval) * time.Second
 	resp, err = http.DefaultClient.Do(req)
 	if err != nil {
@@ -261,8 +259,8 @@ func (b *muse) DoUpload(name string, size int64, file io.Reader) error {
 
 func (b *muse) generate_payload(max int64) string {
 	var payload string
-	payload = `<?xml version="1.0" encoding="UTF-8"?>`
-	payload += "<CompleteMultipartUpload>"
+	payload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+	payload += "<CompleteMultipartUpload>\n"
 	for i := int64(1); i <= max; i++ {
 		if v, ok := b.EtagMap.LoadAndDelete(i); ok {
 			payload += fmt.Sprintf("<Part><PartNumber>%d</PartNumber><ETag>%s</ETag></Part>", i, v)

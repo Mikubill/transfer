@@ -27,7 +27,7 @@ func (b bitSend) DoDownload(link string, config apis.DownConfig) error {
 
 func (b bitSend) download(v string, config apis.DownConfig) error {
 	var link string
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("fetching: %v", v)
 	}
 	fmt.Printf("fetching ticket..")
@@ -45,18 +45,17 @@ func (b bitSend) download(v string, config apis.DownConfig) error {
 	}
 	_ = resp.Body.Close()
 	link = "https://bitsend.jp/" + regex.FindString(string(body))
-	if config.DebugMode {
+	if apis.DebugMode {
 		log.Printf("dest: %v", link)
 	}
 	b.Ticket = resp.Header.Get("Set-Cookie")
 	*end <- struct{}{}
 	fmt.Printf("ok\n")
 
-	return apis.DownloadFile(&apis.DownloaderConfig{
-		Link:     link,
-		Config:   config,
-		Modifier: b.addRef(v),
-	})
+	config.Link = link
+	config.Modifier = b.addRef(v)
+
+	return apis.DownloadFile(config)
 }
 
 func (b bitSend) addRef(ref string) func(req *http.Request) {

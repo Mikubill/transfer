@@ -18,7 +18,7 @@ type muse struct {
 	apis.Backend
 
 	Config   museOptions
-	EtagMap  sync.Map
+	EtagMap  *sync.Map
 	Assets   []int64
 	Commands [][]string
 }
