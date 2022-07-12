@@ -1,10 +1,11 @@
 package musetransfer
 
 import (
-	"bytes"
 	"crypto/hmac"
+	"crypto/md5"
 	"crypto/sha1"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -43,7 +44,7 @@ func (b *muse) getUploadToken() (*s3Token, error) {
 		return nil, err
 	}
 
-	addToken(req, b.Config.devicetoken)
+	addToken(req, b.Config.devicetoken, getToken, []byte(""))
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -76,14 +77,14 @@ func (b *muse) newTransfer() error {
 	if apis.DebugMode {
 		log.Println("\ndevice-token: ", b.Config.devicetoken)
 	}
-	buf, _ := json.Marshal(map[string]any{
-		"title":            utils.GenRandString(10),
-		"titletype":        0,
-		"expire":           365,
-		"customBackground": 0,
+	buf, _ := json.Marshal(OrderedMap{
+		{"title", utils.GenRandString(10)},
+		{"titletype", 0},
+		{"expire", 7},
+		{"customBackground", 0},
 	})
 
-	body, err := b.postAPI(createSend, bytes.NewBuffer(buf))
+	body, err := b.postAPI(createSend, buf)
 	if err != nil {
 		return err
 	}
@@ -272,15 +273,15 @@ func (b *muse) generate_payload(max int64) string {
 
 func (b *muse) AddEntry(n, p string, size int64) error {
 
-	bufe, _ := json.Marshal(map[string]any{
-		"code": b.Config.sToken,
-		"name": n,
-		"path": p + n,
-		"size": size,
-		"type": filepath.Ext(n),
+	buf, _ := json.Marshal(OrderedMap{
+		{"code", b.Config.sToken},
+		{"name", n},
+		{"path", p + n},
+		{"size", size},
+		{"type", filepath.Ext(n)},
 	})
 
-	body, err := b.postAPI(addFile, bytes.NewBuffer(bufe))
+	body, err := b.postAPI(addFile, buf)
 
 	if err != nil {
 		return err
@@ -315,19 +316,19 @@ func (b muse) FinishUpload([]string) (string, error) {
 
 func (b muse) completeUpload() (string, error) {
 
-	buf, err := json.Marshal(map[string]any{
-		"assetIds":         b.Assets,
-		"code":             b.Config.sToken,
-		"customBackground": 0,
-		"expire":           365,
-		"title":            "transfer-" + utils.GenRandString(3),
-		"titleType":        0,
+	buf, err := json.Marshal(OrderedMap{
+		{"assetIds", b.Assets},
+		{"code", b.Config.sToken},
+		{"customBackground", 0},
+		{"expire", 365},
+		{"title", "transfer-" + utils.GenRandString(3)},
+		{"titleType", 0},
 	})
 	if err != nil {
 		return "", err
 	}
 
-	body, err := b.postAPI(finishSend, bytes.NewBuffer(buf))
+	body, err := b.postAPI(finishSend, buf)
 	if err != nil {
 		return "", err
 	}
@@ -346,10 +347,20 @@ func (b muse) completeUpload() (string, error) {
 	return link, nil
 }
 
-func addToken(req *http.Request, token string) {
+func addToken(req *http.Request, token string, url string, data []byte) {
 	addHeaders(req)
 	req.Header.Set("x-requested-with", "XMLHttpRequest")
 	req.Header["x-transfer-device"] = []string{token}
+	
+	o := base64.StdEncoding.EncodeToString([]byte(strings.TrimPrefix(url, "https://service.tezign.com")))
+	i := base64.StdEncoding.EncodeToString(data)
+	r := "" //为登录后的token TODO
+	a := strings.Join([]string{o, i, token, r}, "|")
+
+	md5Hash := md5.New()
+	md5Hash.Write([]byte(a))
+	md5Str := hex.EncodeToString(md5Hash.Sum(nil))
+	req.Header["x-transfer-sign"] = []string{md5Str}
 }
 
 func addHeaders(req *http.Request) {
