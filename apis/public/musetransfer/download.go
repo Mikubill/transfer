@@ -81,7 +81,7 @@ func (b muse) download(v string, config apis.DownConfig) error {
 		}
 
 		config.Link = dlresp.Result.URL
-		config.Modifier = apis.AddHeaders
+		config.Modifier = addHeaders
 
 		err = apis.DownloadFile(config)
 		if err != nil {
