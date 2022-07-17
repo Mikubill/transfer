@@ -1,7 +1,6 @@
 package musetransfer
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -43,7 +42,7 @@ func (b muse) download(v string, config apis.DownConfig) error {
 
 	// request filelist
 	buf, _ := json.Marshal(qform)
-	body, err := b.postAPI(listAPI, bytes.NewBuffer(buf))
+	body, err := b.postAPI(listAPI, buf)
 	if err != nil {
 		return fmt.Errorf("request %s error: %v", listAPI, err)
 	}
@@ -65,7 +64,7 @@ func (b muse) download(v string, config apis.DownConfig) error {
 	for _, item := range listResp.Result {
 		qform["fileId"] = item.FileID
 		buf, _ = json.Marshal(qform)
-		body, err := b.postAPI(dlAPI, bytes.NewBuffer(buf))
+		body, err := b.postAPI(dlAPI, buf)
 		if err != nil {
 			return err
 		}
@@ -82,7 +81,7 @@ func (b muse) download(v string, config apis.DownConfig) error {
 		}
 
 		config.Link = dlresp.Result.URL
-		config.Modifier = apis.AddHeaders
+		config.Modifier = addHeaders
 
 		err = apis.DownloadFile(config)
 		if err != nil {

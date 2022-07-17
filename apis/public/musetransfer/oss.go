@@ -71,7 +71,8 @@ func (b muse) uploader(ch *chan *uploadPart) {
 
 }
 
-func (b muse) postAPI(ep string, k io.Reader) ([]byte, error) {
+func (b muse) postAPI(ep string, data []byte) ([]byte, error) {
+	k := bytes.NewBuffer(data)
 	if apis.DebugMode {
 		log.Println("\nrequesting", ep)
 	}
@@ -79,7 +80,7 @@ func (b muse) postAPI(ep string, k io.Reader) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	addToken(req, b.Config.devicetoken)
+	addToken(req, b.Config.devicetoken, ep, data)
 
 	http.DefaultClient.Timeout = time.Duration(b.Config.interval) * time.Second
 	resp, err := http.DefaultClient.Do(req)
