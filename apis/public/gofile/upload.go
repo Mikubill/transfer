@@ -187,12 +187,24 @@ func (b *goFile) selectServer() error {
 
 func (b *goFile) DoUpload(name string, size int64, file io.Reader) error {
 
-	_, err := b.newMultipartUpload(uploadConfig{
+	body, err := b.newMultipartUpload(uploadConfig{
 		fileSize:   size,
 		fileName:   name,
 		fileReader: file,
 		debug:      apis.DebugMode,
 	})
+
+	// Get download link from response
+	var respData uploadResp
+	err = json.Unmarshal(body, &respData)
+	if err != nil {
+		if apis.DebugMode {
+			log.Printf("parse response error: %v", err)
+		}
+		return err
+	}
+
+	b.downloadLink = respData.Data.DownLoadPage
 	if err != nil {
 		return fmt.Errorf("upload returns error: %s", err)
 	}
@@ -264,6 +276,7 @@ func (b *goFile) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		}
 		return nil, err
 	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		if config.debug {
@@ -271,6 +284,7 @@ func (b *goFile) newMultipartUpload(config uploadConfig) ([]byte, error) {
 		}
 		return nil, err
 	}
+
 	_ = resp.Body.Close()
 	if config.debug {
 		log.Printf("returns: %v", string(body))
@@ -298,7 +312,8 @@ func (b *goFile) FinishUpload([]string) (string, error) {
 	}
 
 	link := fmt.Sprintf("https://gofile.io/?c=%s", b.folderName)
-	fmt.Printf("Download Link: %s\nUser Token: %s\n", link, b.userToken)
+	// fmt.Printf("Download Link: %s\nUser Token: %s\n", link, b.userToken)
+	fmt.Printf("Download Link: %s\nUser Token: %s\n", b.downloadLink, b.userToken)
 
 	return link, nil
 

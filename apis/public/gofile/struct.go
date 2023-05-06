@@ -114,3 +114,16 @@ type fileDetails struct {
 	Link          string `json:"link"`
 	Thumbnail     string `json:"thumbnail"`
 }
+
+type uploadRespData struct {
+	DownLoadPage string `json:"downLoadPage"`
+	Code         string `json:"code"`
+	ParentFolder string `json:"parentFolder"`
+	FileId       string `json:"fileId"`
+	FileName     string `json:"fileName"`
+	Md5          string `json:"md5"`
+}
+type uploadResp struct {
+	Status string         `json:"name"`
+	Data   uploadRespData `json:"data"`
+}

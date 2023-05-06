@@ -21,6 +21,7 @@ type goFile struct {
 	folderID   string
 	folderName string
 
+	downloadLink string
 	// baseBody     []byte
 
 	// boundary     string
