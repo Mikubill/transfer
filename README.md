@@ -57,7 +57,7 @@ Beta 即为实时构建版本，不一定能正常运行，仅建议用作测试
 | Infura (ipfs) | `inf` | https://infura.io/ | 128M |
 | Musetransfer | `muse` | https://musetransfer.com | 5GB |
 | Quickfile | `qf` | https://quickfile.cn | 512M |
-| Anonfile | `anon` | https://anonfile.com | 10G |
+| Anonfile | `anon` | https://anonfile.com | 20G |
 | DownloadGG | `gg` | https://download.gg/ | - |
 
 需要登录才能使用的服务：
