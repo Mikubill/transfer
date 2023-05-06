@@ -22,7 +22,7 @@ const (
 	createFolder           = "https://api.gofile.io/createFolder"
 	setFolder              = "https://api.gofile.io/setFolderOption"
 	getUserAccount         = "https://api.gofile.io/getAccountDetails?token=%s"
-	createFolderPostString = "parentFolderId=%s&token=%s"
+	createFolderPostString = "parentFolderId=%s&folderName=%s&token=%s"
 	setPrimPostString      = "folderId=%s&token=%s&option=public&value=true"
 	shareFolder            = "https://api.gofile.io/shareFolder?folderId=%s&token=%s"
 )
@@ -93,7 +93,7 @@ func (b *goFile) createFolder() error {
 
 	body.Body.Close()
 	rootFolderID := sevData1.Data.RootFolder
-	postString := fmt.Sprintf(createFolderPostString, rootFolderID, b.userToken)
+	postString := fmt.Sprintf(createFolderPostString, rootFolderID, "tfolder", b.userToken)
 
 	// then create new folder
 	if apis.DebugMode {
