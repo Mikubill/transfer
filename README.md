@@ -164,7 +164,7 @@ Use "transfer [command] --help" for more information about a command.
 
 ### upload & download
 
-所有上传操作都建议指定一个 API，如不指定将使用默认 (filelink.Backend)。加上想要传输的文件/文件夹即可。
+所有上传操作都建议指定一个 API，如不指定将使用默认 (fileio.Backend)。加上想要传输的文件/文件夹即可。
 
 ```text
 
