@@ -20,10 +20,10 @@ const (
 	getServer              = "https://api.gofile.io/getServer"
 	createAccount          = "https://api.gofile.io/createAccount"
 	createFolder           = "https://api.gofile.io/createFolder"
-	setFolder              = "https://api.gofile.io/setFolderOption"
+	setFolder              = "https://api.gofile.io/setOption"
 	getUserAccount         = "https://api.gofile.io/getAccountDetails?token=%s"
 	createFolderPostString = "parentFolderId=%s&folderName=%s&token=%s"
-	setPrimPostString      = "folderId=%s&token=%s&option=public&value=true"
+	setPrimPostString      = "contentId=%s&token=%s&option=public&value=true"
 	shareFolder            = "https://api.gofile.io/shareFolder?folderId=%s&token=%s"
 )
 
